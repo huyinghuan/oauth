@@ -1,0 +1,23 @@
+version: "2.1"
+services:
+  register-auth-server:
+    image: "huyinghuan/docker-registry-auth:latest"
+    container_name: "registry-auth-server"
+    restart: always
+    ports: 
+      - "8000:8000"
+    volumes:
+      - /Volumes/Macintosh HD/Extends/data/docker_registry/certs/auth.crt:/go/src/oauth/certs/auth.crt
+      - /Volumes/Macintosh HD/Extends/data/docker_registry/certs/auth.key:/go/src/oauth/certs/auth.key
+    environment:
+      - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
+      - REGISTRY_AUTH_TOKEN_EXPIRATION=900
+      - REGISTRY_AUTH_TOKEN_DEBUG=false
+      #admin account username
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_USER=admin
+      #admin account password
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_PASS=12345678
+      #account registry api path
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_API=__registry
+      #account database mysql
+      - REGISTRY_AUTH_TOKEN_ACCOUNT_DATABASE="test:12345678@tcp(db:3306)/oauth"
