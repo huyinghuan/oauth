@@ -14,12 +14,6 @@
   revision = "8828253bfc54f2f91aaef5f32b44a244b0a98e4f"
 
 [[projects]]
-  name = "github.com/Sirupsen/logrus"
-  packages = ["."]
-  revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
-  version = "v1.0.6"
-
-[[projects]]
   branch = "master"
   name = "github.com/aymerick/raymond"
   packages = [
@@ -29,23 +23,6 @@
     "parser"
   ]
   revision = "b565731e1464263de0bda75f2e45d97b54b60110"
-
-[[projects]]
-  name = "github.com/docker/distribution"
-  packages = [
-    "context",
-    "registry/auth",
-    "registry/auth/token",
-    "uuid"
-  ]
-  revision = "48294d928ced5dd9b378f7fd7c6f5da3ff3f2c89"
-  version = "v2.6.2"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/docker/libtrust"
-  packages = ["."]
-  revision = "aabc10ec26b754e797f9028f4589c5b7bd90dc20"
 
 [[projects]]
   branch = "master"
@@ -91,18 +68,6 @@
   packages = ["."]
   revision = "d85bb4911c725a53b135fc12862748a41b6c07da"
   version = "v0.7.0"
-
-[[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
-  version = "v1.1.1"
-
-[[projects]]
-  name = "github.com/gorilla/mux"
-  packages = ["."]
-  revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
-  version = "v1.6.2"
 
 [[projects]]
   branch = "master"
@@ -168,6 +133,7 @@
     "core/router/node",
     "middleware/logger",
     "middleware/recover",
+    "sessions",
     "view"
   ]
   revision = "2a08a0f1f7162b9e662d5ffdc28bc27376259453"
@@ -228,8 +194,8 @@
 [[projects]]
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
-  revision = "dafebb5b6ff2861a0d69af64991e10866c19be85"
-  version = "v1.0.0"
+  revision = "82c7118e8ccf7403d4860175d97bb635e8e28239"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/modern-go/concurrent"
@@ -260,8 +226,7 @@
   name = "golang.org/x/crypto"
   packages = [
     "acme",
-    "acme/autocert",
-    "ssh/terminal"
+    "acme/autocert"
   ]
   revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
 
@@ -269,7 +234,6 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = [
-    "context",
     "html",
     "html/atom"
   ]
@@ -278,10 +242,7 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows"
-  ]
+  packages = ["unix"]
   revision = "904bdc257025c7b3f43c19360ad3ab85783fad78"
 
 [[projects]]
@@ -289,6 +250,24 @@
   packages = ["cloudsql"]
   revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
   version = "v1.1.0"
+
+[[projects]]
+  branch = "v1"
+  name = "gopkg.in/bsm/ratelimit.v1"
+  packages = ["."]
+  revision = "db14e161995a5177acef654cb0dd785e8ee8bc22"
+
+[[projects]]
+  name = "gopkg.in/redis.v3"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool"
+  ]
+  revision = "b5e368500d0a508ef8f16e9c2d4025a8a46bcc29"
+  version = "v3.6.4"
 
 [[projects]]
   branch = "v2"
@@ -305,6 +284,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "81787eebe417502d8d13f3a5da1610299672be9357ce4eb4ebd48fe74d683d75"
+  inputs-digest = "16dcc3593deffd5ba887fdf707c62079307faa9e443c095cc5ee3c5bbde4be76"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"oauth/config"
 	"sort"
 	"strings"
 	"time"
@@ -39,7 +38,7 @@ func joseBase64UrlEncode(b []byte) string {
 }
 
 func CreateToken(form *UserPostForm) (string, error) {
-	conf := config.Get()
+	//conf := config.Get()
 	now := time.Now().Unix()
 	// header := token.Header{
 	// 	Type:       "JWT",

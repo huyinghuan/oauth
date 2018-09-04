@@ -16,6 +16,21 @@ type DbConfig struct {
 	Connect string
 }
 
+type RedisClient struct {
+	Addr string `yaml:"addr"`
+	Pass string `yaml:"pass"`
+	DB   int    `yaml:"db"`
+}
+
+type RedisCluster struct {
+	URL []string `yaml:"url"`
+}
+
+type Redis struct {
+	Client RedisClient  `yaml:"client"`
+	Cluser RedisCluster `yaml:"cluster"`
+}
+
 type Account struct {
 	User string `yaml:"user"`
 	Pass string `yaml:"pass"`
