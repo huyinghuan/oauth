@@ -12,6 +12,10 @@ func SetEx(key string, value interface{}, seconds time.Duration) error {
 	return client.SetXX(key, value, seconds).Err()
 }
 
+func Exist(key string) bool {
+	return client.Exists(key).Val()
+}
+
 func Del(keys ...string) error {
 	var queue []string
 	for _, key := range keys {
