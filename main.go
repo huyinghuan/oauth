@@ -123,12 +123,12 @@ func GetApp() *iris.Application {
 			ctx.StatusCode(406)
 			return
 		}
-		now := time.Now().UnixNano()
+		now := time.Now().Unix()
 		if timestamp, err := ctx.URLParamInt64("timestamp"); err != nil {
 			ctx.StatusCode(406)
 			return
 			//与服务器误差小于5分钟 东八区
-		} else if math.Abs(float64(now-timestamp)) > 1000*5*60 {
+		} else if math.Abs(float64(now-timestamp)) > 5*60 {
 			ctx.StatusCode(406)
 			return
 		}
@@ -177,7 +177,7 @@ func GetApp() *iris.Application {
 		ctx.Header("Location", callback)
 	})
 
-	app.Post("/user-registry", func(ctx context.Context) {
+	app.Post("/user-register", func(ctx context.Context) {
 		account := accountForm{}
 		ctx.ReadJSON(&account)
 		username := strings.TrimSpace(account.Username)
@@ -196,7 +196,7 @@ func GetApp() *iris.Application {
 		}
 	})
 
-	app.Post("/app-registry", func(ctx context.Context) {
+	app.Post("/app-register", func(ctx context.Context) {
 		form := appForm{}
 		ctx.ReadJSON(&form)
 		username := strings.TrimSpace(form.Name)
