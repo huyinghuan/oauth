@@ -2,8 +2,6 @@ package controller
 
 import (
 	"encoding/base64"
-	"encoding/json"
-	"fmt"
 	"log"
 	"oauth/auth"
 	"oauth/config"
@@ -11,7 +9,6 @@ import (
 	"oauth/logger"
 	"strings"
 
-	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 )
 
@@ -82,26 +79,28 @@ func verityUserScopePermission(form *auth.UserPostForm, hasLogin bool) {
 }
 
 func Authorize(ctx context.Context) {
-	hasLogin := verityUsernameAndPassword(ctx.FormValue("account"), ctx.GetHeader("Authorization"))
-	form, err := auth.GetUserPostForm(ctx)
-	if err != nil {
-		logger.Debug(err)
-		ctx.StatusCode(iris.StatusBadRequest)
-		ctx.WriteString(fmt.Sprintf("Bad request: %s", err))
-		return
-	}
+	//token := ctx.GetHeader("token")
 
-	verityUserScopePermission(form, hasLogin)
+	// hasLogin := verityUsernameAndPassword(ctx.FormValue("account"), ctx.GetHeader("Authorization"))
+	// form, err := auth.GetUserPostForm(ctx)
+	// if err != nil {
+	// 	logger.Debug(err)
+	// 	ctx.StatusCode(iris.StatusBadRequest)
+	// 	ctx.WriteString(fmt.Sprintf("Bad request: %s", err))
+	// 	return
+	// }
 
-	tokenStr, err := auth.CreateToken(form)
-	if err != nil {
-		logger.Debug(err)
-		ctx.StatusCode(iris.StatusServiceUnavailable)
-		ctx.WriteString(err.Error())
-		return
-	}
-	result, _ := json.Marshal(&map[string]string{"token": tokenStr})
-	ctx.StatusCode(200)
-	ctx.Header("Content-Type", "application/json")
-	ctx.Write(result)
+	// verityUserScopePermission(form, hasLogin)
+
+	// tokenStr, err := auth.CreateToken(form)
+	// if err != nil {
+	// 	logger.Debug(err)
+	// 	ctx.StatusCode(iris.StatusServiceUnavailable)
+	// 	ctx.WriteString(err.Error())
+	// 	return
+	// }
+	// result, _ := json.Marshal(&map[string]string{"token": tokenStr})
+	// ctx.StatusCode(200)
+	// ctx.Header("Content-Type", "application/json")
+	// ctx.Write(result)
 }

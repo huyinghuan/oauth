@@ -17,9 +17,9 @@ type DbConfig struct {
 }
 
 type RedisClient struct {
-	Addr string `yaml:"addr"`
-	Pass string `yaml:"pass"`
-	DB   int    `yaml:"db"`
+	Addr     string `yaml:"addr"`
+	Password string `yaml:"pass"`
+	DB       int64  `yaml:"db"`
 }
 
 type RedisCluster struct {
@@ -27,8 +27,8 @@ type RedisCluster struct {
 }
 
 type Redis struct {
-	Client RedisClient  `yaml:"client"`
-	Cluser RedisCluster `yaml:"cluster"`
+	Client  RedisClient  `yaml:"client"`
+	Cluster RedisCluster `yaml:"cluster"`
 }
 
 type Account struct {
@@ -43,6 +43,7 @@ type Config struct {
 	Port    string   `yaml:"port"`
 	Website string   `yaml:"website"`
 	Account Account  `yaml:"account"`
+	Redis   Redis    `yaml:"redis"`
 }
 
 var config *Config

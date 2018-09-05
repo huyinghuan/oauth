@@ -16,10 +16,10 @@ func FindApplicationByClientID(clientID string) (schema.Application, error) {
 	return app, err
 }
 
-func RegisterAppliction(name string, password string) error {
+func RegisterAppliction(app *schema.Application) error {
 	engine := database.GetDriver()
 	exist, err := engine.Get(&schema.Application{
-		Name: name,
+		Name: app.Name,
 	})
 	if err != nil {
 		return err
@@ -27,14 +27,9 @@ func RegisterAppliction(name string, password string) error {
 	if exist {
 		return fmt.Errorf("已存在应用名")
 	}
-
-	app := schema.Application{
-		Name:       name,
-		Password:   utils.Encrypt(password),
-		ClientID:   utils.RandomString(24),
-		PrivateKey: utils.RandomString(24),
-	}
-	_, err = engine.InsertOne(&app)
+	app.ClientID = utils.RandomString(24)
+	app.PrivateKey = utils.RandomString(24)
+	_, err = engine.InsertOne(app)
 	if err != nil {
 		return err
 	}

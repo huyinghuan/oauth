@@ -1,7 +1,15 @@
 package iredis
 
+import (
+	"time"
+)
+
 func Set(key string, value interface{}) error {
 	return client.Set(key, value, 0).Err()
+}
+
+func SetEx(key string, value interface{}, seconds time.Duration) error {
+	return client.SetXX(key, value, seconds).Err()
 }
 
 func Del(keys ...string) error {
