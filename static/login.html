@@ -1,7 +1,110 @@
 <html>
-    <head></head>
-    <body>
-        <h2>登陆界面</h2>
+    <head>
 
+        <style>
+            
+            body{
+                height: 100%;
+                padding: 0px;
+                margin: 0px;
+            }
+            header{
+                height: auto;
+            }
+            footer{
+                height: 40px;
+            }
+            #main{
+                flex: 1;
+                -webkit-flex:1;
+                -webkit-box-flex:1;
+                overflow: hidden;
+
+                display:flex;
+                flex-direction:row;
+            }
+            #container{
+                height: 100%;
+                display:flex;
+                flex-direction:column;
+            }
+            p{
+                height: 250px;
+            }
+
+            #left-nav{
+                width: 200px;
+                height: 100%;
+            }
+            #route-index{
+                flex: 1;
+                -webkit-flex:1;
+                -webkit-box-flex:1;
+                height: 100%;
+
+                display:flex;
+                flex-direction:column;
+            }
+
+            #input{
+                height: auto;
+                
+            }
+            #table{
+                flex: 1;
+                -webkit-flex:1;
+                -webkit-box-flex:1;
+            }
+        </style>
+
+
+    </head>
+
+    <body>
+        <div id="container">
+            <header>
+                <h2 style="text-align:center">Open Auth</h2>
+            </header>
+            <div id="main">
+                <div id="left-nav"></div>
+                <div id="route-index">
+                    <div id="input">
+                        <input id="username" type="text" />
+                        <input id="password" type="password"/>
+                        <button id="login">登陆</button>
+                    </div>
+                    <div id="table">
+                    </div>
+                </div>
+            </div>
+            <footer></footer>
+        </div>
+
+        <script>
+            var loginBtn = document.querySelector("#login")
+            var usernameInput = document.querySelector("#username")
+            var passwordInput = document.querySelector("#password")
+            loginBtn.addEventListener("click", function(){
+                let username = usernameInput.value
+                let password = passwordInput.value
+
+                console.log(usernameInput.value, passwordInput.value)
+
+               fetch('/resource/login', {
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({username: username, password: password})
+                }).then((resp)=>{
+                    if(resp.status == 200){
+                        location.reload();
+                    }else{
+                        confirm("账户或密码错误")
+                    }
+                });
+            })
+        </script>
     </body>
 </html>
