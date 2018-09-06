@@ -12,30 +12,28 @@ import (
 
 var engine *xorm.Engine
 
-func initAdmin(user string, password string) error {
-	exist, err := engine.Get(&schema.User{
-		Name: user,
-	})
+func initAdmin(username string, password string) error {
+	user := schema.User{
+		Name: username,
+	}
+	exist, err := engine.Get(&user)
 	if err != nil {
 		return err
 	}
 	if !exist {
-		user := schema.User{
-			Name:     user,
+		newUser := schema.User{
+			Name:     username,
 			Password: utils.Encrypt(password),
 		}
-		if _, err = engine.InsertOne(&user); err != nil {
+		if _, err = engine.InsertOne(&newUser); err != nil {
 			return err
 		} else {
 			log.Println("admin账户初始化完成")
 		}
 		return nil
 	} else {
-		user := schema.User{
-			Name:     user,
-			Password: utils.Encrypt(password),
-		}
-		if _, err := engine.Update(user); err != nil {
+		user.Password = utils.Encrypt(password)
+		if _, err := engine.Id(user.ID).Update(user); err != nil {
 			return err
 		}
 		log.Println("更新Amin密码完成")

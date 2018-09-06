@@ -18,14 +18,10 @@ func CreateResourceToken(clientID string, username string, pk string) (string, e
 	return token, err
 }
 
-func GetResourceToken(clientID string, token string) (string, error) {
+func GetResourceByToken(clientID string, token string) (string, error) {
 	key := fmt.Sprintf("resource:%s:%s", clientID, token)
 	token, err := iredis.Get(key)
 	if err != nil {
-		return "", err
-	}
-
-	if err := iredis.Del(key); err != nil {
 		return "", err
 	}
 	return token, nil

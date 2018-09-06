@@ -3,6 +3,7 @@ package iredis
 import (
 	"log"
 	"testing"
+	"time"
 )
 
 func TestGet(t *testing.T) {
@@ -32,4 +33,11 @@ func TestDel(t *testing.T) {
 	if v, err := Get("test2"); err == nil && v != "" {
 		t.Fail()
 	}
+}
+
+func TestSetEX(t *testing.T) {
+	SetEx("aaa", "222", 3*time.Second)
+	log.Println(client.Get("aaa"))
+	time.Sleep(4 * time.Second)
+	log.Println(client.Get("aaa"))
 }

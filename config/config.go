@@ -5,6 +5,7 @@ import (
 	"log"
 	"oauth/logger"
 	"os"
+	"path"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -50,7 +51,11 @@ var config *Config
 
 //init 读取配置文件
 func init() {
-	configBytes, err := ioutil.ReadFile("config.yaml")
+	configPath := "config.yaml"
+	if os.Getenv("ProjectPWD") != "" {
+		configPath = path.Join(os.Getenv("ProjectPWD"), "config.yaml")
+	}
+	configBytes, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		log.Fatalln(err)
 	}

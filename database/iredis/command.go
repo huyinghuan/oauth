@@ -9,7 +9,7 @@ func Set(key string, value interface{}) error {
 }
 
 func SetEx(key string, value interface{}, seconds time.Duration) error {
-	return client.SetXX(key, value, seconds).Err()
+	return client.Set(key, value, seconds).Err()
 }
 
 func Exist(key string) bool {

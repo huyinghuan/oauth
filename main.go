@@ -235,6 +235,7 @@ func GetApp() *iris.Application {
 		postStr, err := auth.DecryptBody(clientID, body)
 
 		if err != nil {
+			logger.Debug(err)
 			ctx.StatusCode(406)
 			return
 		}
@@ -242,6 +243,7 @@ func GetApp() *iris.Application {
 		postData := ResourceAccountForm{}
 
 		if err := json.Unmarshal([]byte(postStr), &postData); err != nil {
+			logger.Debug(err)
 			ctx.StatusCode(500)
 			return
 		}
@@ -252,14 +254,13 @@ func GetApp() *iris.Application {
 			return
 		}
 		token := postData.Token
-		username, err := auth.GetResourceToken(clientID, token)
+		username, err := auth.GetResourceByToken(clientID, token)
 		if err != nil {
-			logger.Debug(err)
-			ctx.StatusCode(500)
+			ctx.StatusCode(406)
 			return
 		}
 		result := map[string]interface{}{
-			"timestamp": time.Now().UnixNano(),
+			"timestamp": time.Now().Unix(),
 			"username":  username,
 		}
 		encryptBody, err := auth.EncryptBody(clientID, result)
