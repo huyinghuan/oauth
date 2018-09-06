@@ -6,6 +6,7 @@ import (
 	"oauth/logger"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -63,7 +64,15 @@ func init() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	debug := os.Getenv("REGISTRY_AUTH_TOKEN_DEBUG")
+	dev := os.Getenv("OPENAUTH_DEV")
+	if dev != "" {
+		dev = strings.Replace(dev, "\"", "", -1)
+		if dev == "false" {
+			config.Dev = false
+		}
+	}
+
+	debug := os.Getenv("OPENAUTH_DEBUG")
 	if debug != "" {
 		debug = strings.Replace(debug, "\"", "", -1)
 		if debug == "false" {
@@ -71,22 +80,34 @@ func init() {
 		}
 	}
 
-	admin := os.Getenv("REGISTRY_AUTH_TOKEN_ACCOUNT_USER")
+	admin := os.Getenv("OPENAUTH_ADMIN")
 	if admin != "" {
 		config.Account.User = strings.Replace(admin, "\"", "", -1)
 	}
-	pass := os.Getenv("REGISTRY_AUTH_TOKEN_ACCOUNT_PASS")
+	pass := os.Getenv("OPENAUTH_ADMIN_PASS")
 	if pass != "" {
 		config.Account.Pass = strings.Replace(pass, "\"", "", -1)
 	}
-	api := os.Getenv("REGISTRY_AUTH_TOKEN_ACCOUNT_API")
-	if api != "" {
-		config.Account.API = strings.Replace(api, "\"", "", -1)
-	}
-	db := os.Getenv("REGISTRY_AUTH_TOKEN_ACCOUNT_DATABASE")
+
+	db := os.Getenv("OPENAUTH_DATABASE")
 	if db != "" {
 		config.Db.Connect = strings.Replace(db, "\"", "", -1)
 	}
+
+	redisClientAddr := os.Getenv("OPENAUTH_REDIS_CLIENT_ADDR")
+	if redisClientAddr != "" {
+		config.Redis.Client.Addr = strings.Replace(redisClientAddr, "\"", "", -1)
+	}
+	redisClientPass := os.Getenv("OPENAUTH_REDIS_CLIENT_PASS")
+	if redisClientPass != "" {
+		config.Redis.Client.Password = strings.Replace(redisClientPass, "\"", "", -1)
+	}
+	redisClientDB := os.Getenv("OPENAUTH_REDIS_CLIENT_DB")
+	if redisClientDB != "" {
+		redisIndex := strings.Replace(redisClientDB, "\"", "", -1)
+		config.Redis.Client.DB, _ = strconv.ParseInt(redisIndex, 10, 64)
+	}
+
 }
 
 //Get 获取配置文件
