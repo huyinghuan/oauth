@@ -77,8 +77,7 @@ request(options, function (error, response, body) {
   console.log(body);
 });
 ```
-
-Respose：
+Respose：
 
 ```json
 {
@@ -87,7 +86,7 @@ request(options, function (error, response, body) {
 }
 ```
 
-## 获取登陆用户Token
+## 获取登陆用户Token
 
 - 1.将网页URL重定向到`/authorize?client_id=xxx`, 该URL会自动引导用户进行登陆操作
 - 2.用户在登陆以后，将会由该URL跳转到`your_app_server_callback_url?token=xxxx`，这样你到应用拿到了一个60秒内有效到token值。
