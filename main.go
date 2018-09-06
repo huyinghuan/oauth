@@ -102,7 +102,7 @@ func GetApp() *iris.Application {
 		log.Println(fmt.Sprintf("权限请请求 %s : %s : %s : %s", clientID, account, scope.Name, scope.Type))
 
 		authScope := AuthScope{
-			Timestamp: time.Now().UnixNano(),
+			Timestamp: time.Now().Unix(),
 			Scope:     scope,
 		}
 
@@ -120,15 +120,6 @@ func GetApp() *iris.Application {
 		clientID := ctx.URLParam("client_id")
 		clientID = strings.TrimSpace(clientID)
 		if clientID == "" {
-			ctx.StatusCode(406)
-			return
-		}
-		now := time.Now().Unix()
-		if timestamp, err := ctx.URLParamInt64("timestamp"); err != nil {
-			ctx.StatusCode(406)
-			return
-			//与服务器误差小于5分钟 东八区
-		} else if math.Abs(float64(now-timestamp)) > 5*60 {
 			ctx.StatusCode(406)
 			return
 		}
@@ -255,7 +246,7 @@ func GetApp() *iris.Application {
 			return
 		}
 
-		if math.Abs(float64(time.Now().UnixNano()-postData.Timestamp)) > 1000*5*60 {
+		if math.Abs(float64(time.Now().Unix()-postData.Timestamp)) > 5*60 {
 			logger.Debug("时间戳超时")
 			ctx.StatusCode(406)
 			return
