@@ -1,84 +1,21 @@
 <html>
     <head>
-
         <style>
-            
-            body{
-                height: 100%;
-                padding: 0px;
-                margin: 0px;
-            }
-            header{
-                height: auto;
-            }
-            footer{
-                height: 40px;
-            }
-            #main{
-                flex: 1;
-                -webkit-flex:1;
-                -webkit-box-flex:1;
-                overflow: hidden;
-
-                display:flex;
-                flex-direction:row;
-            }
-            #container{
-                height: 100%;
-                display:flex;
-                flex-direction:column;
-            }
-            p{
-                height: 250px;
-            }
-
-            #left-nav{
-                width: 200px;
-                height: 100%;
-            }
-            #route-index{
-                flex: 1;
-                -webkit-flex:1;
-                -webkit-box-flex:1;
-                height: 100%;
-
-                display:flex;
-                flex-direction:column;
-            }
-
-            #input{
-                height: auto;
-                
-            }
-            #table{
-                flex: 1;
-                -webkit-flex:1;
-                -webkit-box-flex:1;
+            .input{
+                margin-bottom: 20px;
             }
         </style>
-
-
     </head>
 
     <body>
-        <div id="container">
-            <header>
-                <h2 style="text-align:center">Open Auth</h2>
-            </header>
-            <div id="main">
-                <div id="left-nav"></div>
-                <div id="route-index">
-                    <div id="input">
-                        <input id="username" type="text" />
-                        <input id="password" type="password"/>
-                        <button id="login">登陆</button>
-                    </div>
-                    <div id="table">
-                    </div>
-                </div>
+            <h2 style="text-align: center;">Open Auth</h2>
+            <input type="hidden"id="client_id" value={{.ClientID}}>
+            <div style="width: 600px;height:300px; background-color: antiquewhite; margin: 20px auto;">
+                    <div class="input">账户: <input id="username" type="text" /> </div>
+                    <div class="input">密码: <input id="password" type="password"/></div>
+                    <div class="input" ><button id="login">登陆</button> <button id="register">注册</button></div>
             </div>
-            <footer></footer>
-        </div>
+
 
         <script>
             var loginBtn = document.querySelector("#login")
@@ -90,7 +27,7 @@
 
                 console.log(usernameInput.value, passwordInput.value)
 
-               fetch('/login/user', {
+               fetch('/user/login', {
                     method: 'POST',
                     headers: {
                     'Accept': 'application/json',

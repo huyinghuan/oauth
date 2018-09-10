@@ -1,5 +1,5 @@
 port: 8000
-dev: true
+dev: false
 website: "x.x.x.x:5000" #the Register Server's ip or domain ,just for page show
 account:
   user: "admin"

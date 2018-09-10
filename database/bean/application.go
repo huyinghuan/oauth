@@ -29,6 +29,7 @@ func RegisterAppliction(app *schema.Application) error {
 	}
 	app.ClientID = utils.RandomString(24)
 	app.PrivateKey = utils.RandomString(24)
+	app.Password = utils.Encrypt(app.Password)
 	_, err = engine.InsertOne(app)
 	if err != nil {
 		return err

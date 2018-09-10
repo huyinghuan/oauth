@@ -16,7 +16,7 @@
 ### API
 
 ```
-URL: /app-register
+URL: /app/register
 Method: POST
 Request Body: 
 

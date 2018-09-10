@@ -31,3 +31,44 @@ func (c *User) Post(ctx iris.Context) {
 		ctx.WriteString("注册成功！")
 	}
 }
+
+func (c *User) Get(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	ctx.JSON(map[string]string{
+		"username": sess.GetString("username"),
+	})
+}
+
+func (c *User) Logout(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	sess.Clear()
+	ctx.StatusCode(200)
+}
+
+type accountForm struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (c *User) Login(ctx iris.Context) {
+	account := accountForm{}
+	ctx.ReadJSON(&account)
+	username := strings.TrimSpace(account.Username)
+	password := strings.TrimSpace(account.Password)
+	if username == "" || password == "" {
+		ctx.StatusCode(403)
+		return
+	}
+
+	if _, exist, err := bean.FindUser(username, password); err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+	} else if !exist {
+		ctx.StatusCode(403)
+	} else {
+		sess := c.Session.Start(ctx)
+		sess.Set("user-authorized", true)
+		sess.Set("username", username)
+		ctx.StatusCode(200)
+	}
+}
