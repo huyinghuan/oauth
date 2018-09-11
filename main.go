@@ -36,6 +36,7 @@ func GetApp() *iris.Application {
 
 	userCtrl := controller.User{Session: session}
 	UserAPI := app.Party("/user")
+	UserAPI.Get("/register", func(ctx iris.Context) { ctx.ServeFile("static/register.html", false) })
 	//注册
 	UserAPI.Post("/register", userCtrl.Post)
 	//退出

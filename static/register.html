@@ -8,26 +8,26 @@
     </head>
 
     <body>
-            <h2 style="text-align: center;">Open Auth Login</h2>
+            <h2 style="text-align: center;">Open Auth Account Register</h2>
             <input type="hidden"id="client_id" value={{.ClientID}}>
             <div style="width: 600px;height:300px; background-color: antiquewhite; margin: 20px auto;">
                     <div class="input">账户: <input id="username" type="text" /> </div>
                     <div class="input">密码: <input id="password" type="password"/></div>
-                    <div class="input" ><button id="login">登陆</button> <a href="/user/register">注册</a></div>
+                    <div class="input" ><button id="register">注册</button></div>
             </div>
 
 
         <script>
-            var loginBtn = document.querySelector("#login")
+            var registerBtn = document.querySelector("#register")
             var usernameInput = document.querySelector("#username")
             var passwordInput = document.querySelector("#password")
-            loginBtn.addEventListener("click", function(){
+            registerBtn.addEventListener("click", function(){
                 let username = usernameInput.value
                 let password = passwordInput.value
 
                 console.log(usernameInput.value, passwordInput.value)
 
-               fetch('/user/login', {
+               fetch('/user/register', {
                     method: 'POST',
                     headers: {
                     'Accept': 'application/json',
@@ -36,9 +36,10 @@
                     body: JSON.stringify({username: username, password: password})
                 }).then((resp)=>{
                     if(resp.status == 200){
-                        location.reload();
+                        confirm("注册成功!")
+                        window.location.href = "/"
                     }else{
-                        confirm("账户或密码错误")
+                        confirm("账户重复或密码不符合")
                     }
                 });
             })
