@@ -8,7 +8,6 @@ import (
 	"oauth/auth"
 	"oauth/database/bean"
 	"oauth/database/iredis"
-	"oauth/logger"
 	"strings"
 	"time"
 
@@ -50,20 +49,20 @@ func (c *Authorize) Verity(ctx iris.Context) {
 
 	body, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {
-		logger.Debug(err)
+		log.Println(err)
 		ctx.StatusCode(500)
 		return
 	}
 	defer ctx.Request().Body.Close()
 	decryptBody, err := auth.DecryptBody(clientID, body)
 	if err != nil {
-		logger.Debug(err)
+		log.Println(err)
 		ctx.StatusCode(500)
 		return
 	}
 	scope := Scope{}
 	if err := json.Unmarshal([]byte(decryptBody), &scope); err != nil {
-		logger.Debug(err)
+		log.Println(err)
 		ctx.StatusCode(500)
 		return
 	}
@@ -77,7 +76,7 @@ func (c *Authorize) Verity(ctx iris.Context) {
 
 	encryptAuthScope, err := auth.EncryptBody(clientID, authScope)
 	if err != nil {
-		logger.Debug(err)
+		log.Println(err)
 		ctx.StatusCode(500)
 		return
 	}
@@ -109,7 +108,6 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.StatusCode(406)
 		return
 	}
-
 	//是否存在私有key
 	appPKKey := fmt.Sprintf("app:pk:%s", clientID)
 
@@ -131,14 +129,13 @@ func (c *Authorize) Get(ctx iris.Context) {
 		return
 	}
 	if agree, err := sess.GetBoolean(clientID); err != nil || !agree {
-		sess.Set(clientID, false)
 		app, _ := bean.FindApplicationByClientID(clientID)
 		ctx.ViewData("ClientID", clientID)
 		ctx.ViewData("AppName", app.Name)
 		ctx.View("confirm.html")
 		return
 	}
-
+	sess.Set(clientID, false)
 	privateKey, err := iredis.Get(appPKKey)
 	if err != nil {
 		ctx.StatusCode(500)
@@ -157,7 +154,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-	callback := fmt.Sprintf("%s?token=%s", cbURL, token)
-	ctx.StatusCode(301)
+	callback := fmt.Sprintf("%s?token=%s&t=%d", cbURL, token, time.Now().Unix())
+	ctx.StatusCode(302)
 	ctx.Header("Location", callback)
 }
