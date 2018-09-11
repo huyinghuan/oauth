@@ -42,6 +42,7 @@ func (c *User) Get(ctx iris.Context) {
 func (c *User) Logout(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	sess.Clear()
+	sess.ClearFlashes()
 	ctx.StatusCode(200)
 }
 
