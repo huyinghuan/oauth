@@ -12,6 +12,7 @@ redis:
     addr: "localhost:6379"
     pass: ""
     db: 0
+open_register: true #是否开放用户注册
   #cluster:
   #  url:
   #    - xxxx:xx

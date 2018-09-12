@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/bulma.min.css"> 
+        <style>
+            body{
+                padding-top: 15%;
+                height: 100%;
+                color: whitesmoke;
+            }
+            .label{
+                color: whitesmoke!important;
+            }
+            .bg{
+                background-image: url("/static/images/bg.png") !important;
+                background-repeat: repeat-x!important;
+            }
+        </style>
+    </head>
+    <body class="bg">
+        <div class="columns">
+            <div class="column"></div>
+            <div class="column is-one-fifth">
+                <h2 style="text-align: center;"> 当前用户:{{.Account}}</h2>
+                <a href="javascript:void(0)" onclick="logout()">注销</a>
+            </div>
+            <div class="column"></div>
+        </div>
+    </body>
+    <script>
+        function logout(){
+            fetch("/user/logout",{
+                method: "DELETE"
+            }).then((resp)=>{
+                location.reload()
+            })
+        }
+    </script>
+</html>

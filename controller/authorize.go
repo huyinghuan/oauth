@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"oauth/auth"
+	"oauth/config"
 	"oauth/database/bean"
 	"oauth/database/iredis"
 	"strings"
@@ -119,13 +120,15 @@ func (c *Authorize) Get(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	//用户是否已登陆
 	if userAuthorized, err := sess.GetBoolean("user-authorized"); err != nil || !userAuthorized {
-		ctx.ServeFile("static/login.html", false)
+		ctx.ViewData("OpenRegister", config.Get().OpenRegister)
+		ctx.View("login.html")
 		return
 	}
 
 	username := sess.GetString("username")
 	if username == "" {
-		ctx.ServeFile("static/login.html", false)
+		ctx.ViewData("OpenRegister", config.Get().OpenRegister)
+		ctx.View("login.html")
 		return
 	}
 	if agree, err := sess.GetBoolean(clientID); err != nil || !agree {

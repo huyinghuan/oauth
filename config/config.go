@@ -40,12 +40,13 @@ type Account struct {
 }
 
 type Config struct {
-	Db      DbConfig `yaml:"db"`
-	Dev     bool     `yaml:"dev"`
-	Port    string   `yaml:"port"`
-	Website string   `yaml:"website"`
-	Account Account  `yaml:"account"`
-	Redis   Redis    `yaml:"redis"`
+	Db           DbConfig `yaml:"db"`
+	Dev          bool     `yaml:"dev"`
+	Port         string   `yaml:"port"`
+	Website      string   `yaml:"website"`
+	Account      Account  `yaml:"account"`
+	Redis        Redis    `yaml:"redis"`
+	OpenRegister bool     `yaml:"open_register"`
 }
 
 var config *Config
@@ -83,6 +84,7 @@ func init() {
 	admin := os.Getenv("OPENAUTH_ADMIN")
 	if admin != "" {
 		config.Account.User = strings.Replace(admin, "\"", "", -1)
+		config.OpenRegister = false
 	}
 	pass := os.Getenv("OPENAUTH_ADMIN_PASS")
 	if pass != "" {
@@ -106,6 +108,14 @@ func init() {
 	if redisClientDB != "" {
 		redisIndex := strings.Replace(redisClientDB, "\"", "", -1)
 		config.Redis.Client.DB, _ = strconv.ParseInt(redisIndex, 10, 64)
+	}
+
+	openRegister := os.Getenv("OPENAUTH_OPEN_REGISTER")
+	if openRegister != "" {
+		debug = strings.Replace(openRegister, "\"", "", -1)
+		if openRegister == "true" {
+			config.OpenRegister = true
+		}
 	}
 
 }

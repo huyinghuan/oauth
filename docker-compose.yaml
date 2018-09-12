@@ -18,6 +18,7 @@ services:
       - OPENAUTH_REDIS_CLIENT_ADDR=redis:6379
       #- OPENAUTH_REDIS_CLIENT_PASS=
       #- OPENAUTH_REDIS_CLIENT_DB=
+      - OPENAUTH_OPEN_REGISTER=true
     networks: 
       oauth:
     depends_on:

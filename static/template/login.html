@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/bulma.min.css"> 
+        <link rel="stylesheet" href="/static/css/all.css"> 
+        <style>
+            body{
+                padding-top: 15%;
+                height: 100%;
+                color: whitesmoke;
+            }
+            .label{
+                color: whitesmoke!important;
+            }
+            .bg{
+                background-image: url("/static/images/bg.png") !important;
+                background-repeat: repeat-x!important;
+            }
+        </style>
+    </head>
+
+    <body class="bg">
+        <div class="columns">
+            <div class="column"></div>
+            <div class="column is-one-fifth">
+                    <h2 style="text-align: center;"  class="title is-3">Open Auth</h2>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <label class="label">账户:</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                            <p class="control is-expanded">
+                                <input class="input" type="text" id="username">
+                            </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <label class="label">密码:</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                            <div class="control">
+                                <input class="input" type="password" id="password">
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <!-- Left empty for spacing -->
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                            <div class="control">
+                                <button class="button is-primary"  id="login">
+                                        登陆
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    {{if .OpenRegister}}
+                    <div class="field is-horizontal">
+                        <div class="field-label">
+                            <!-- Left empty for spacing -->
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <div class="control">
+                                    <a href="/user/register" target="_blank">用户注册</a>
+                                </div>
+                            </div>
+                            <!-- <div class="field">
+                                <div class="control">
+                                    <a href="/app/register" target="_blank">我的应用想使用这个用户中心</a>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+            <div class="column"></div>     
+        </div>
+        <script>
+            var loginBtn = document.querySelector("#login")
+            var usernameInput = document.querySelector("#username")
+            var passwordInput = document.querySelector("#password")
+            loginBtn.addEventListener("click", function(){
+                let username = usernameInput.value
+                let password = passwordInput.value
+
+                console.log(usernameInput.value, passwordInput.value)
+
+               fetch('/user/login', {
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({username: username, password: password})
+                }).then((resp)=>{
+                    if(resp.status == 200){
+                        location.reload();
+                    }else{
+                        confirm("账户或密码错误")
+                    }
+                });
+            })
+        </script>
+        
+    </body>
+</html>

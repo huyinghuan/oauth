@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"oauth/config"
 	"oauth/database/bean"
 	"strings"
 
@@ -14,6 +15,13 @@ type User struct {
 
 //用户注册
 func (c *User) Post(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	//如果没有开放用户认证，用户不是管理员，那么就拒绝注册
+	if !config.Get().OpenRegister && sess.GetString("username") != config.Get().Account.User {
+		ctx.StatusCode(401)
+		return
+	}
+
 	account := accountForm{}
 	ctx.ReadJSON(&account)
 	username := strings.TrimSpace(account.Username)
@@ -30,13 +38,6 @@ func (c *User) Post(ctx iris.Context) {
 		ctx.StatusCode(200)
 		ctx.WriteString("注册成功！")
 	}
-}
-
-func (c *User) Get(ctx iris.Context) {
-	sess := c.Session.Start(ctx)
-	ctx.JSON(map[string]string{
-		"username": sess.GetString("username"),
-	})
 }
 
 func (c *User) Logout(ctx iris.Context) {

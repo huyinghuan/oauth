@@ -20,10 +20,12 @@ var (
 
 func GetApp() *iris.Application {
 	app := iris.New()
-	tmpl := iris.HTML("./static", ".html")
+	tmpl := iris.HTML("./static/template", ".html")
 	tmpl.Reload(true)
 
 	app.RegisterView(tmpl)
+
+	app.StaticWeb("/static/", "./static/resource")
 
 	//免登陆接口
 	webIndexCtrl := controller.WebIndex{Session: session}
@@ -35,8 +37,6 @@ func GetApp() *iris.Application {
 		u.Post("/register", userCtrl.Post)
 		//退出
 		u.Delete("/logout", userCtrl.Logout)
-		//获取信息
-		u.Get("/info", userCtrl.Get)
 		//提交登陆表单
 		u.Post("/login", userCtrl.Login)
 	})

@@ -15,17 +15,22 @@ type WebIndex struct {
 
 func (c *WebIndex) Get(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
+	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+	ctx.Header("Pragma", "no-cache")
+	ctx.Header("Expires", "0")
 	//用户是否已登陆
 	if userAuthorized, err := sess.GetBoolean("user-authorized"); err != nil || !userAuthorized {
-		ctx.ServeFile("static/login.html", false)
+		ctx.ViewData("OpenRegister", config.Get().OpenRegister)
+		ctx.View("login.html")
 		return
 	}
 	username := sess.GetString("username")
+	ctx.ViewData("Account", username)
+
 	if username != config.Get().Account.User {
-		ctx.ServeFile("static/user.html", false)
+		ctx.View("user.html")
 		return
 	}
-	ctx.ViewData("Account", username)
 
 	list, err := bean.GetApplictionList()
 	if err != nil {
