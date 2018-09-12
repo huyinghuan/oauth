@@ -10,13 +10,17 @@
     <body>
             <h2 style="text-align: center;">Open Auth Login</h2>
             <input type="hidden"id="client_id" value={{.ClientID}}>
-            <div style="width: 600px;height:300px; background-color: antiquewhite; margin: 20px auto;">
-                    <div class="input">账户: <input id="username" type="text" /> </div>
-                    <div class="input">密码: <input id="password" type="password"/></div>
-                    <div class="input" ><button id="login">登陆</button> <a href="/user/register">注册</a></div>
+            <div style="width: 600px;height:auto; background-color: antiquewhite; margin: 20px auto;">
+                <div class="input">账户: <input id="username" type="text" /> </div>
+                <div class="input">密码: <input id="password" type="password"/></div>
+                <div class="input" ><button id="login">登陆</button></div>
+                <h3>注册</h3>
+                <ul>
+                    <li><a href="/user/register">用户注册</a></li>
+                    <li><a href="/app/register">我的应用想使用这个用户中心</a></li>
+                </ul>
             </div>
-
-
+            
         <script>
             var loginBtn = document.querySelector("#login")
             var usernameInput = document.querySelector("#username")

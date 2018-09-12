@@ -3,6 +3,7 @@ package main
 import (
 	"oauth/config"
 	"oauth/controller"
+	"oauth/controller/middleware"
 	_ "oauth/database"
 
 	"github.com/kataras/iris"
@@ -23,38 +24,50 @@ func GetApp() *iris.Application {
 	tmpl.Reload(true)
 
 	app.RegisterView(tmpl)
+
+	//免登陆接口
 	webIndexCtrl := controller.WebIndex{Session: session}
 	app.Get("/", webIndexCtrl.Get)
-
 	userCtrl := controller.User{Session: session}
-	UserAPI := app.Party("/user")
-	UserAPI.Get("/register", func(ctx iris.Context) { ctx.ServeFile("static/register.html", false) })
-	//注册
-	UserAPI.Post("/register", userCtrl.Post)
-	//退出
-	UserAPI.Delete("/logout", userCtrl.Logout)
-	//获取信息
-	UserAPI.Get("/info", userCtrl.Get)
-	//提交登陆表单
-	UserAPI.Post("/login", userCtrl.Login)
+	app.PartyFunc("/user", func(u iris.Party) {
+		u.Get("/register", func(ctx iris.Context) { ctx.ServeFile("static/register.html", false) })
+		//注册
+		u.Post("/register", userCtrl.Post)
+		//退出
+		u.Delete("/logout", userCtrl.Logout)
+		//获取信息
+		u.Get("/info", userCtrl.Get)
+		//提交登陆表单
+		u.Post("/login", userCtrl.Login)
+	})
 
 	appCtrl := controller.App{Session: session}
-	AppAPI := app.Party("/app")
-	//注册
-	AppAPI.Post("/register", appCtrl.Post)
+	app.PartyFunc("/app", func(u iris.Party) {
+		u.Get("/register", func(ctx iris.Context) { ctx.ServeFile("static/app-register.html", false) })
+		//注册
+		u.Post("/register", appCtrl.Post)
+	})
+
+	//需要登陆认证的接口
+	middle := middleware.MiddleWare{Session: session}
+	API := app.Party("/api", middle.UserAuth)
+	API.PartyFunc("/app", func(u iris.Party) {
+		u.Delete("/{appID:long}", appCtrl.Delete)
+	})
 
 	//以下为第三方调用接口
 	authorizeCtrl := controller.Authorize{Session: session}
-	app.Get("/authorize", authorizeCtrl.Get)
-	//权限校验
-	app.Post("/authorize", authorizeCtrl.Verity)
-
-	//接口调整
-	app.Post("/authorize/jump", authorizeCtrl.Jump)
-
+	app.PartyFunc("/authorize", func(u iris.Party) {
+		u.Get("/", authorizeCtrl.Get)
+		//权限校验
+		u.Post("/", authorizeCtrl.Verity)
+		//接口跳转
+		u.Post("/jump", authorizeCtrl.Jump)
+	})
 	resourceCtrl := controller.Resource{Session: session}
-	ResourceAPI := app.Party("/resource")
-	ResourceAPI.Post("/account", resourceCtrl.GetAccount)
+	app.PartyFunc("/resource", func(u iris.Party) {
+		u.Post("/account", resourceCtrl.GetAccount)
+	})
 
 	return app
 }

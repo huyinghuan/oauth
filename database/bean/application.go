@@ -7,6 +7,13 @@ import (
 	"oauth/utils"
 )
 
+func FindApplicationByID(id int64) (schema.Application, error) {
+	app := schema.Application{}
+	engine := database.GetDriver()
+	_, err := engine.Id(id).Get(&app)
+	return app, err
+}
+
 func FindApplicationByClientID(clientID string) (schema.Application, error) {
 	app := schema.Application{
 		ClientID: clientID,
@@ -42,4 +49,11 @@ func RegisterAppliction(app *schema.Application) error {
 		return err
 	}
 	return nil
+}
+
+func DeleteAppliction(id int64) error {
+	engine := database.GetDriver()
+	app := new(schema.Application)
+	_, err := engine.Id(id).Delete(app)
+	return err
 }

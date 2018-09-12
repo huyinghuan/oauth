@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <style>
+            .input{
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+
+    <body>
+            <h2 style="text-align: center;">Open Auth Application Register</h2>
+            <input type="hidden"id="client_id" value={{.ClientID}}>
+            <div style="width: 600px;height:300px; background-color: antiquewhite; margin: 20px auto;">
+                    <div class="input">应用名称: <input id="name" type="text" /> </div>
+                    <div class="input">回调地址: <input id="callback" type="text"/></div>
+                    <div class="input">密码: <input id="password" type="password"/></div>
+                    <div class="input" ><button id="register">注册</button></div>
+            </div>
+
+
+        <script>
+            var registerBtn = document.querySelector("#register")
+            var usernameInput = document.querySelector("#name")
+            var callbackInput = document.querySelector("#callback")
+            var passwordInput = document.querySelector("#password")
+            registerBtn.addEventListener("click", function(){
+                let username = usernameInput.value
+                let password = passwordInput.value
+                let callback = callbackInput.value
+
+               fetch('/app/register', {
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({name: username, password: password, callback: callback})
+                }).then((resp)=>{
+                    if(resp.status == 200){
+                        confirm("注册成功!")
+                        window.location.href = "/"
+                    }else{
+                        confirm("应用名重复或密码不符合要求")
+                    }
+                });
+            })
+        </script>
+    </body>
+</html>

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"oauth/database/bean"
 	"oauth/database/iredis"
 	"oauth/database/schema"
@@ -48,4 +49,27 @@ func (c *App) Post(ctx iris.Context) {
 			"private_key": app.PrivateKey,
 		})
 	}
+}
+
+//删除一个app
+func (c *App) Delete(ctx iris.Context) {
+	id, _ := ctx.Params().GetInt64("appID")
+	app, err := bean.FindApplicationByID(id)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
+	if err := iredis.Del(fmt.Sprintf("app:pk:%s", app.ClientID), fmt.Sprintf("app:cb:%s", app.ClientID)); err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
+
+	if err := bean.DeleteAppliction(id); err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
+	ctx.StatusCode(200)
 }
