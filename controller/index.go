@@ -15,6 +15,9 @@ type WebIndex struct {
 
 func (c *WebIndex) Get(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
+	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+	ctx.Header("Pragma", "no-cache")
+	ctx.Header("Expires", "0")
 	//用户是否已登陆
 	if userAuthorized, err := sess.GetBoolean("user-authorized"); err != nil || !userAuthorized {
 		ctx.ServeFile("static/login.html", false)
