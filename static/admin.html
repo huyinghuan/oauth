@@ -1,0 +1,48 @@
+<html>
+    <header></header>
+    <body>
+        <h2 style="text-align: center;"> 当前用户:<span>{{.Account}}</span></h2>
+        <div style="width: 600px;height:auto; background-color: antiquewhite; margin: 20px auto;">
+            <ul>
+                <li><a href="javascript:void(0)" onclick="logout()">注销</a></li>
+            </ul>
+            <hr>
+            <h3>第三方应用列表:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>应用名称</th>
+                        <th>ClientID</th>
+                        <th>PrivateKey</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .AppList}}
+                        <tr>
+                            <td>{{.Name}}</td>
+                            <td>{{.ClientID}}</td>
+                            <td>{{.PrivateKey}}</td>
+                        </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            <h3>用户列表:</h3>
+            <ul>
+                {{range .UserList}}
+                    <li>{{.Name}}</li>
+                {{end}}
+            </ul>
+        </div>
+    </body>
+    <script>
+
+
+        function logout(){
+            fetch("/user/logout",{
+                method: "DELETE"
+            }).then((resp)=>{
+                location.reload()
+            })
+        }
+    </script>
+</html>

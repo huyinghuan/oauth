@@ -16,6 +16,13 @@ func FindApplicationByClientID(clientID string) (schema.Application, error) {
 	return app, err
 }
 
+func GetApplictionList() ([]schema.Application, error) {
+	engine := database.GetDriver()
+	list := make([]schema.Application, 0)
+	err := engine.Find(&list)
+	return list, err
+}
+
 func RegisterAppliction(app *schema.Application) error {
 	engine := database.GetDriver()
 	exist, err := engine.Get(&schema.Application{

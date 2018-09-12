@@ -17,6 +17,13 @@ func FindUser(name string, password string) (schema.User, bool, error) {
 	return user, exist, err
 }
 
+func GetAllUser() ([]schema.User, error) {
+	engine := database.GetDriver()
+	list := make([]schema.User, 0)
+	err := engine.Find(&list)
+	return list, err
+}
+
 func RegisterUser(name string, password string) error {
 	engine := database.GetDriver()
 	exist, err := engine.Get(&schema.User{

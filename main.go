@@ -23,16 +23,8 @@ func GetApp() *iris.Application {
 	tmpl.Reload(true)
 
 	app.RegisterView(tmpl)
-
-	app.Get("/", func(ctx iris.Context) {
-		sess := session.Start(ctx)
-		//用户是否已登陆
-		if userAuthorized, err := sess.GetBoolean("user-authorized"); err != nil || !userAuthorized {
-			ctx.ServeFile("static/login.html", false)
-			return
-		}
-		ctx.ServeFile("static/user.html", false)
-	})
+	webIndexCtrl := controller.WebIndex{Session: session}
+	app.Get("/", webIndexCtrl.Get)
 
 	userCtrl := controller.User{Session: session}
 	UserAPI := app.Party("/user")
