@@ -1,5 +1,22 @@
 <html>
-    <header></header>
+    <head>
+        <link rel="stylesheet" href="/static/css/bulma.min.css"> 
+        <link rel="stylesheet" href="/static/css/all.css"> 
+        <style>
+            body{
+                padding-top: 15%;
+                height: 100%;
+                color: whitesmoke;
+            }
+            .label{
+                color: whitesmoke!important;
+            }
+            .bg{
+                background-image: url("/static/images/bg.png") !important;
+                background-repeat: repeat-x!important;
+            }
+        </style>
+    </head>
     <body>
         <h2 style="text-align: center;"> 当前用户:<span>{{.Account}}</span></h2>
         <div style="width: 1000px;height:auto; background-color: antiquewhite; margin: 20px auto;">
