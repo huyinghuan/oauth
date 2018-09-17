@@ -32,7 +32,7 @@ func GetApp() *iris.Application {
 	app.Get("/", webIndexCtrl.Get)
 	userCtrl := controller.User{Session: session}
 	app.PartyFunc("/user", func(u iris.Party) {
-		u.Get("/register", func(ctx iris.Context) { ctx.ServeFile("static/register.html", false) })
+		u.Get("/register", func(ctx iris.Context) { ctx.View("register.html") })
 		//注册
 		u.Post("/register", userCtrl.Post)
 		//退出

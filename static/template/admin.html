@@ -24,9 +24,14 @@
             <div class="column"></div>
             <div class="column is-three-quarters">
                 <h2 style="text-align: center;"  class="title is-2"> 当前用户:{{.Account}}</h2>
-                <a class="button is-warning" href="javascript:void(0)" onclick="logout()">注销</a>
+                <div class="buttons">
+                    <a class="button is-warning" href="javascript:void(0)" onclick="logout()">注销</a>
+                    <a class="button is-info" href="/app/register" target="_blank">注册应用</a>
+                    <a class="button is-success" href="/user/register" target="_blank">注册用户</a>
+                </div>
+               
+                <hr>
                 <h3 class="title is-3">第三方应用列表:</h3>
-
                 <table class="table is-striped is-hoverable  is-fullwidth">
                     <thead>
                         <tr>
