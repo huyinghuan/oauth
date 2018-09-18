@@ -60,7 +60,7 @@ func GetApp() *iris.Application {
 	app.PartyFunc("/authorize", func(u iris.Party) {
 		u.Get("/", authorizeCtrl.Get)
 		//权限校验
-		u.Post("/", authorizeCtrl.Verity)
+		u.Post("/", authorizeCtrl.Verify)
 		//接口跳转
 		u.Post("/jump", authorizeCtrl.Jump)
 	})

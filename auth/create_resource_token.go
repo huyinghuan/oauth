@@ -5,10 +5,12 @@ import (
 	"oauth/database/iredis"
 	"oauth/utils"
 	"time"
+
+	SDK "github.com/huyinghuan/oauth_sdk"
 )
 
 func CreateResourceToken(clientID string, username string, pk string) (string, error) {
-	encryptKey, err := utils.CFBEncrypt(pk, fmt.Sprintf("%s:%s:%d", clientID, username, time.Now().UnixNano()))
+	encryptKey, err := SDK.CFBEncrypt(pk, fmt.Sprintf("%s:%s:%d", clientID, username, time.Now().UnixNano()))
 	if err != nil {
 		return "", err
 	}

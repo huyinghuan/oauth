@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"oauth/database/iredis"
-	"oauth/utils"
+
+	SDK "github.com/huyinghuan/oauth_sdk"
 )
 
 func DecryptBody(clientID string, body []byte) (string, error) {
@@ -13,7 +14,7 @@ func DecryptBody(clientID string, body []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return utils.CFBDecrypt(pk, string(body))
+	return SDK.CFBDecrypt(pk, string(body))
 }
 
 func EncryptBody(clientID string, data interface{}) (string, error) {
@@ -23,5 +24,5 @@ func EncryptBody(clientID string, data interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return utils.CFBEncrypt(pk, string(body))
+	return SDK.CFBEncrypt(pk, string(body))
 }

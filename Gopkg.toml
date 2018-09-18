@@ -31,4 +31,4 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/docker/libtrust"
+  name = "github.com/huyinghuan/oauth_sdk"

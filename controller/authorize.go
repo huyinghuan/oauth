@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	SDK "github.com/huyinghuan/oauth_sdk"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
 )
@@ -20,20 +21,20 @@ type Authorize struct {
 	Session *sessions.Sessions
 }
 
-type Scope struct {
-	Type    string
-	Name    string
-	Actions []string
-}
+// type Scope struct {
+// 	Type    string
+// 	Name    string
+// 	Actions []string
+// }
 
-type AuthScope struct {
-	Timestamp int64 `json:"timestamp"`
-	Scope     Scope `json:"scope"`
-}
+// type AuthScope struct {
+// 	Timestamp int64 `json:"timestamp"`
+// 	Scope     Scope `json:"scope"`
+// }
 
 //权限校验
 
-func (c *Authorize) Verity(ctx iris.Context) {
+func (c *Authorize) Verify(ctx iris.Context) {
 	clientID := ctx.GetHeader("client_id")
 	account := ctx.GetHeader("account")
 	account = strings.TrimSpace(account)
@@ -61,7 +62,7 @@ func (c *Authorize) Verity(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	}
-	scope := Scope{}
+	scope := SDK.Scope{}
 	if err := json.Unmarshal([]byte(decryptBody), &scope); err != nil {
 		log.Println(err)
 		ctx.StatusCode(500)
@@ -70,7 +71,7 @@ func (c *Authorize) Verity(ctx iris.Context) {
 
 	log.Println(fmt.Sprintf("权限请请求 %s : %s : %s : %s", clientID, account, scope.Name, scope.Type))
 
-	authScope := AuthScope{
+	authScope := SDK.AuthScope{
 		Timestamp: time.Now().Unix(),
 		Scope:     scope,
 	}

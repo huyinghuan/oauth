@@ -1,4 +1,4 @@
-package utils
+package oauth_sdk
 
 import (
 	"crypto/aes"
@@ -10,15 +10,18 @@ import (
 	"io"
 )
 
+func CFBEncryptBytes(keyStr string, cryptoBody []byte) (string, error) {
+	keyBytes := sha256.Sum256([]byte(keyStr))
+	return encrypt(keyBytes[:], cryptoBody)
+}
+
 func CFBEncrypt(keyStr string, cryptoText string) (string, error) {
 	keyBytes := sha256.Sum256([]byte(keyStr))
-	return encrypt(keyBytes[:], cryptoText)
+	return encrypt(keyBytes[:], []byte(cryptoText))
 }
 
 // encrypt string to base64 crypto using AES
-func encrypt(key []byte, text string) (string, error) {
-	plaintext := []byte(text)
-
+func encrypt(key []byte, plaintext []byte) (string, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err

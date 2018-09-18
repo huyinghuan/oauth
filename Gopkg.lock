@@ -77,6 +77,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/huyinghuan/oauth_sdk"
+  packages = ["."]
+  revision = "cfa82b130618dc425ade24e4d266b3c5f7ab4b5f"
+
+[[projects]]
+  branch = "master"
   name = "github.com/iris-contrib/formBinder"
   packages = ["."]
   revision = "ad9fb86c356f971f30319c40ddbdcf72129a2791"
@@ -88,10 +94,10 @@
   version = "v2.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/json-iterator/go"
   packages = ["."]
-  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
-  version = "1.1.5"
+  revision = "2433035e513208b0f7bd5b50d0aecd889b2c1ff8"
 
 [[projects]]
   branch = "master"
@@ -284,6 +290,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "16dcc3593deffd5ba887fdf707c62079307faa9e443c095cc5ee3c5bbde4be76"
+  inputs-digest = "0f9119af209f3358b6f8bf76be6d156502e9b0a4f4b6f4264f435bddc312eab8"
   solver-name = "gps-cdcl"
   solver-version = 1
