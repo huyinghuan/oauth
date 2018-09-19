@@ -23,10 +23,30 @@ func FindApplicationByClientID(clientID string) (schema.Application, error) {
 	return app, err
 }
 
-func GetApplictionList() ([]schema.Application, error) {
+// func GetApplictionList() ([]schema.Application, error) {
+// 	engine := database.GetDriver()
+// 	list := make([]schema.Application, 0)
+// 	err := engine.Find(&list)
+// 	return list, err
+// }
+
+type ApplicationUserGroup struct {
+	Appliction schema.Application `xorm:"extends" json:"application"`
+	User       schema.User        `xorm:"extends" json:"user"`
+}
+
+func GetApplictionList(userID int64) ([]ApplicationUserGroup, error) {
+
 	engine := database.GetDriver()
-	list := make([]schema.Application, 0)
-	err := engine.Find(&list)
+
+	session := engine.Table("application").
+		Join("LEFT", "user", "application.user_id = user.id")
+
+	if userID != -1 {
+		session.Where("user.id = ?", userID)
+	}
+	list := make([]ApplicationUserGroup, 0)
+	err := session.Find(&list)
 	return list, err
 }
 
@@ -43,7 +63,6 @@ func RegisterAppliction(app *schema.Application) error {
 	}
 	app.ClientID = utils.RandomString(24)
 	app.PrivateKey = utils.RandomString(24)
-	app.Password = utils.Encrypt(app.Password)
 	_, err = engine.InsertOne(app)
 	if err != nil {
 		return err

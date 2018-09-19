@@ -62,7 +62,7 @@ func (c *User) Login(ctx iris.Context) {
 		return
 	}
 
-	if _, exist, err := bean.FindUser(username, password); err != nil {
+	if u, exist, err := bean.FindUser(username, password); err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
 	} else if !exist {
@@ -71,6 +71,7 @@ func (c *User) Login(ctx iris.Context) {
 		sess := c.Session.Start(ctx)
 		sess.Set("user-authorized", true)
 		sess.Set("username", username)
+		sess.Set("uid", u.ID)
 		ctx.StatusCode(200)
 	}
 }

@@ -43,7 +43,9 @@ func GetApp() *iris.Application {
 
 	appCtrl := controller.App{Session: session}
 	app.PartyFunc("/app", func(u iris.Party) {
-		u.Get("/register", func(ctx iris.Context) { ctx.ServeFile("static/app-register.html", false) })
+		u.Get("/register", func(ctx iris.Context) {
+			ctx.View("app-register.html")
+		})
 		//注册
 		u.Post("/register", appCtrl.Post)
 	})

@@ -36,6 +36,7 @@
                 <table class="table is-striped is-hoverable  is-fullwidth">
                     <thead>
                         <tr>
+                            <th>所属</th>
                             <th>应用名称</th>
                             <th>ClientID</th>
                             <th>PrivateKey</th>
@@ -46,11 +47,12 @@
                     <tbody>
                         {{range .AppList}}
                             <tr>
-                                <td>{{.Name}}</td>
-                                <td>{{.ClientID}}</td>
-                                <td>{{.PrivateKey}}</td>
-                                <td>{{.Callback}}</td>
-                                <td><button onclick="deleteApp({{.ID}})">删除</button></td>
+                                <th>{{.User.Name}}</th>
+                                <td>{{.Appliction.Name}}</td>
+                                <td>{{.Appliction.ClientID}}</td>
+                                <td>{{.Appliction.PrivateKey}}</td>
+                                <td>{{.Appliction.Callback}}</td>
+                                <td><button onclick="deleteApp({{.Appliction.ID}})">删除</button></td>
                             </tr>
                         {{end}}
                     </tbody>

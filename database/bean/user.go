@@ -46,3 +46,18 @@ func RegisterUser(name string, password string) error {
 	}
 	return nil
 }
+
+func FindUserByUsername(name string) (*schema.User, error) {
+	engine := database.GetDriver()
+	user := schema.User{
+		Name: name,
+	}
+	exist, err := engine.Get(&user)
+	if err != nil {
+		return nil, err
+	}
+	if !exist {
+		return nil, fmt.Errorf("不存在用户")
+	}
+	return &user, nil
+}

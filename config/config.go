@@ -40,13 +40,14 @@ type Account struct {
 }
 
 type Config struct {
-	Db           DbConfig `yaml:"db"`
-	Dev          bool     `yaml:"dev"`
-	Port         string   `yaml:"port"`
-	Website      string   `yaml:"website"`
-	Account      Account  `yaml:"account"`
-	Redis        Redis    `yaml:"redis"`
-	OpenRegister bool     `yaml:"open_register"`
+	Db              DbConfig `yaml:"db"`
+	Dev             bool     `yaml:"dev"`
+	Port            string   `yaml:"port"`
+	Website         string   `yaml:"website"`
+	Account         Account  `yaml:"account"`
+	Redis           Redis    `yaml:"redis"`
+	OpenRegister    bool     `yaml:"open_register"`
+	OpenAppRegister bool     `yaml:"open_app_register"`
 }
 
 var config *Config

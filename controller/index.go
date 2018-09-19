@@ -27,27 +27,38 @@ func (c *WebIndex) Get(ctx iris.Context) {
 	username := sess.GetString("username")
 	ctx.ViewData("Account", username)
 
-	if username != config.Get().Account.User {
-		ctx.View("user.html")
-		return
+	//默认为普通用户
+	uid, _ := sess.GetInt64("uid")
+	isAdmin := username == config.Get().Account.User
+	OpenAppRegister := config.Get().OpenAppRegister
+	//是否开发用户注册
+	ctx.ViewData("OpenAppRegister", OpenAppRegister)
+	viewHTML := "user.html"
+	//管理员
+	if isAdmin {
+		uid = int64(-1)
+		ctx.ViewData("OpenAppRegister", true)
+		viewHTML = "admin.html"
 	}
 
-	list, err := bean.GetApplictionList()
-	if err != nil {
-		log.Println(err)
-		ctx.StatusCode(500)
-		return
+	if OpenAppRegister || isAdmin {
+		list, err := bean.GetApplictionList(uid)
+		if err != nil {
+			log.Println(err)
+			ctx.StatusCode(500)
+			return
+		}
+		ctx.ViewData("AppList", list)
 	}
-	ctx.ViewData("AppList", list)
-
-	userList, err := bean.GetAllUser()
-
-	if err != nil {
-		log.Println(err)
-		ctx.StatusCode(500)
-		return
+	if isAdmin {
+		userList, err := bean.GetAllUser()
+		if err != nil {
+			log.Println(err)
+			ctx.StatusCode(500)
+			return
+		}
+		ctx.ViewData("UserList", userList)
 	}
-	ctx.ViewData("UserList", userList)
 
-	ctx.View("admin.html")
+	ctx.View(viewHTML)
 }

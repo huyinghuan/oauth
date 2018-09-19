@@ -13,6 +13,7 @@ redis:
     pass: ""
     db: 0
 open_register: true #是否开放用户注册
+open_app_register: true #是否开放app注册
   #cluster:
   #  url:
   #    - xxxx:xx

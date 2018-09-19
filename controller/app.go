@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"log"
+	"oauth/config"
 	"oauth/database/bean"
 	"oauth/database/iredis"
 	"oauth/database/schema"
@@ -17,24 +18,39 @@ type App struct {
 }
 type appForm struct {
 	Name     string `json:"name"`
-	Password string `json:"password"`
 	Callback string `json:"callback"`
 }
 
 // app 注册
 func (c *App) Post(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	username := sess.GetString("username")
+	//如果没有开放应用注册或用户不是管理员，那么就拒绝注册
+	if !config.Get().OpenRegister && username != config.Get().Account.User {
+		ctx.StatusCode(401)
+		return
+	}
+	if username == "" {
+		ctx.StatusCode(401)
+		return
+	}
 	form := appForm{}
 	ctx.ReadJSON(&form)
-	username := strings.TrimSpace(form.Name)
-	password := strings.TrimSpace(form.Password)
-	if username == "" || password == "" {
+	appName := strings.TrimSpace(form.Name)
+	if appName == "" {
 		ctx.StatusCode(iris.StatusNotAcceptable)
-		ctx.WriteString("用户名或密码不能为空")
+		ctx.WriteString("应用名不能为空")
+		return
+	}
+	user, err := bean.FindUserByUsername(username)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(401)
 		return
 	}
 	app := schema.Application{
-		Name:     username,
-		Password: password,
+		UserID:   user.ID,
+		Name:     appName,
 		Callback: form.Callback,
 	}
 	if err := bean.RegisterAppliction(&app); err != nil {
