@@ -86,6 +86,7 @@ func init() {
 	if admin != "" {
 		config.Account.User = strings.Replace(admin, "\"", "", -1)
 		config.OpenRegister = false
+		config.OpenRegister = false
 	}
 	pass := os.Getenv("OPENAUTH_ADMIN_PASS")
 	if pass != "" {
@@ -113,12 +114,19 @@ func init() {
 
 	openRegister := os.Getenv("OPENAUTH_OPEN_REGISTER")
 	if openRegister != "" {
-		debug = strings.Replace(openRegister, "\"", "", -1)
+		openRegister = strings.Replace(openRegister, "\"", "", -1)
 		if openRegister == "true" {
 			config.OpenRegister = true
 		}
 	}
 
+	openAppRegister := os.Getenv("OPENAUTH_OPEN_APP_REGISTER")
+	if openRegister != "" {
+		openAppRegister = strings.Replace(openAppRegister, "\"", "", -1)
+		if openAppRegister == "true" {
+			config.OpenRegister = true
+		}
+	}
 }
 
 //Get 获取配置文件
