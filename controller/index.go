@@ -36,7 +36,6 @@ func (c *WebIndex) Get(ctx iris.Context) {
 	viewHTML := "user.html"
 	//管理员
 	if isAdmin {
-		uid = int64(-1)
 		ctx.ViewData("OpenAppRegister", true)
 		viewHTML = "admin.html"
 	}

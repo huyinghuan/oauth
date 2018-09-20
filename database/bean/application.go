@@ -76,3 +76,36 @@ func DeleteAppliction(id int64) error {
 	_, err := engine.Id(id).Delete(app)
 	return err
 }
+
+func GetAppliction(id int64, uid int64) (schema.Application, error) {
+	engine := database.GetDriver()
+	app := schema.Application{}
+	session := engine.ID(id)
+	if uid != -1 {
+		session.Where("user_id = ?", uid)
+	}
+	_, err := session.Get(&app)
+	return app, err
+}
+
+func UpdateApplication(id int64, uid int64, app *schema.Application) error {
+	engine := database.GetDriver()
+	findApp := schema.Application{
+		Name: app.Name,
+	}
+	exist, err := engine.Get(&findApp)
+	if err != nil {
+		return err
+	}
+
+	if exist && findApp.ID != id {
+		return fmt.Errorf("已存在应用名")
+	}
+
+	session := engine.ID(id).Cols("callback", "name")
+	if uid != -1 {
+		session.Where("user_id = ?", uid)
+	}
+	_, err = session.Update(app)
+	return err
+}

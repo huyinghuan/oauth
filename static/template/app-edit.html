@@ -1,6 +1,6 @@
 <html>
     <head>
-            <title>OpenAuth 应用注册</title>
+            <title>OpenAuth 应用修改</title>
             <link rel="stylesheet" href="/static/css/bulma.min.css">
             <style>
                 body{
@@ -20,8 +20,8 @@
             <div class="columns">
                     <div class="column"></div>
                     <div class="column is-one-three">
-                            <h2 style="text-align: center;"  class="title is-3">Open Auth App Register</h2>
-                            <input type="hidden"id="client_id" value={{.ClientID}}>
+                            <h2 style="text-align: center;"  class="title is-3">Open Auth Application</h2>
+                            <input type="hidden"id="appID" value={{.App.ID}}>
                             <div class="field is-horizontal">
                                 <div class="field-label is-normal">
                                     <label class="label">应用名称:</label>
@@ -29,7 +29,7 @@
                                 <div class="field-body">
                                     <div class="field">
                                     <p class="control is-expanded">
-                                        <input class="input" type="text" id="name">
+                                        <input class="input" type="text" id="name" value="{{.App.Name}}">
                                     </p>
                                     </div>
                                 </div>
@@ -41,24 +41,18 @@
                                     <div class="field-body">
                                         <div class="field">
                                         <p class="control is-expanded">
-                                            <input class="input" type="text" id="callback">
+                                            <input class="input" type="text" id="callback" value="{{.App.Callback}}">
                                         </p>
                                         </div>
                                     </div>
                                 </div>
-
-
                             <div class="field is-horizontal">
                                 <div class="field-label">
-                                    <!-- Left empty for spacing -->
                                 </div>
                                 <div class="field-body">
                                     <div class="field">
                                     <div class="control">
-                                        <button class="button is-primary"  id="register">
-                                                注册
-                                        </button>
-                                        <a href="https://github.com/huyinghuan/oauth/blob/master/README.md" target="_blank">如何使用?</a>
+                                        <button class="button is-primary"  id="save"> 保存 </button>
                                     </div>
                                     </div>
                                 </div>
@@ -67,23 +61,28 @@
                     <div class="column"></div>     
 
         <script>
-            var registerBtn = document.querySelector("#register")
+            var saveBtn = document.querySelector("#save")
+            var appIDInput = document.querySelector("#appID")
             var usernameInput = document.querySelector("#name")
             var callbackInput = document.querySelector("#callback")
-            registerBtn.addEventListener("click", function(){
+            saveBtn.addEventListener("click", function(){
                 let username = usernameInput.value
                 let callback = callbackInput.value
-
-               fetch('/app/register', {
-                    method: 'POST',
+                let appID = appIDInput.value
+               fetch('/api/app/'+appID, {
+                    method: 'PUT',
                     headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({name: username, callback: callback})
                 }).then((resp)=>{
+                    if(resp.status == 401){
+                        window.location.href = "/"
+                        return
+                    }
                     if(resp.status == 200){
-                        confirm("注册成功!")
+                        confirm("保存成功!")
                         window.location.href = "/"
                     }else{
                         confirm("应用名重复或不符合要求")

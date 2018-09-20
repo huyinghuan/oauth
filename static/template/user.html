@@ -18,6 +18,9 @@
                 background-image: url("/static/images/bg.png") !important;
                 background-repeat: repeat-x!important;
             }
+            .table td, .table th{
+                vertical-align: middle !important;
+            }
         </style>
     </head>
     <body class="bg">
@@ -31,6 +34,38 @@
                     <a class="button is-info" href="/app/register" target="_blank">接入开放用户系统</a>
                     {{end}}
                 </div>
+                {{if .OpenAppRegister}}
+                <hr>
+                <h3 class="title is-3">已申请接入的应用列表:</h3>
+                <table class="table is-striped is-hoverable is-narrow is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>应用名称</th>
+                            <th>ClientID</th>
+                            <th>PrivateKey</th>
+                            <th>回调地址</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .AppList}}
+                            <tr>
+                                <td>{{.Appliction.Name}}</td>
+                                <td>{{.Appliction.ClientID}}</td>
+                                <td>{{.Appliction.PrivateKey}}</td>
+                                <td>{{.Appliction.Callback}}</td>
+                                <td>
+                                    <div class="buttons">
+                                        <button class="button is-small" onclick="deleteApp({{.Appliction.ID}})">删除</button>
+                                        <a class="button is-small" href="/app/{{.Appliction.ID}}">编辑</a>
+                                    </div>   
+                                </td>
+                            </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+                {{end}}
+
             </div>
             <div class="column"></div>
         </div>

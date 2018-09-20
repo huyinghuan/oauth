@@ -48,6 +48,8 @@ func GetApp() *iris.Application {
 		})
 		//注册
 		u.Post("/register", appCtrl.Post)
+
+		u.Get("/{appID:long}", appCtrl.EditPage)
 	})
 
 	//需要登陆认证的接口
@@ -55,6 +57,7 @@ func GetApp() *iris.Application {
 	API := app.Party("/api", middle.UserAuth)
 	API.PartyFunc("/app", func(u iris.Party) {
 		u.Delete("/{appID:long}", appCtrl.Delete)
+		u.Put("/{appID:long}", appCtrl.Put)
 	})
 
 	//以下为第三方调用接口

@@ -71,7 +71,12 @@ func (c *User) Login(ctx iris.Context) {
 		sess := c.Session.Start(ctx)
 		sess.Set("user-authorized", true)
 		sess.Set("username", username)
-		sess.Set("uid", u.ID)
+		//管理员
+		if username == config.Get().Account.User {
+			sess.Set("uid", -1)
+		} else {
+			sess.Set("uid", u.ID)
+		}
 		ctx.StatusCode(200)
 	}
 }
