@@ -39,6 +39,9 @@ func GetApp() *iris.Application {
 		u.Delete("/logout", userCtrl.Logout)
 		//提交登陆表单
 		u.Post("/login", userCtrl.Login)
+		//修改密码
+		u.Get("/password", func(ctx iris.Context) { ctx.View("password.html") })
+		u.Get("/password/{uid:long}", userCtrl.ResetPassword4AdminView)
 	})
 
 	appCtrl := controller.App{Session: session}
@@ -58,6 +61,10 @@ func GetApp() *iris.Application {
 	API.PartyFunc("/app", func(u iris.Party) {
 		u.Delete("/{appID:long}", appCtrl.Delete)
 		u.Put("/{appID:long}", appCtrl.Put)
+	})
+	API.PartyFunc("/user", func(u iris.Party) {
+		u.Put("/password", userCtrl.ResetPassword)
+		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
 	})
 
 	//以下为第三方调用接口

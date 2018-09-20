@@ -7,6 +7,13 @@ import (
 	"oauth/utils"
 )
 
+func GetUserByID(id int64) (schema.User, error) {
+	engine := database.GetDriver()
+	user := schema.User{}
+	_, err := engine.ID(id).Get(&user)
+	return user, err
+}
+
 func FindUser(name string, password string) (schema.User, bool, error) {
 	engine := database.GetDriver()
 	user := schema.User{
@@ -60,4 +67,31 @@ func FindUserByUsername(name string) (*schema.User, error) {
 		return nil, fmt.Errorf("不存在用户")
 	}
 	return &user, nil
+}
+
+func UpdateUserPassword(uid int64, oldPass string, newPass string) error {
+	encrypOldPass := utils.Encrypt(oldPass)
+	encrypNewPass := utils.Encrypt(newPass)
+	engine := database.GetDriver()
+	user := schema.User{}
+	exists, err := engine.ID(uid).Where("password = ?", encrypOldPass).Get(&user)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("密码错误")
+	}
+	_, err = engine.ID(uid).Cols("password").Update(&schema.User{
+		Password: encrypNewPass,
+	})
+	return err
+}
+
+func UpdateUserPasswordNoOld(uid int64, password string) error {
+	password = utils.Encrypt(password)
+	engine := database.GetDriver()
+	_, err := engine.ID(uid).Cols("password").Update(&schema.User{
+		Password: password,
+	})
+	return err
 }

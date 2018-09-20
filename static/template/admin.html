@@ -67,11 +67,27 @@
                 </table>
                 <hr>
                 <h3 class="title is-3">用户列表:</h3>
-                <div class="buttons">
-                    {{range .UserList}}
-                        <span class="button">{{.Name}}</span>
-                    {{end}}
-                </div>
+                <table class="table is-striped is-hoverable  is-fullwidth">
+                    <thead>
+                        <tr>
+                            <td>用户名</td>
+                            <td>操作</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .UserList}}
+                        <tr>
+                            <td>{{.Name}}</td>
+                            <td>
+                                <div class="buttons">
+                                    <button class="button is-small" onclick="deleteUser({{.ID}})">删除</button>
+                                    <a class="button is-small" href="/user/password/{{.ID}}">修改密码</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
             </div>
             <div class="column"></div>
         </div>
