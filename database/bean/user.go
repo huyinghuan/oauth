@@ -95,3 +95,9 @@ func UpdateUserPasswordNoOld(uid int64, password string) error {
 	})
 	return err
 }
+
+func DeleteUser(uid int64) error {
+	engine := database.GetDriver()
+	_, e := engine.ID(uid).Delete(&schema.User{})
+	return e
+}

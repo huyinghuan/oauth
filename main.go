@@ -65,6 +65,7 @@ func GetApp() *iris.Application {
 	API.PartyFunc("/user", func(u iris.Party) {
 		u.Put("/password", userCtrl.ResetPassword)
 		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
+		u.Delete("/{uid:long}", userCtrl.DeleteUser)
 	})
 
 	//以下为第三方调用接口

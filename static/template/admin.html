@@ -30,6 +30,7 @@
                 <h2 style="text-align: center;"  class="title is-2"> 当前用户:{{.Account}}</h2>
                 <div class="buttons">
                     <a class="button is-warning" href="javascript:void(0)" onclick="logout()">注销</a>
+                    <a class="button is-success" href="/user/password/{{.AdminID}}" >修改密码</a>
                     <a class="button is-info" href="/app/register" target="_blank">注册应用</a>
                     <a class="button is-success" href="/user/register" target="_blank">注册用户</a>
                 </div>
@@ -57,8 +58,9 @@
                                 <td>{{.Appliction.Callback}}</td>
                                 <td>
                                     <div class="buttons">
-                                        <button class="button is-small" onclick="deleteApp({{.Appliction.ID}})">删除</button>
+                                        <button class="button is-small" onclick="deleteApp({{.Appliction.ID}}, {{.Appliction.Name}})">删除</button>
                                         <a class="button is-small" href="/app/{{.Appliction.ID}}">编辑</a>
+                                        <!--<a class="button is-small" href="/TODO">权限管理</a>-->
                                     </div>
                                 </td>
                             </tr>
@@ -80,7 +82,7 @@
                             <td>{{.Name}}</td>
                             <td>
                                 <div class="buttons">
-                                    <button class="button is-small" onclick="deleteUser({{.ID}})">删除</button>
+                                    <button class="button is-small" onclick="deleteUser({{.ID}}, {{.Name}})">删除</button>
                                     <a class="button is-small" href="/user/password/{{.ID}}">修改密码</a>
                                 </div>
                             </td>
@@ -101,11 +103,32 @@
             })
         }
 
-        function deleteApp(id){
+        function deleteApp(id, name){
+            if(!confirm("是否删除应用:"+name)){
+                return
+            }
             fetch("/api/app/"+id,{
                 method: "DELETE"
             }).then((resp)=>{
                 location.reload()
+            })
+        }
+
+        function deleteUser(id, name){
+            if(!confirm("是否删除用户:"+name)){
+                return
+            }
+            fetch("/api/user/"+id, {
+                method:"DELETE"
+            }).then((resp)=>{
+                if(resp.status ==200){
+                    location.reload()
+                    return
+                }
+                resp.text().then((t)=>{
+                    confirm(resp.status + ":"+t)
+                })
+                
             })
         }
     </script>

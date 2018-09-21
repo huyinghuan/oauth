@@ -4,6 +4,7 @@ website: "x.x.x.x:5000" #the Register Server's ip or domain ,just for page show
 account:
   user: "admin"
   pass: "12345678"
+  resetOnRestart: false
 db: 
   driver: mysql
   connect: "root:12345678@tcp(127.0.0.1:3306)/open-auth"

@@ -34,9 +34,9 @@ type Redis struct {
 }
 
 type Account struct {
-	User string `yaml:"user"`
-	Pass string `yaml:"pass"`
-	API  string `yaml:"api"`
+	User           string `yaml:"user"`
+	Pass           string `yaml:"pass"`
+	ResetOnRestart bool   `yaml:"resetOnRestart"`
 }
 
 type Config struct {
@@ -52,20 +52,7 @@ type Config struct {
 
 var config *Config
 
-//init 读取配置文件
-func init() {
-	configPath := "config.yaml"
-	if os.Getenv("ProjectPWD") != "" {
-		configPath = path.Join(os.Getenv("ProjectPWD"), "config.yaml")
-	}
-	configBytes, err := ioutil.ReadFile(configPath)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = yaml.Unmarshal(configBytes, &config)
-	if err != nil {
-		log.Fatalln(err)
-	}
+func readENV() {
 	dev := os.Getenv("OPENAUTH_DEV")
 	if dev != "" {
 		dev = strings.Replace(dev, "\"", "", -1)
@@ -87,10 +74,22 @@ func init() {
 		config.Account.User = strings.Replace(admin, "\"", "", -1)
 		config.OpenRegister = false
 		config.OpenRegister = false
+	} else {
+		//如果环境没有配置管理账号，则视为非docker环境，不需要进行后续逻辑
+		return
 	}
+
 	pass := os.Getenv("OPENAUTH_ADMIN_PASS")
 	if pass != "" {
 		config.Account.Pass = strings.Replace(pass, "\"", "", -1)
+	}
+
+	resetOnRestart := os.Getenv("OPENAUTH_ADMIN_RESET_ONRESTART")
+	if resetOnRestart != "" {
+		resetOnRestart = strings.Replace(resetOnRestart, "\"", "", -1)
+		if resetOnRestart == "true" {
+			config.Account.ResetOnRestart = true
+		}
 	}
 
 	db := os.Getenv("OPENAUTH_DATABASE")
@@ -124,9 +123,26 @@ func init() {
 	if openRegister != "" {
 		openAppRegister = strings.Replace(openAppRegister, "\"", "", -1)
 		if openAppRegister == "true" {
-			config.OpenRegister = true
+			config.OpenAppRegister = true
 		}
 	}
+}
+
+//init 读取配置文件
+func init() {
+	configPath := "config.yaml"
+	if os.Getenv("ProjectPWD") != "" {
+		configPath = path.Join(os.Getenv("ProjectPWD"), "config.yaml")
+	}
+	configBytes, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	err = yaml.Unmarshal(configBytes, &config)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	readENV()
 }
 
 //Get 获取配置文件

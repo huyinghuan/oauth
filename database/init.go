@@ -60,10 +60,13 @@ func init() {
 	log.Printf("数据库连接成功")
 
 	account := conf.Account
-
-	if err := initAdmin(account.User, account.Pass); err != nil {
-		log.Fatal(err)
+	//每次重启重置密码
+	if account.ResetOnRestart {
+		if err := initAdmin(account.User, account.Pass); err != nil {
+			log.Fatal(err)
+		}
 	}
+
 }
 
 // GetDriver 获取数据库链接

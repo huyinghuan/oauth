@@ -74,6 +74,7 @@ func (c *User) Login(ctx iris.Context) {
 		//管理员
 		if username == config.Get().Account.User {
 			sess.Set("uid", -1)
+			sess.Set("adminID", u.ID)
 		} else {
 			sess.Set("uid", u.ID)
 		}
@@ -146,6 +147,26 @@ func (c *User) ResetPassword4Admin(ctx iris.Context) {
 	err := bean.UpdateUserPasswordNoOld(uid, newPassword)
 	if err != nil {
 		ctx.StatusCode(406)
+		ctx.WriteString(err.Error())
+		return
+	}
+	ctx.StatusCode(200)
+}
+
+func (c *User) DeleteUser(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	uid, _ := ctx.Params().GetInt64("uid")
+	if currendUID, err := sess.GetInt64("adminID"); err != nil {
+		ctx.StatusCode(403)
+		return
+	} else if currendUID == uid {
+		ctx.StatusCode(406)
+		ctx.WriteString("不允许删除管理员")
+		return
+	}
+
+	if err := bean.DeleteUser(uid); err != nil {
+		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
 		return
 	}
