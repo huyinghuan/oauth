@@ -3,9 +3,9 @@
         <link rel="stylesheet" href="/static/css/bulma.min.css">
         <style>
             body{
-                padding-top: 5%;
                 height: 100%;
                 color: white!important;
+                overflow-y: auto;
             }
             .title{
                 color:white!important;
@@ -51,7 +51,7 @@
                     <tbody>
                         {{range .AppList}}
                             <tr>
-                                <th>{{.User.Name}}</th>
+                                <td>{{.User.Name}}</td>
                                 <td>{{.Appliction.Name}}</td>
                                 <td>{{.Appliction.ClientID}}</td>
                                 <td>{{.Appliction.PrivateKey}}</td>
@@ -72,8 +72,8 @@
                 <table class="table is-striped is-hoverable  is-fullwidth">
                     <thead>
                         <tr>
-                            <td>用户名</td>
-                            <td>操作</td>
+                            <th>用户名</th>
+                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
