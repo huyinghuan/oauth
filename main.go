@@ -57,6 +57,13 @@ func GetApp() *iris.Application {
 
 	//需要登陆认证的接口
 	middle := middleware.MiddleWare{Session: session}
+	appUserMangerCtrl := controller.AppUserManager{Session: session}
+	app.PartyFunc("/app/{appID:long}/user_manger", func(u iris.Party) {
+		//判定app是否归属于当前用户
+		u.Use(middle.UserHaveApp)
+		u.Get("/", appUserMangerCtrl.GetView)
+	})
+
 	API := app.Party("/api", middle.UserAuth)
 	API.PartyFunc("/app", func(u iris.Party) {
 		u.Delete("/{appID:long}", appCtrl.Delete)

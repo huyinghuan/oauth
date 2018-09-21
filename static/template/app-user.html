@@ -21,54 +21,42 @@
                 vertical-align: middle !important;
             }
         </style>
-         <title>OpenAuth管理</title>
+         <title>OpenAuth 应用用户管理</title>
     </head>
     <body class="bg">
         <div class="columns">
             <div class="column"></div>
             <div class="column is-three-quarters">
-                <h2 style="text-align: center;"  class="title is-2"> 当前用户:{{.Account}}</h2>
+                <h2 style="text-align: center;"  class="title is-2"> 当前应用:{{.App.Name}}</h2>
                 <div class="buttons">
-                    <a class="button is-warning" href="javascript:void(0)" onclick="logout()">注销</a>
-                    <a class="button is-success" href="/user/password/{{.AdminID}}" >修改密码</a>
-                    <a class="button is-info" href="/app/register" target="_blank">注册应用</a>
-                    <a class="button is-success" href="/user/register" target="_blank">注册用户</a>
+                    <a class="button is-success" href="/" target="_blank">首页</a>
                 </div>
-               
                 <hr>
-                <h3 class="title is-3">第三方应用列表:</h3>
-                <table class="table is-striped is-hoverable  is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>所属</th>
-                            <th>应用名称</th>
-                            <th>ClientID</th>
-                            <th>PrivateKey</th>
-                            <th>回调地址</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .AppList}}
-                            <tr>
-                                <td>{{.User.Name}}</td>
-                                <td>{{.Appliction.Name}}</td>
-                                <td>{{.Appliction.ClientID}}</td>
-                                <td>{{.Appliction.PrivateKey}}</td>
-                                <td>{{.Appliction.Callback}}</td>
-                                <td>
-                                    <div class="buttons">
-                                        <button class="button is-small" onclick="deleteApp({{.Appliction.ID}}, {{.Appliction.Name}})">删除</button>
-                                        <a class="button is-small" href="/app/{{.Appliction.ID}}">编辑</a>
-                                        <a class="button is-small" href="/app/{{.Appliction.ID}}/user_manger">用户管理</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        {{end}}
-                    </tbody>
-                </table>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">用户:</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <p class="control">
+                                <input class="input" type="text" id="username">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <div class="select">
+                                <select id="category">
+                                    <option value="white">白名单</option>
+                                    <option value="black">黑名单</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <button class="button is-success">添加</button>
+                        </div>
+                    </div>
+                </div>
                 <hr>
-                <h3 class="title is-3">用户列表:</h3>
+                <h3 class="title is-3">白名单列表:</h3>
                 <table class="table is-striped is-hoverable  is-fullwidth">
                     <thead>
                         <tr>
@@ -77,13 +65,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{range .UserList}}
+                        {{range .WhiteList}}
+                            <tr>
+                                <td>{{.User.Name}}</td>
+                                <td>
+                                    <div class="buttons">
+                                        <button class="button is-small" onclick="deleteFromWhieList()">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+                <hr>
+                <h3 class="title is-3">黑名单列表:</h3>
+                <table class="table is-striped is-hoverable  is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .BlackList}}
                         <tr>
                             <td>{{.Name}}</td>
                             <td>
                                 <div class="buttons">
-                                    <button class="button is-small" onclick="deleteUser({{.ID}}, {{.Name}})">删除</button>
-                                    <a class="button is-small" href="/user/password/{{.ID}}">修改密码</a>
+                                    <button class="button is-small" onclick="deleteFromBlackList()">删除</button>
                                 </div>
                             </td>
                         </tr>
