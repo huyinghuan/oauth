@@ -12,7 +12,7 @@ import (
 
 var engine *xorm.Engine
 
-func initAdmin(username string, password string) error {
+func initAdmin(username string, password string, resetOnRestart bool) error {
 	user := schema.User{
 		Name: username,
 	}
@@ -31,14 +31,16 @@ func initAdmin(username string, password string) error {
 			log.Println("admin账户初始化完成")
 		}
 		return nil
-	} else {
-		user.Password = utils.Encrypt(password)
-		if _, err := engine.Id(user.ID).Update(user); err != nil {
-			return err
-		}
-		log.Println("更新Amin密码完成")
+	}
+	if !resetOnRestart {
 		return nil
 	}
+	user.Password = utils.Encrypt(password)
+	if _, err := engine.Id(user.ID).Update(user); err != nil {
+		return err
+	}
+	log.Println("更新Amin密码完成")
+	return nil
 }
 
 // InitDriver 初始化数据库链接
@@ -60,13 +62,9 @@ func init() {
 	log.Printf("数据库连接成功")
 
 	account := conf.Account
-	//每次重启重置密码
-	if account.ResetOnRestart {
-		if err := initAdmin(account.User, account.Pass); err != nil {
-			log.Fatal(err)
-		}
+	if err := initAdmin(account.User, account.Pass, account.ResetOnRestart); err != nil {
+		log.Fatal(err)
 	}
-
 }
 
 // GetDriver 获取数据库链接
