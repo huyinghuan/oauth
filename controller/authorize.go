@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"oauth/auth"
 	"oauth/config"
 	"oauth/database/bean"
 	"oauth/database/iredis"
+	"strconv"
 	"strings"
 	"time"
 
@@ -104,6 +106,7 @@ func (c *Authorize) Jump(ctx iris.Context) {
 }
 
 func (c *Authorize) Get(ctx iris.Context) {
+	redirectURL := ctx.URLParam("redirect")
 	clientID := ctx.URLParam("client_id")
 	clientID = strings.TrimSpace(clientID)
 	if clientID == "" {
@@ -158,7 +161,16 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-	callback := fmt.Sprintf("%s?token=%s&t=%d", cbURL, token, time.Now().Unix())
+	u, e := url.Parse(cbURL)
+	if e != nil {
+		ctx.StatusCode(406)
+		return
+	}
+	q := u.Query()
+	q.Add("redirect", redirectURL)
+	q.Add("token", token)
+	q.Add("t", strconv.FormatInt(time.Now().Unix(), 10))
+	u.RawQuery = q.Encode()
 	ctx.StatusCode(302)
-	ctx.Header("Location", callback)
+	ctx.Header("Location", u.String())
 }
