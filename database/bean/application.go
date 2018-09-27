@@ -88,24 +88,21 @@ func GetAppliction(id int64, uid int64) (schema.Application, error) {
 	return app, err
 }
 
-func UpdateApplication(id int64, uid int64, app *schema.Application) error {
+func UpdateApplication(id int64, uid int64, app *schema.Application) (*schema.Application, error) {
 	engine := database.GetDriver()
 	findApp := schema.Application{
 		Name: app.Name,
 	}
 	exist, err := engine.Get(&findApp)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if exist && findApp.ID != id {
-		return fmt.Errorf("已存在应用名")
+		return nil, fmt.Errorf("已存在应用名")
 	}
-
-	session := engine.ID(id).Cols("callback", "name")
-	if uid != -1 {
-		session.Where("user_id = ?", uid)
-	}
-	_, err = session.Update(app)
-	return err
+	findApp.Callback = app.Callback
+	findApp.Name = app.Name
+	_, err = engine.ID(id).Update(&findApp)
+	return &findApp, err
 }

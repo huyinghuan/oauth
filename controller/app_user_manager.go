@@ -22,3 +22,16 @@ func (a *AppUserManager) GetView(ctx iris.Context) {
 	ctx.ViewData("App", app)
 	ctx.View("app-user.html")
 }
+
+func (a *AppUserManager) Post(ctx iris.Context) {
+	// sess := a.Session.Start(ctx)
+	// uid, _ := sess.GetInt64("uid")
+
+	// appID, _ := ctx.Params().GetInt64("appID")
+	// app, err := bean.FindApplicationByID(appID)
+
+	// form := map[string]string{}
+
+	// ctx.ReadJSON(&form)
+
+}

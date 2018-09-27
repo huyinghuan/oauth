@@ -54,15 +54,18 @@ func (c *App) Put(ctx iris.Context) {
 	uid, _ := sess.GetInt64("uid")
 	form := appForm{}
 	ctx.ReadJSON(&form)
-	if err := bean.UpdateApplication(id, uid, &schema.Application{
+	app := schema.Application{
 		Name:     form.Name,
 		Callback: form.Callback,
-	}); err != nil {
+	}
+	if uApp, err := bean.UpdateApplication(id, uid, &app); err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
-		return
+
+	} else {
+		iredis.Set(fmt.Sprintf("app:cb:%s", uApp.ClientID), uApp.Callback)
+		ctx.StatusCode(200)
 	}
-	ctx.StatusCode(200)
 
 }
 

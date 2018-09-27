@@ -62,6 +62,7 @@ func GetApp() *iris.Application {
 		//判定app是否归属于当前用户
 		u.Use(middle.UserHaveApp)
 		u.Get("/", appUserMangerCtrl.GetView)
+		u.Post("/", appUserMangerCtrl.Post)
 	})
 
 	API := app.Party("/api", middle.UserAuth)

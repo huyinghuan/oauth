@@ -20,6 +20,12 @@
             .table td, .table th{
                 vertical-align: middle !important;
             }
+            .special-form>.field-label{
+                flex: none;
+            }
+            .special-form .field-body>.field{
+                flex-grow: 0 !important;
+            }
         </style>
          <title>OpenAuth 应用用户管理</title>
     </head>
@@ -32,7 +38,7 @@
                     <a class="button is-success" href="/" target="_blank">首页</a>
                 </div>
                 <hr>
-                <div class="field is-horizontal">
+                <div class="field is-horizontal special-form">
                     <div class="field-label is-normal">
                         <label class="label">用户:</label>
                     </div>
@@ -51,7 +57,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <button class="button is-success">添加</button>
+                            <button class="button is-success" onclick="addUser2CategoryList()">添加</button>
                         </div>
                     </div>
                 </div>
@@ -104,26 +110,17 @@
         </div>
     </body>
     <script>
-        function logout(){
-            fetch("/user/logout",{
-                method: "DELETE"
-            }).then((resp)=>{
-                location.reload()
-            })
+        function $(id){
+            return document.querySelector(id)
         }
 
-        function deleteApp(id, name){
-            if(!confirm("是否删除应用:"+name)){
-                return
-            }
-            fetch("/api/app/"+id,{
-                method: "DELETE"
-            }).then((resp)=>{
-                location.reload()
-            })
+        function addUser2CategoryList(){
+            let username = $("#username").value
+            let category = $("#category").value
+            fetch("/api/")
         }
 
-        function deleteUser(id, name){
+        function deleteFromCategoryUserList(id, category){
             if(!confirm("是否删除用户:"+name)){
                 return
             }
