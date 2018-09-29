@@ -50,6 +50,24 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		return
 	}
 	//TODO 校验 account 是否存在数据库，是否处于正常状态
+	user, err := bean.FindUserByUsername(account)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
+	if user.ID == 0 {
+		ctx.StatusCode(401)
+		return
+	}
+	if haveEnterPromise, err := bean.HaveEnterPromise(user.ID, clientID); err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	} else if !haveEnterPromise {
+		ctx.StatusCode(401)
+		return
+	}
 
 	body, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {
