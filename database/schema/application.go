@@ -1,10 +1,11 @@
 package schema
 
 type Application struct {
-	ID         int64  `xorm:"id unique autoincr index pk" json:"id" formam:"-"`
-	UserID     int64  `xorm:"user_id" json:"user_id" formam:"-"`
-	Name       string `xorm:"name" json:"name" formam:"name"`
-	ClientID   string `xorm:"client_id" json:"client_id" formam:"client_id"`
-	PrivateKey string `xorm:"private_key" json:"private_key" formam:"private_key"`
-	Callback   string `xorm:"callback" json:"callback" formam:"callback"`
+	ID         int64  `xorm:"id unique autoincr index pk" json:"id" `
+	UserID     int64  `xorm:"user_id" json:"user_id" `
+	Name       string `xorm:"name" json:"name"`
+	ClientID   string `xorm:"client_id" json:"client_id"`
+	PrivateKey string `xorm:"private_key" json:"private_key" `
+	Callback   string `xorm:"callback" json:"callback"`
+	Mode       string `xoram:"mode" json:"mode"` //运行模式
 }

@@ -8,11 +8,9 @@ import (
 
 func (m *MiddleWare) UserHaveApp(ctx iris.Context) {
 	sess := m.Session.Start(ctx)
-
 	currentUID, _ := sess.GetInt64("uid")
-
 	//如果是管理员
-	if currentUID == -1 {
+	if currentUID == 0 {
 		ctx.Next()
 		return
 	}

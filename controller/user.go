@@ -69,11 +69,10 @@ func (c *User) Login(ctx iris.Context) {
 		ctx.StatusCode(403)
 	} else {
 		sess := c.Session.Start(ctx)
-		sess.Set("user-authorized", true)
 		sess.Set("username", username)
 		//管理员
 		if username == config.Get().Account.User {
-			sess.Set("uid", -1)
+			sess.Set("uid", 0)
 			sess.Set("adminID", u.ID)
 		} else {
 			sess.Set("uid", u.ID)
@@ -106,7 +105,7 @@ func (c *User) ResetPassword(ctx iris.Context) {
 func (c *User) ResetPassword4AdminView(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	currendUID, _ := sess.GetInt64("uid")
-	if currendUID != -1 {
+	if currendUID != 0 {
 		ctx.StatusCode(403)
 		return
 	}
@@ -131,7 +130,7 @@ func (c *User) ResetPassword4AdminView(ctx iris.Context) {
 func (c *User) ResetPassword4Admin(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	currendUID, _ := sess.GetInt64("uid")
-	if currendUID != -1 {
+	if currendUID != 0 {
 		ctx.StatusCode(403)
 		return
 	}

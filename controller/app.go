@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 	"oauth/config"
 	"oauth/database/bean"
@@ -63,7 +62,7 @@ func (c *App) Put(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 
 	} else {
-		iredis.Set(fmt.Sprintf("app:cb:%s", uApp.ClientID), uApp.Callback)
+		iredis.AppCache.SetCallback(uApp.ClientID, uApp.Callback)
 		ctx.StatusCode(200)
 	}
 
@@ -106,8 +105,7 @@ func (c *App) Post(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 	} else {
 		ctx.StatusCode(200)
-		iredis.Set(fmt.Sprintf("app:pk:%s", app.ClientID), app.PrivateKey)
-		iredis.Set(fmt.Sprintf("app:cb:%s", app.ClientID), app.Callback)
+		iredis.AppCache.SetAll(app.ClientID, app.PrivateKey, app.Callback)
 		ctx.JSON(map[string]string{
 			"client_id":   app.ClientID,
 			"private_key": app.PrivateKey,
@@ -124,7 +122,7 @@ func (c *App) Delete(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	}
-	if err := iredis.Del(fmt.Sprintf("app:pk:%s", app.ClientID), fmt.Sprintf("app:cb:%s", app.ClientID)); err != nil {
+	if err := iredis.AppCache.Clear(app.ClientID); err != nil {
 		log.Println(err)
 		ctx.StatusCode(500)
 		return
@@ -136,4 +134,22 @@ func (c *App) Delete(ctx iris.Context) {
 		return
 	}
 	ctx.StatusCode(200)
+}
+
+//更新app的用户名单模式
+
+func (c *App) UpdateRunMode(ctx iris.Context) {
+	id, _ := ctx.Params().GetInt64("appID")
+	mode := ctx.Params().Get("mode")
+
+	if mode != "black" {
+		mode = "white"
+	}
+
+	if err := bean.UpdateApplicationRunMode(id, mode); err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	}
+
 }

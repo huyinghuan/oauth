@@ -97,7 +97,7 @@ func (c *Authorize) Jump(ctx iris.Context) {
 	}
 	sess := c.Session.Start(ctx)
 	//用户是否已登陆
-	if userAuthorized, err := sess.GetBoolean("user-authorized"); err != nil || !userAuthorized {
+	if _, err := sess.GetInt64("uid"); err != nil {
 		ctx.StatusCode(401)
 		return
 	}
@@ -114,27 +114,36 @@ func (c *Authorize) Get(ctx iris.Context) {
 		return
 	}
 	//是否存在私有key
-	appPKKey := fmt.Sprintf("app:pk:%s", clientID)
 
-	if !iredis.Exist(appPKKey) {
+	if !iredis.AppCache.Exist(clientID) {
 		ctx.StatusCode(406)
 		return
 	}
 
 	sess := c.Session.Start(ctx)
 	//用户是否已登陆
-	if userAuthorized, err := sess.GetBoolean("user-authorized"); err != nil || !userAuthorized {
+	uid, err := sess.GetInt64("uid")
+	if err != nil {
 		ctx.ViewData("OpenRegister", config.Get().OpenRegister)
 		ctx.View("login.html")
 		return
 	}
 
-	username := sess.GetString("username")
-	if username == "" {
-		ctx.ViewData("OpenRegister", config.Get().OpenRegister)
-		ctx.View("login.html")
+	//确认用户是否在正常访问名单
+	if haveEnterPromise, err := bean.HaveEnterPromise(uid, clientID); err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	} else if !haveEnterPromise {
+		//没有访问权限
+		app, _ := bean.FindApplicationByClientID(clientID)
+		ctx.ViewData("AppName", app.Name)
+		ctx.View("no-promise.html")
 		return
 	}
+
+	username := sess.GetString("username")
+	//是否已经进过确认页面
 	if agree, err := sess.GetBoolean(clientID); err != nil || !agree {
 		app, _ := bean.FindApplicationByClientID(clientID)
 		ctx.ViewData("ClientID", clientID)
@@ -142,8 +151,9 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.View("confirm.html")
 		return
 	}
+	//每次都需要进入确认页面
 	sess.Set(clientID, false)
-	privateKey, err := iredis.Get(appPKKey)
+	privateKey, err := iredis.AppCache.GetPrivateKey(clientID)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
@@ -155,7 +165,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-	cbURL, err := iredis.Get(fmt.Sprintf("app:cb:%s", clientID))
+	cbURL, err := iredis.AppCache.GetCallback(clientID)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())

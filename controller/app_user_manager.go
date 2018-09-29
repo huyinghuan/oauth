@@ -19,19 +19,57 @@ func (a *AppUserManager) GetView(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
+	if whiteList, err := bean.GetAppUserList(app.ClientID, "white"); err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	} else {
+		ctx.ViewData("WhiteList", whiteList)
+	}
+	if blackList, err := bean.GetAppUserList(app.ClientID, "black"); err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	} else {
+		ctx.ViewData("BlackList", blackList)
+	}
+
 	ctx.ViewData("App", app)
+
 	ctx.View("app-user.html")
 }
 
 func (a *AppUserManager) Post(ctx iris.Context) {
-	// sess := a.Session.Start(ctx)
-	// uid, _ := sess.GetInt64("uid")
+	appID, _ := ctx.Params().GetInt64("appID")
+	app, err := bean.FindApplicationByID(appID)
 
-	// appID, _ := ctx.Params().GetInt64("appID")
-	// app, err := bean.FindApplicationByID(appID)
+	form := map[string]string{}
 
-	// form := map[string]string{}
+	ctx.ReadJSON(&form)
 
-	// ctx.ReadJSON(&form)
+	username, isExistUsername := form["username"]
+	category, isExistCategory := form["category"]
 
+	if !isExistUsername || !isExistCategory {
+		ctx.StatusCode(406)
+		return
+	}
+	user, err := bean.FindUserByUsername(username)
+	if err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	}
+
+	bean.AddUserToApp(user.ID, app.ClientID, category)
+
+}
+
+func (a *AppUserManager) Delete(ctx iris.Context) {
+	id, _ := ctx.Params().GetInt64("id")
+	err := bean.DeleteUserFromAppUserList(id)
+	if err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+	}
 }

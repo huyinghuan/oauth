@@ -2,15 +2,13 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"oauth/database/iredis"
 
 	SDK "github.com/huyinghuan/oauth_sdk"
 )
 
 func DecryptBody(clientID string, body []byte) (string, error) {
-	appPKKey := fmt.Sprintf("app:pk:%s", clientID)
-	pk, err := iredis.Get(appPKKey)
+	pk, err := iredis.AppCache.GetPrivateKey(clientID)
 	if err != nil {
 		return "", err
 	}
@@ -19,8 +17,7 @@ func DecryptBody(clientID string, body []byte) (string, error) {
 
 func EncryptBody(clientID string, data interface{}) (string, error) {
 	body, _ := json.Marshal(data)
-	appPKKey := fmt.Sprintf("app:pk:%s", clientID)
-	pk, err := iredis.Get(appPKKey)
+	pk, err := iredis.AppCache.GetPrivateKey(clientID)
 	if err != nil {
 		return "", err
 	}

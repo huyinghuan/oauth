@@ -22,25 +22,15 @@
                 <button class="delete" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
-                    <input type="hidden"id="client_id" value={{.ClientID}}>
-                    应用  <span class="tag is-info">{{.AppName}}</span>  想要获取你的账户信息进行登陆
+                    你无法登陆 应用  <span class="tag is-info">{{.AppName}}</span> 如果有疑问，请联系该应用管理员。
                 </section>
                 <footer class="modal-card-foot">
-                <button class="button is-success" onclick="agree()">同意</button>
-                <button class="button is-danger"  onclick="disagree()">拒绝</button>
+                <button class="button is-success" onclick="disagree()">关闭</button>
                 </footer>
             </div>
         </div>
     </body>
     <script>
-        var client_id = "{{.ClientID}}";
-        function agree(){
-            fetch("/authorize/jump?client_id="+client_id, {
-                method:"POST"
-            }).then(()=>{
-                location.reload()
-            })
-        }
         function disagree(){
             location.href ="/"
         }

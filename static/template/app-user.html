@@ -35,7 +35,9 @@
             <div class="column is-three-quarters">
                 <h2 style="text-align: center;"  class="title is-2"> 当前应用:{{.App.Name}}</h2>
                 <div class="buttons">
-                    <a class="button is-success" href="/" target="_blank">首页</a>
+                    <a class="button is-success" href="/">首页</a>
+                    <button class="button is-info" onclick="runMode('black')">黑名单模式运行</button>
+                    <button class="button is-warning" onclick="runMode('white')">白名单模式运行</button>
                 </div>
                 <hr>
                 <div class="field is-horizontal special-form">
@@ -76,7 +78,7 @@
                                 <td>{{.User.Name}}</td>
                                 <td>
                                     <div class="buttons">
-                                        <button class="button is-small" onclick="deleteFromWhieList()">删除</button>
+                                        <button class="button is-small" onclick="deleteFromUserList({{.AppUserList.ID}}, {{.User.Name}})">删除</button>
                                     </div>
                                 </td>
                             </tr>
@@ -95,10 +97,10 @@
                     <tbody>
                         {{range .BlackList}}
                         <tr>
-                            <td>{{.Name}}</td>
+                            <td>{{.User.Name}}</td>
                             <td>
                                 <div class="buttons">
-                                    <button class="button is-small" onclick="deleteFromBlackList()">删除</button>
+                                    <button class="button is-small" onclick="deleteFromUserList({{.AppUserList.ID}}, {{.User.Name}})">删除</button>
                                 </div>
                             </td>
                         </tr>
@@ -110,6 +112,8 @@
         </div>
     </body>
     <script>
+        var appID = {{.App.ID}};
+        var clientID = "{{.App.ClientID}}";
         function $(id){
             return document.querySelector(id)
         }
@@ -117,18 +121,45 @@
         function addUser2CategoryList(){
             let username = $("#username").value
             let category = $("#category").value
-            fetch("/api/")
+            fetch(`/api/app/${appID}/user_manager`,{
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username: username, category: category})
+            }).then((resp)=>{
+                if(resp.status == 200){
+                    confirm("添加成功!")
+                }else{
+                    confirm(resp.statusText)
+                }
+            });
         }
 
-        function deleteFromCategoryUserList(id, category){
+        function deleteFromUserList(id, name){
             if(!confirm("是否删除用户:"+name)){
                 return
             }
-            fetch("/api/user/"+id, {
+            fetch(`/api/app/${appID}/user_manager/`+id, {
                 method:"DELETE"
             }).then((resp)=>{
-                if(resp.status ==200){
+                if(resp.status == 200){
                     location.reload()
+                    return
+                }
+                resp.text().then((t)=>{
+                    confirm(resp.status + ":"+t)
+                })
+            })
+        }
+
+        function runMode(mode){
+            fetch(`/api/app/${appID}/user_mode/${mode}`,{
+                method:"PATCH"
+            }).then((resp)=>{
+                if(resp.status == 200){
+                    confirm("修改成功!")
                     return
                 }
                 resp.text().then((t)=>{

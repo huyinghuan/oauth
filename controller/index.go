@@ -19,17 +19,16 @@ func (c *WebIndex) Get(ctx iris.Context) {
 	ctx.Header("Pragma", "no-cache")
 	ctx.Header("Expires", "0")
 	//用户是否已登陆
-	if userAuthorized, err := sess.GetBoolean("user-authorized"); err != nil || !userAuthorized {
+	uid, err := sess.GetInt64("uid")
+	if err != nil {
 		ctx.ViewData("OpenRegister", config.Get().OpenRegister)
 		ctx.View("login.html")
 		return
 	}
 	username := sess.GetString("username")
 	ctx.ViewData("Account", username)
-
 	//默认为普通用户
-	uid, _ := sess.GetInt64("uid")
-	isAdmin := username == config.Get().Account.User
+	isAdmin := uid == 0
 	OpenAppRegister := config.Get().OpenAppRegister
 	//是否开发用户注册
 	ctx.ViewData("OpenAppRegister", OpenAppRegister)

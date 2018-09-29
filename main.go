@@ -55,25 +55,13 @@ func GetApp() *iris.Application {
 		u.Get("/{appID:long}", appCtrl.EditPage)
 	})
 
-	//需要登陆认证的接口
+	//用户管理
 	middle := middleware.MiddleWare{Session: session}
 	appUserMangerCtrl := controller.AppUserManager{Session: session}
-	app.PartyFunc("/app/{appID:long}/user_manger", func(u iris.Party) {
+	app.PartyFunc("/app/{appID:long}/user_manager", func(u iris.Party) {
 		//判定app是否归属于当前用户
 		u.Use(middle.UserHaveApp)
 		u.Get("/", appUserMangerCtrl.GetView)
-		u.Post("/", appUserMangerCtrl.Post)
-	})
-
-	API := app.Party("/api", middle.UserAuth)
-	API.PartyFunc("/app", func(u iris.Party) {
-		u.Delete("/{appID:long}", appCtrl.Delete)
-		u.Put("/{appID:long}", appCtrl.Put)
-	})
-	API.PartyFunc("/user", func(u iris.Party) {
-		u.Put("/password", userCtrl.ResetPassword)
-		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
-		u.Delete("/{uid:long}", userCtrl.DeleteUser)
 	})
 
 	//以下为第三方调用接口
@@ -88,6 +76,27 @@ func GetApp() *iris.Application {
 	resourceCtrl := controller.Resource{Session: session}
 	app.PartyFunc("/resource", func(u iris.Party) {
 		u.Post("/account", resourceCtrl.GetAccount)
+	})
+
+	//数据接口
+
+	API := app.Party("/api")
+	API.PartyFunc("/user", func(u iris.Party) {
+		u.Use(middle.UserAuth)
+		u.Put("/password", userCtrl.ResetPassword)
+		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
+		u.Delete("/{uid:long}", userCtrl.DeleteUser)
+	})
+
+	application := API.Party("/app/{appID:long}", middle.UserHaveApp)
+	application.PartyFunc("/", func(u iris.Party) {
+		u.Delete("/", appCtrl.Delete)
+		u.Put("/", appCtrl.Put)
+		u.Patch("/user_mode/{mode:string}", appCtrl.UpdateRunMode)
+	})
+	application.PartyFunc("/user_manager", func(u iris.Party) {
+		u.Post("/", appUserMangerCtrl.Post)
+		u.Delete("/{id: long}", appUserMangerCtrl.Delete)
 	})
 
 	return app

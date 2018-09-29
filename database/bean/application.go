@@ -3,6 +3,7 @@ package bean
 import (
 	"fmt"
 	"oauth/database"
+	"oauth/database/iredis"
 	"oauth/database/schema"
 	"oauth/utils"
 )
@@ -42,7 +43,7 @@ func GetApplictionList(userID int64) ([]ApplicationUserGroup, error) {
 	session := engine.Table("application").
 		Join("LEFT", "user", "application.user_id = user.id")
 
-	if userID != -1 {
+	if userID != 0 {
 		session.Where("user.id = ?", userID)
 	}
 	list := make([]ApplicationUserGroup, 0)
@@ -63,6 +64,7 @@ func RegisterAppliction(app *schema.Application) error {
 	}
 	app.ClientID = utils.RandomString(24)
 	app.PrivateKey = utils.RandomString(24)
+	app.Mode = "black"
 	_, err = engine.InsertOne(app)
 	if err != nil {
 		return err
@@ -81,7 +83,7 @@ func GetAppliction(id int64, uid int64) (schema.Application, error) {
 	engine := database.GetDriver()
 	app := schema.Application{}
 	session := engine.ID(id)
-	if uid != -1 {
+	if uid != 0 {
 		session.Where("user_id = ?", uid)
 	}
 	_, err := session.Get(&app)
@@ -104,5 +106,22 @@ func UpdateApplication(id int64, uid int64, app *schema.Application) (*schema.Ap
 	findApp.Callback = app.Callback
 	findApp.Name = app.Name
 	_, err = engine.ID(id).Update(&findApp)
+	if err == nil {
+		iredis.AppCache.SetAll(findApp.ClientID, findApp.PrivateKey, findApp.Callback)
+	}
 	return &findApp, err
+}
+
+func UpdateApplicationRunMode(id int64, mode string) error {
+	engine := database.GetDriver()
+	app := schema.Application{}
+	if _, err := engine.ID(id).Get(&app); err != nil {
+		return err
+	}
+	app.Mode = mode
+	_, err := engine.ID(id).Cols("mode").Update(&app)
+	if err == nil {
+		iredis.AppCache.SetMode(app.ClientID, mode)
+	}
+	return err
 }

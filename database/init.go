@@ -57,7 +57,7 @@ func init() {
 	if err := engine.Ping(); err != nil {
 		log.Fatal("数据库链接失败", err)
 	}
-	engine.Sync(new(schema.User), new(schema.Application))
+	engine.Sync(new(schema.User), new(schema.Application), new(schema.AppUserList))
 
 	log.Printf("数据库连接成功")
 
