@@ -62,6 +62,7 @@ func GetApp() *iris.Application {
 		//判定app是否归属于当前用户
 		u.Use(middle.UserHaveApp)
 		u.Get("/", appUserMangerCtrl.GetView)
+		u.Get("/role", appUserMangerCtrl.GetRoleView)
 	})
 
 	//以下为第三方调用接口

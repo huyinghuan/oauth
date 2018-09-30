@@ -11,6 +11,13 @@ type AppUserManager struct {
 	Session *sessions.Sessions
 }
 
+func (a *AppUserManager) GetRoleView(ctx iris.Context) {
+	appID, _ := ctx.Params().GetInt64("appID")
+	app, _ := bean.FindApplicationByID(appID)
+	ctx.ViewData("App", app)
+	ctx.View("app-user-role.html")
+}
+
 func (a *AppUserManager) GetView(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
 	app, err := bean.FindApplicationByID(appID)

@@ -36,28 +36,18 @@
                 <h2 style="text-align: center;"  class="title is-2"> 当前应用:{{.App.Name}}</h2>
                 <div class="buttons">
                     <a class="button is-white" href="/">首页</a>
-                    <button class="button is-info" onclick="runMode('black')">黑名单模式运行</button>
-                    <button class="button is-warning" onclick="runMode('white')">白名单模式运行</button>
-                    <a class="button is-success" href="/app/{{.App.ID}}/user_manager/role">角色与权限</a>
+                    <a class="button is-success">角色与权限</a>
                 </div>
                 <hr>
                 <div class="field is-horizontal special-form">
                     <div class="field-label is-normal">
-                        <label class="label">用户:</label>
+                        <label class="label">角色:</label>
                     </div>
                     <div class="field-body">
                         <div class="field">
                             <p class="control">
-                                <input class="input" type="text" id="username">
+                                <input class="input" type="text" id="role">
                             </p>
-                        </div>
-                        <div class="field">
-                            <div class="select">
-                                <select id="category">
-                                    <option value="white">白名单</option>
-                                    <option value="black">黑名单</option>
-                                </select>
-                            </div>
                         </div>
                         <div class="field">
                             <button class="button is-success" onclick="addUser2CategoryList()">添加</button>
@@ -65,11 +55,11 @@
                     </div>
                 </div>
                 <hr>
-                <h3 class="title is-3">白名单列表:</h3>
+                <h3 class="title is-3">角色列表:</h3>
                 <table class="table is-striped is-hoverable  is-fullwidth">
                     <thead>
                         <tr>
-                            <th>用户名</th>
+                            <th>角色</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -86,28 +76,6 @@
                         {{end}}
                     </tbody>
                 </table>
-                <hr>
-                <h3 class="title is-3">黑名单列表:</h3>
-                <table class="table is-striped is-hoverable  is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>用户名</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .BlackList}}
-                        <tr>
-                            <td>{{.User.Name}}</td>
-                            <td>
-                                <div class="buttons">
-                                    <button class="button is-small" onclick="deleteFromUserList({{.AppUserList.ID}}, {{.User.Name}})">删除</button>
-                                </div>
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
             </div>
             <div class="column"></div>
         </div>
@@ -119,7 +87,7 @@
             return document.querySelector(id)
         }
 
-        function addUser2CategoryList(){
+        function addRole(){
             let username = $("#username").value
             let category = $("#category").value
             fetch(`/api/app/${appID}/user_manager`,{
