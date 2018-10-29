@@ -70,6 +70,7 @@
                     <thead>
                         <tr>
                             <th>用户名</th>
+                            <th>角色</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -77,6 +78,7 @@
                         {{range .WhiteList}}
                             <tr>
                                 <td>{{.User.Name}}</td>
+                                <td>{{.AppUserList.RoleID}}</td>
                                 <td>
                                     <div class="buttons">
                                         <button class="button is-small" onclick="deleteFromUserList({{.AppUserList.ID}}, {{.User.Name}})">删除</button>

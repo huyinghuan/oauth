@@ -12,19 +12,19 @@ type AppUserList struct {
 type AppRole struct {
 	ID       int64  `xorm:"id unique autoincr index pk" json:"id"`
 	ClientID string `xorm:"client_id index" json:"client_id"` //应用ID
-	Name     string `xorm:"name" json:"name" `
+	Name     string `xorm:"name" json:"name"`
 }
 
-type AppRolePromise struct {
+type AppRolePermission struct {
 	ID      int64  `xorm:"id unique autoincr index pk" json:"id"`
 	RoleID  int64  `xorm:"role_id index"`
+	Name    string `xorm:"name" json:"name"`       //权限别称
 	Method  string `xorm:"method" json:"method"`   //http method
 	Pattern string `xorm:"pattern" json:"pattern"` // http url reg pattern
-	Flag    string `xorm:"flag" json:"flag"`       //Regexp Flag
 }
 
-func (arp *AppRolePromise) TableName() string {
-	return "app_role_promise"
+func (arp *AppRolePermission) TableName() string {
+	return "app_role_permission"
 }
 
 func (ar *AppRole) TableName() string {

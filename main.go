@@ -59,10 +59,11 @@ func GetApp() *iris.Application {
 	middle := middleware.MiddleWare{Session: session}
 	appUserMangerCtrl := controller.AppUserManager{Session: session}
 	app.PartyFunc("/app/{appID:long}/user_manager", func(u iris.Party) {
-		//判定app是否归属于当前用户
+		//判定app是否归属于当前用户(该应用是否为该用户创建)
 		u.Use(middle.UserHaveApp)
 		u.Get("/", appUserMangerCtrl.GetView)
 		u.Get("/role", appUserMangerCtrl.GetRoleView)
+		u.Get("/role/{roleID:long}/permission", appUserMangerCtrl.GetRolePermissionView)
 	})
 
 	//以下为第三方调用接口
@@ -95,9 +96,25 @@ func GetApp() *iris.Application {
 		u.Put("/", appCtrl.Put)
 		u.Patch("/user_mode/{mode:string}", appCtrl.UpdateRunMode)
 	})
+
+	//黑白名单
 	application.PartyFunc("/user_manager", func(u iris.Party) {
 		u.Post("/", appUserMangerCtrl.Post)
 		u.Delete("/{id: long}", appUserMangerCtrl.Delete)
+	})
+
+	//应用角色
+	roleCtrl := controller.AppRoleManager{Session: session}
+	Role := application.PartyFunc("/role", func(u iris.Party) {
+		u.Post("/", roleCtrl.Post)
+		u.Get("/", roleCtrl.Get)
+		u.Delete("/{id:long}", roleCtrl.Delete)
+	})
+
+	permissionCtrl := controller.AppRolePermission{Session: session}
+	Role.PartyFunc("/{roleID:long}/permission", func(u iris.Party) {
+		u.Post("/", permissionCtrl.Post)
+		u.Delete("/{id:long}", permissionCtrl.Delete)
 	})
 
 	return app

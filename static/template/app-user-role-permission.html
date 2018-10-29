@@ -27,26 +27,36 @@
                 flex-grow: 0 !important;
             }
         </style>
-         <title>OpenAuth 应用用户管理</title>
+         <title>OpenAuth 应用角色权限管理</title>
     </head>
     <body class="bg">
         <div class="columns">
             <div class="column"></div>
             <div class="column is-three-quarters">
-                <h2 style="text-align: center;"  class="title is-2"> 当前应用:{{.App.Name}}</h2>
+                <h2 style="text-align: center;"  class="title is-2"> 当前应用:{{.App.Name}} - {{.Role.Name}}</h2>
                 <div class="buttons">
                     <a class="button is-white" href="/">首页</a>
                     <a class="button is-success">角色与权限</a>
                 </div>
                 <hr>
-                <div class="field is-horizontal special-form">
+                <div class="field is-horizontal">
                     <div class="field-label is-normal">
-                        <label class="label">角色:</label>
+                        <label class="label">权限:</label>
                     </div>
                     <div class="field-body">
                         <div class="field">
                             <p class="control">
-                                <input class="input" type="text" id="role">
+                                <input class="input" type="text" id="pattern" placeholder="url正则">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <p class="control">
+                                <input class="input" type="text" id="method" placeholder="HTTP Method">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <p class="control">
+                                <input class="input" type="text" id="name" placeholder="备注">
                             </p>
                         </div>
                         <div class="field">
@@ -55,23 +65,26 @@
                     </div>
                 </div>
                 <hr>
-                <h3 class="title is-3">角色列表:</h3>
+                <h3 class="title is-3">权限列表:</h3>
                 <table class="table is-striped is-hoverable  is-fullwidth">
                     <thead>
                         <tr>
-                            <th>角色</th>
+                            <th>权限</th>
+                            <th>HTTP Method</th>
+                            <th>备注</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{$app := .App}}
-                        {{range .RoleList}}
+                        {{range .PermissionList}}
                             <tr>
+                                <td>{{.Pattern}}</td>
+                                <td>{{.Method}}</td>
                                 <td>{{.Name}}</td>
                                 <td>
                                     <div class="buttons">
-                                        <button class="button is-small" onclick="delRole({{.ID}}, {{.Name}})">删除</button>
-                                        <a class="button is-small is-info" href="/app/{{$app.ID}}/user_manager/role/{{.ID}}/permission">权限分配</a>
+                                        <button class="button is-small" onclick="delPermission({{.ID}}, {{.Name}})">删除</button>
                                     </div>
                                 </td>
                             </tr>
@@ -84,20 +97,24 @@
     </body>
     <script>
         var appID = {{.App.ID}};
+        var roleID = {{.Role.ID}};
         var clientID = "{{.App.ClientID}}";
         function $(id){
             return document.querySelector(id)
         }
 
         function addRole(){
-            let role = $("#role").value 
-            fetch(`/api/app/${appID}/role`,{
+            let pattern = $("#pattern").value
+            let httpMethod = $("#method").value
+            let name = $("#name").value
+            console.log(name, pattern, httpMethod)
+            fetch(`/api/app/${appID}/role/${roleID}/permission`,{
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({role: role})
+                body: JSON.stringify({name: name, pattern: pattern, method: httpMethod})
             }).then((resp)=>{
                 if(resp.status == 200){
                     confirm("添加成功!")
@@ -108,11 +125,11 @@
             });
         }
 
-        function delRole(id, name){
-            if(!confirm("是否删除角色:"+name)){
+        function delPermission(id, name){
+            if(!confirm("是否删除权限:"+name)){
                 return
             }
-            fetch(`/api/app/${appID}/role/`+id, {
+            fetch(`/api/app/${appID}/role/${roleID}/permission/${id}`, {
                 method:"DELETE"
             }).then((resp)=>{
                 if(resp.status == 200){

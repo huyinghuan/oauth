@@ -49,7 +49,7 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(401)
 		return
 	}
-	//TODO 校验 account 是否存在数据库，是否处于正常状态
+	//校验 account 是否存在数据库，是否处于正常状态
 	user, err := bean.FindUserByUsername(account)
 	if err != nil {
 		log.Println(err)
@@ -60,6 +60,7 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(401)
 		return
 	}
+	//是否设置了应用的黑白名单，当前用户是否拥有进入应用权限
 	if haveEnterPromise, err := bean.HaveEnterPromise(user.ID, clientID); err != nil {
 		log.Println(err)
 		ctx.StatusCode(500)
@@ -68,6 +69,7 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(401)
 		return
 	}
+	//TODO 用户是否存在角色，该角色是否具有该路径的访问权限。
 
 	body, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {

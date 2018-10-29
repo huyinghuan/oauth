@@ -11,9 +11,23 @@ type AppUserManager struct {
 	Session *sessions.Sessions
 }
 
+func (a *AppUserManager) GetRolePermissionView(ctx iris.Context) {
+	appID, _ := ctx.Params().GetInt64("appID")
+	app, _ := bean.FindApplicationByID(appID)
+	roleID, _ := ctx.Params().GetInt64("roleID")
+	role, _ := bean.Role.Get(roleID)
+	permission, _ := bean.Role.GetPermission(roleID)
+	ctx.ViewData("Role", role)
+	ctx.ViewData("App", app)
+	ctx.ViewData("PermissionList", permission)
+	ctx.View("app-user-role-permission.html")
+}
+
 func (a *AppUserManager) GetRoleView(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
 	app, _ := bean.FindApplicationByID(appID)
+	list, _ := bean.Role.GetRoleList(app.ClientID)
+	ctx.ViewData("RoleList", list)
 	ctx.ViewData("App", app)
 	ctx.View("app-user-role.html")
 }
