@@ -21,6 +21,7 @@ services:
       #- OPENAUTH_REDIS_CLIENT_DB=
       - OPENAUTH_OPEN_REGISTER=true
       - OPENAUTH_OPEN_APP_REGISTER=true
+      - OPENAUTH_REDIS_CACHE_FROM_DB=true
     networks: 
       oauth:
     depends_on:

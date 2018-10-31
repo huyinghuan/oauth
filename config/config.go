@@ -75,6 +75,7 @@ func readENV() {
 		config.Account.User = strings.Replace(admin, "\"", "", -1)
 		config.OpenRegister = false
 		config.OpenRegister = false
+		config.RedisCacheFromDB = false
 	} else {
 		//如果环境没有配置管理账号，则视为非docker环境，不需要进行后续逻辑
 		return
@@ -125,6 +126,13 @@ func readENV() {
 		openAppRegister = strings.Replace(openAppRegister, "\"", "", -1)
 		if openAppRegister == "true" {
 			config.OpenAppRegister = true
+		}
+	}
+	redisCacheFromDB := os.Getenv("OPENAUTH_REDIS_CACHE_FROM_DB")
+	if redisCacheFromDB != "" {
+		redisCacheFromDB = strings.Replace(redisCacheFromDB, "\"", "", -1)
+		if redisCacheFromDB == "true" {
+			config.RedisCacheFromDB = true
 		}
 	}
 }
