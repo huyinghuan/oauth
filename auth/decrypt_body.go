@@ -7,17 +7,17 @@ import (
 	SDK "github.com/huyinghuan/oauth_sdk"
 )
 
-func DecryptBody(clientID string, body []byte) (string, error) {
-	pk, err := iredis.AppCache.GetPrivateKey(clientID)
+func DecryptBody(appID int64, body []byte) (string, error) {
+	pk, err := iredis.AppCache.GetPrivateKey(appID)
 	if err != nil {
 		return "", err
 	}
 	return SDK.CFBDecrypt(pk, string(body))
 }
 
-func EncryptBody(clientID string, data interface{}) (string, error) {
+func EncryptBody(appID int64, data interface{}) (string, error) {
 	body, _ := json.Marshal(data)
-	pk, err := iredis.AppCache.GetPrivateKey(clientID)
+	pk, err := iredis.AppCache.GetPrivateKey(appID)
 	if err != nil {
 		return "", err
 	}

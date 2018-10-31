@@ -14,8 +14,7 @@ type AppRoleManager struct {
 
 func (a *AppRoleManager) Get(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
-	app, err := bean.FindApplicationByID(appID)
-	list, err := bean.Role.GetRoleList(app.ClientID)
+	list, err := bean.Role.GetRoleList(appID)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
@@ -26,12 +25,6 @@ func (a *AppRoleManager) Get(ctx iris.Context) {
 
 func (a *AppRoleManager) Post(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
-	app, err := bean.FindApplicationByID(appID)
-	if err != nil {
-		ctx.StatusCode(500)
-		ctx.WriteString(err.Error())
-		return
-	}
 	form := map[string]string{}
 
 	ctx.ReadJSON(&form)
@@ -49,7 +42,7 @@ func (a *AppRoleManager) Post(ctx iris.Context) {
 		return
 	}
 
-	if err := bean.Role.Add(role, app.ClientID); err != nil {
+	if err := bean.Role.Add(role, appID); err != nil {
 		if err != nil {
 			ctx.StatusCode(500)
 			ctx.WriteString(err.Error())

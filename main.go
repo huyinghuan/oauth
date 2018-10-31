@@ -105,17 +105,17 @@ func GetApp() *iris.Application {
 
 	//应用角色
 	roleCtrl := controller.AppRoleManager{Session: session}
-	Role := application.PartyFunc("/role", func(u iris.Party) {
+	application.PartyFunc("/role", func(u iris.Party) {
 		u.Post("/", roleCtrl.Post)
 		u.Get("/", roleCtrl.Get)
 		u.Delete("/{id:long}", roleCtrl.Delete)
 	})
 
 	permissionCtrl := controller.AppRolePermission{Session: session}
-	Role.PartyFunc("/{roleID:long}/permission", func(u iris.Party) {
-		u.Post("/", permissionCtrl.Post)
-		u.Delete("/{id:long}", permissionCtrl.Delete)
-	})
+	RolePermission := application.Party("/role/{roleID:long}/permission", middle.AppHaveRole)
+	RolePermission.Get("/", permissionCtrl.Get)
+	RolePermission.Post("/", permissionCtrl.Post)
+	RolePermission.Delete("/{id:long}", permissionCtrl.Delete)
 
 	return app
 }

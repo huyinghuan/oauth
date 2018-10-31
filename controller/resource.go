@@ -3,8 +3,10 @@ package controller
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"math"
 	"oauth/auth"
+	"oauth/database/iredis"
 	"oauth/logger"
 	"strings"
 	"time"
@@ -36,8 +38,13 @@ func (c *Resource) GetAccount(ctx iris.Context) {
 		return
 	}
 	defer ctx.Request().Body.Close()
-
-	postStr, err := auth.DecryptBody(clientID, body)
+	appID, err := iredis.AppCache.GetMap(clientID)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
+	postStr, err := auth.DecryptBody(appID, body)
 
 	if err != nil {
 		logger.Debug(err)
@@ -68,7 +75,7 @@ func (c *Resource) GetAccount(ctx iris.Context) {
 		"timestamp": time.Now().Unix(),
 		"username":  username,
 	}
-	encryptBody, err := auth.EncryptBody(clientID, result)
+	encryptBody, err := auth.EncryptBody(appID, result)
 	if err != nil {
 		logger.Debug(err)
 		ctx.StatusCode(500)

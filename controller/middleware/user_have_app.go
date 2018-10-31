@@ -7,6 +7,9 @@ import (
 )
 
 func (m *MiddleWare) UserHaveApp(ctx iris.Context) {
+
+	appID, _ := ctx.Params().GetInt64("appID")
+
 	sess := m.Session.Start(ctx)
 	currentUID, _ := sess.GetInt64("uid")
 	//如果是管理员
@@ -14,8 +17,6 @@ func (m *MiddleWare) UserHaveApp(ctx iris.Context) {
 		ctx.Next()
 		return
 	}
-
-	appID, _ := ctx.Params().GetInt64("appID")
 
 	app, err := bean.FindApplicationByID(appID)
 	if err != nil {

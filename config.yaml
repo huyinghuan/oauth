@@ -13,6 +13,7 @@ redis:
     addr: "localhost:6379"
     pass: ""
     db: 0
+redis_cache_from_db: true #从数据库读取数据，写入缓存，仅用于迁移redis后使用
 open_register: true #是否开放用户注册
 open_app_register: true #是否开放app注册
   #cluster:

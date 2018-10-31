@@ -12,6 +12,17 @@ type AppRolePermission struct {
 	Session *sessions.Sessions
 }
 
+func (ctrl *AppRolePermission) Get(ctx iris.Context) {
+	roleID, _ := ctx.Params().GetInt64("roleID")
+	permission, _ := bean.Role.GetPermission(roleID)
+	if permission == nil {
+		ctx.JSON([]interface{}{})
+	} else {
+		ctx.JSON(permission)
+	}
+
+}
+
 func (ctrl *AppRolePermission) Post(ctx iris.Context) {
 	roleID, _ := ctx.Params().GetInt64("roleID")
 	p := schema.AppRolePermission{}

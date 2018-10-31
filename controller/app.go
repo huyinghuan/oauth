@@ -62,7 +62,7 @@ func (c *App) Put(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 
 	} else {
-		iredis.AppCache.SetCallback(uApp.ClientID, uApp.Callback)
+		iredis.AppCache.SetCallback(id, uApp.Callback)
 		ctx.StatusCode(200)
 	}
 
@@ -105,7 +105,7 @@ func (c *App) Post(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 	} else {
 		ctx.StatusCode(200)
-		iredis.AppCache.SetAll(app.ClientID, app.PrivateKey, app.Callback)
+		iredis.AppCache.SetAll(app.ID, app.PrivateKey, app.Callback, app.Mode)
 		ctx.JSON(map[string]string{
 			"client_id":   app.ClientID,
 			"private_key": app.PrivateKey,
@@ -116,13 +116,7 @@ func (c *App) Post(ctx iris.Context) {
 //删除一个app
 func (c *App) Delete(ctx iris.Context) {
 	id, _ := ctx.Params().GetInt64("appID")
-	app, err := bean.FindApplicationByID(id)
-	if err != nil {
-		log.Println(err)
-		ctx.StatusCode(500)
-		return
-	}
-	if err := iredis.AppCache.Clear(app.ClientID); err != nil {
+	if err := iredis.AppCache.Clear(id); err != nil {
 		log.Println(err)
 		ctx.StatusCode(500)
 		return

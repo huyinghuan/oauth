@@ -10,15 +10,15 @@ type role struct{}
 
 var Role role
 
-func (r *role) Add(name string, clientID string) error {
+func (r *role) Add(name string, appID int64) error {
 	engine := database.GetDriver()
-	_, err := engine.InsertOne(schema.AppRole{Name: name, ClientID: clientID})
+	_, err := engine.InsertOne(schema.AppRole{Name: name, AppID: appID})
 	return err
 }
 
-func (r *role) GetRoleList(clientID string) (list []schema.AppRole, err error) {
+func (r *role) GetRoleList(appID int64) (list []schema.AppRole, err error) {
 	engine := database.GetDriver()
-	err = engine.Where("client_id = ?", clientID).Find(&list)
+	err = engine.Where("app_id = ?", appID).Find(&list)
 	return
 }
 
@@ -58,7 +58,17 @@ func (r *role) Delete(id int64) error {
 	return sess.Commit()
 }
 
-func (r *role) AppHaveRole(id int64, clientID string) (bool, error) {
+func (r *role) AppHaveRole(id int64, appID int64) (bool, error) {
 	engine := database.GetDriver()
-	return engine.ID(id).Where("client_id = ? ", clientID).Exist(&schema.AppRole{})
+	return engine.ID(id).Where("app_id = ? ", appID).Exist(&schema.AppRole{})
+}
+
+func (r *role) GetRoleIDByUserIDInApp(appID int64, userID int64) (roleID int64, err error) {
+	engine := database.GetDriver()
+	appUser := schema.AppUserList{}
+	if _, err = engine.Where("user_id = ? and app_id = ?", userID, appID).Get(&appUser); err != nil {
+		return
+	}
+	roleID = appUser.RoleID
+	return
 }

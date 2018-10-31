@@ -3,6 +3,7 @@ package database
 import (
 	"log"
 	"oauth/config"
+	"oauth/database/iredis"
 	"oauth/database/schema"
 	"oauth/utils"
 
@@ -12,6 +13,20 @@ import (
 
 var engine *xorm.Engine
 
+//初始化appid-clientID映射
+func initAppIDMapToClientID() error {
+	list := []schema.Application{}
+	if err := engine.Find(&list); err != nil {
+		return err
+	}
+	for _, app := range list {
+		iredis.AppCache.SetMap(app.ID, app.ClientID)
+		iredis.AppCache.SetAll(app.ID, app.PrivateKey, app.Callback, app.Mode)
+	}
+	return nil
+}
+
+//初始化管理员账户
 func initAdmin(username string, password string, resetOnRestart bool) error {
 	user := schema.User{
 		Name: username,
@@ -64,6 +79,9 @@ func init() {
 	account := conf.Account
 	if err := initAdmin(account.User, account.Pass, account.ResetOnRestart); err != nil {
 		log.Fatal(err)
+	}
+	if conf.RedisCacheFromDB {
+		initAppIDMapToClientID()
 	}
 }
 

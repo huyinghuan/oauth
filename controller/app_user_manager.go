@@ -2,6 +2,7 @@ package controller
 
 import (
 	"oauth/database/bean"
+	"strings"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
@@ -26,7 +27,7 @@ func (a *AppUserManager) GetRolePermissionView(ctx iris.Context) {
 func (a *AppUserManager) GetRoleView(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
 	app, _ := bean.FindApplicationByID(appID)
-	list, _ := bean.Role.GetRoleList(app.ClientID)
+	list, _ := bean.Role.GetRoleList(appID)
 	ctx.ViewData("RoleList", list)
 	ctx.ViewData("App", app)
 	ctx.View("app-user-role.html")
@@ -40,14 +41,21 @@ func (a *AppUserManager) GetView(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-	if whiteList, err := bean.GetAppUserList(app.ClientID, "white"); err != nil {
+	roleList, err := bean.Role.GetRoleList(appID)
+	if err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	}
+	ctx.ViewData("RoleList", roleList)
+	if whiteList, err := bean.GetAppUserList(appID, "white"); err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
 		return
 	} else {
 		ctx.ViewData("WhiteList", whiteList)
 	}
-	if blackList, err := bean.GetAppUserList(app.ClientID, "black"); err != nil {
+	if blackList, err := bean.GetAppUserList(appID, "black"); err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
 		return
@@ -60,18 +68,22 @@ func (a *AppUserManager) GetView(ctx iris.Context) {
 	ctx.View("app-user.html")
 }
 
+type appUserPostForm struct {
+	Username string `json:"username"`
+	Category string `json:"category"`
+	RoleID   int64  `json:"role_id"`
+}
+
 func (a *AppUserManager) Post(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
-	app, err := bean.FindApplicationByID(appID)
-
-	form := map[string]string{}
-
+	form := appUserPostForm{}
 	ctx.ReadJSON(&form)
 
-	username, isExistUsername := form["username"]
-	category, isExistCategory := form["category"]
+	username := strings.TrimSpace(form.Username)
 
-	if !isExistUsername || !isExistCategory {
+	category := strings.TrimSpace(form.Category)
+
+	if username == "" || category == "" {
 		ctx.StatusCode(406)
 		return
 	}
@@ -81,8 +93,7 @@ func (a *AppUserManager) Post(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-
-	bean.AddUserToApp(user.ID, app.ClientID, category)
+	bean.AddUserToApp(user.ID, appID, category, form.RoleID)
 
 }
 

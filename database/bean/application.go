@@ -15,15 +15,6 @@ func FindApplicationByID(id int64) (schema.Application, error) {
 	return app, err
 }
 
-func FindApplicationByClientID(clientID string) (schema.Application, error) {
-	app := schema.Application{
-		ClientID: clientID,
-	}
-	engine := database.GetDriver()
-	_, err := engine.Get(&app)
-	return app, err
-}
-
 // func GetApplictionList() ([]schema.Application, error) {
 // 	engine := database.GetDriver()
 // 	list := make([]schema.Application, 0)
@@ -107,7 +98,7 @@ func UpdateApplication(id int64, uid int64, app *schema.Application) (*schema.Ap
 	findApp.Name = app.Name
 	_, err = engine.ID(id).Update(&findApp)
 	if err == nil {
-		iredis.AppCache.SetAll(findApp.ClientID, findApp.PrivateKey, findApp.Callback)
+		iredis.AppCache.SetAll(id, findApp.PrivateKey, findApp.Callback, findApp.Mode)
 	}
 	return &findApp, err
 }
@@ -121,7 +112,7 @@ func UpdateApplicationRunMode(id int64, mode string) error {
 	app.Mode = mode
 	_, err := engine.ID(id).Cols("mode").Update(&app)
 	if err == nil {
-		iredis.AppCache.SetMode(app.ClientID, mode)
+		iredis.AppCache.SetMode(id, mode)
 	}
 	return err
 }

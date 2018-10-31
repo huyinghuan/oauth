@@ -10,6 +10,8 @@ import (
 	"oauth/config"
 	"oauth/database/bean"
 	"oauth/database/iredis"
+	"oauth/database/schema"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -34,8 +36,47 @@ type Authorize struct {
 // 	Scope     Scope `json:"scope"`
 // }
 
-//权限校验
+func isAllowMethod(allowMethodList string, beTestMethod string) bool {
+	methodList := strings.Split(allowMethodList, ",")
+	//校验method
+	for _, allowMethod := range methodList {
+		allowMethod = strings.ToUpper(allowMethod)
+		if allowMethod == "ALL" || allowMethod == beTestMethod {
+			return true
+		}
+	}
+	return false
+}
 
+func isAllowAPI(allowAPI string, url string) bool {
+	if allowAPI == url {
+		return true
+	}
+	reg, err := regexp.Compile(allowAPI)
+	if err != nil {
+		return false
+	}
+	return reg.MatchString(url)
+}
+
+/*
+	method == GET,POST,PUT
+*/
+//API访问权限校验
+func verifyAPIAccessPromission(list []schema.AppRolePermission, url string, method string) bool {
+	for _, rule := range list {
+		if !isAllowMethod(rule.Method, method) {
+			continue
+		}
+		if !isAllowAPI(rule.Pattern, url) {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+//权限校验
 func (c *Authorize) Verify(ctx iris.Context) {
 	clientID := ctx.GetHeader("client_id")
 	account := ctx.GetHeader("account")
@@ -60,8 +101,14 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(401)
 		return
 	}
+	appID, err := iredis.AppCache.GetMap(clientID)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
 	//是否设置了应用的黑白名单，当前用户是否拥有进入应用权限
-	if haveEnterPromise, err := bean.HaveEnterPromise(user.ID, clientID); err != nil {
+	if haveEnterPromise, err := bean.HaveEnterPromise(user.ID, appID); err != nil {
 		log.Println(err)
 		ctx.StatusCode(500)
 		return
@@ -70,6 +117,25 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		return
 	}
 	//TODO 用户是否存在角色，该角色是否具有该路径的访问权限。
+	roleID, err := bean.Role.GetRoleIDByUserIDInApp(appID, user.ID)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
+	//角色为默认角色时，拥有全部权限
+	if roleID != 0 {
+		list, err := bean.Role.GetPermission(roleID)
+		if err != nil {
+			log.Println(err)
+			ctx.StatusCode(500)
+			return
+		}
+		if !verifyAPIAccessPromission(list, ctx.Path(), ctx.Method()) {
+			ctx.StatusCode(403)
+			return
+		}
+	}
 
 	body, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {
@@ -78,7 +144,7 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		return
 	}
 	defer ctx.Request().Body.Close()
-	decryptBody, err := auth.DecryptBody(clientID, body)
+	decryptBody, err := auth.DecryptBody(appID, body)
 	if err != nil {
 		log.Println(err)
 		ctx.StatusCode(500)
@@ -98,7 +164,7 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		Scope:     scope,
 	}
 
-	encryptAuthScope, err := auth.EncryptBody(clientID, authScope)
+	encryptAuthScope, err := auth.EncryptBody(appID, authScope)
 	if err != nil {
 		log.Println(err)
 		ctx.StatusCode(500)
@@ -148,15 +214,20 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.View("login.html")
 		return
 	}
-
+	appID, err := iredis.AppCache.GetMap(clientID)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
 	//确认用户是否在正常访问名单
-	if haveEnterPromise, err := bean.HaveEnterPromise(uid, clientID); err != nil {
+	if haveEnterPromise, err := bean.HaveEnterPromise(uid, appID); err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
 		return
 	} else if !haveEnterPromise {
 		//没有访问权限
-		app, _ := bean.FindApplicationByClientID(clientID)
+		app, _ := bean.FindApplicationByID(appID)
 		ctx.ViewData("AppName", app.Name)
 		ctx.View("no-promise.html")
 		return
@@ -165,7 +236,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 	username := sess.GetString("username")
 	//是否已经进过确认页面
 	if agree, err := sess.GetBoolean(clientID); err != nil || !agree {
-		app, _ := bean.FindApplicationByClientID(clientID)
+		app, _ := bean.FindApplicationByID(appID)
 		ctx.ViewData("ClientID", clientID)
 		ctx.ViewData("AppName", app.Name)
 		ctx.View("confirm.html")
@@ -173,7 +244,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 	}
 	//每次都需要进入确认页面
 	sess.Set(clientID, false)
-	privateKey, err := iredis.AppCache.GetPrivateKey(clientID)
+	privateKey, err := iredis.AppCache.GetPrivateKey(appID)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
@@ -185,7 +256,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-	cbURL, err := iredis.AppCache.GetCallback(clientID)
+	cbURL, err := iredis.AppCache.GetCallback(appID)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())

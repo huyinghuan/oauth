@@ -58,6 +58,14 @@
                                     <option value="black">黑名单</option>
                                 </select>
                             </div>
+                            <div  class="select">
+                                <select id="roleID">
+                                    <option value=0 >默认用户(全部权限)</option>
+                                    {{range .RoleList}}
+                                    <option value={{.ID}}>{{.Name}}</option>
+                                    {{end}}
+                                </select>
+                            </div>
                         </div>
                         <div class="field">
                             <button class="button is-success" onclick="addUser2CategoryList()">添加</button>
@@ -124,17 +132,18 @@
         function addUser2CategoryList(){
             let username = $("#username").value
             let category = $("#category").value
+            let roleID= $("#roleID").value
             fetch(`/api/app/${appID}/user_manager`,{
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({username: username, category: category})
+                body: JSON.stringify({username: username, category: category, role_id: ~~roleID})
             }).then((resp)=>{
                 if(resp.status == 200){
                     confirm("添加成功!")
-                    window.reload()
+                  //  location.reload()
                 }else{
                     confirm(resp.statusText)
                 }

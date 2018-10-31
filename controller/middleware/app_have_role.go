@@ -6,16 +6,10 @@ import (
 	"github.com/kataras/iris"
 )
 
-func AppHaveRole(ctx iris.Context) {
+func (m *MiddleWare) AppHaveRole(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
-	app, err := bean.FindApplicationByID(appID)
-	if err != nil {
-		ctx.StatusCode(500)
-		ctx.WriteString(err.Error())
-		return
-	}
-	id, _ := ctx.Params().GetInt64("id")
-	exist, err := bean.Role.AppHaveRole(id, app.ClientID)
+	roleID, _ := ctx.Params().GetInt64("roleID")
+	exist, err := bean.Role.AppHaveRole(roleID, appID)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
@@ -24,7 +18,7 @@ func AppHaveRole(ctx iris.Context) {
 	if exist {
 		ctx.Next()
 	} else {
-		ctx.StatusCode(406)
+		ctx.StatusCode(403)
 		return
 	}
 }
