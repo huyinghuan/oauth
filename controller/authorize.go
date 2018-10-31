@@ -116,26 +116,6 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(401)
 		return
 	}
-	//TODO 用户是否存在角色，该角色是否具有该路径的访问权限。
-	roleID, err := bean.Role.GetRoleIDByUserIDInApp(appID, user.ID)
-	if err != nil {
-		log.Println(err)
-		ctx.StatusCode(500)
-		return
-	}
-	//角色为默认角色时，拥有全部权限
-	if roleID != 0 {
-		list, err := bean.Role.GetPermission(roleID)
-		if err != nil {
-			log.Println(err)
-			ctx.StatusCode(500)
-			return
-		}
-		if !verifyAPIAccessPromission(list, ctx.Path(), ctx.Method()) {
-			ctx.StatusCode(403)
-			return
-		}
-	}
 
 	body, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {
@@ -158,7 +138,26 @@ func (c *Authorize) Verify(ctx iris.Context) {
 	}
 
 	log.Println(fmt.Sprintf("权限请请求 %s : %s : %s : %s", clientID, account, scope.Name, scope.Type))
-
+	//TODO 用户是否存在角色，该角色是否具有该路径的访问权限。
+	roleID, err := bean.Role.GetRoleIDByUserIDInApp(appID, user.ID)
+	if err != nil {
+		log.Println(err)
+		ctx.StatusCode(500)
+		return
+	}
+	//角色为默认角色时，拥有全部权限
+	if roleID != 0 {
+		list, err := bean.Role.GetPermission(roleID)
+		if err != nil {
+			log.Println(err)
+			ctx.StatusCode(500)
+			return
+		}
+		if !verifyAPIAccessPromission(list, scope.Name, scope.Type) {
+			ctx.StatusCode(403)
+			return
+		}
+	}
 	authScope := SDK.AuthScope{
 		Timestamp: time.Now().Unix(),
 		Scope:     scope,
