@@ -1,5 +1,6 @@
 <html>
     <head>
+        <title>OpenAuth 应用用户管理</title>
         <link rel="stylesheet" href="/static/css/bulma.min.css">
         <style>
             body{
@@ -27,7 +28,6 @@
                 flex-grow: 0 !important;
             }
         </style>
-         <title>OpenAuth 应用用户管理</title>
     </head>
     <body class="bg">
         <div class="columns">
@@ -82,18 +82,7 @@
                             <th>操作</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{range .WhiteList}}
-                            <tr>
-                                <td>{{.User.Name}}</td>
-                                <td>{{.AppUserList.RoleID}}</td>
-                                <td>
-                                    <div class="buttons">
-                                        <button class="button is-small" onclick="deleteFromUserList({{.AppUserList.ID}}, {{.User.Name}})">删除</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        {{end}}
+                    <tbody id="WhiteList">
                     </tbody>
                 </table>
                 <hr>
@@ -105,17 +94,7 @@
                             <th>操作</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{range .BlackList}}
-                        <tr>
-                            <td>{{.User.Name}}</td>
-                            <td>
-                                <div class="buttons">
-                                    <button class="button is-small" onclick="deleteFromUserList({{.AppUserList.ID}}, {{.User.Name}})">删除</button>
-                                </div>
-                            </td>
-                        </tr>
-                        {{end}}
+                    <tbody id="BlackList">
                     </tbody>
                 </table>
             </div>
@@ -129,11 +108,34 @@
             return document.querySelector(id)
         }
 
+        function loadData(){
+            let whiteList = []
+            let blackList = []
+            fetch(`/api/app/${appID}/user`).then((resp)=>{
+                return resp.json()
+            }).then((data)=>{
+                data.forEach((item)=>{
+                    console.log(item)
+                    let tr = `
+                        <tr>
+                            <td>${item.user.name}</td>
+                            <td>${item.appUser.role_id}</td>
+                            <td>
+                                <div class="buttons">
+                                    <button class="button is-small" onclick="deleteFromUserList({{.AppUserList.ID}}, {{.User.Name}})">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `
+                })
+            })
+        }
+        loadData()
         function addUser2CategoryList(){
             let username = $("#username").value
             let category = $("#category").value
             let roleID= $("#roleID").value
-            fetch(`/api/app/${appID}/user_manager`,{
+            fetch(`/api/app/${appID}/user`,{
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',
@@ -154,7 +156,7 @@
             if(!confirm("是否删除用户:"+name)){
                 return
             }
-            fetch(`/api/app/${appID}/user_manager/`+id, {
+            fetch(`/api/app/${appID}/user/`+id, {
                 method:"DELETE"
             }).then((resp)=>{
                 if(resp.status == 200){

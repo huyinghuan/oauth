@@ -20,33 +20,19 @@ type appForm struct {
 	Callback string `json:"callback"`
 }
 
-//app修改页面
-
-func (c *App) EditPage(ctx iris.Context) {
-	appID, _ := ctx.Params().GetInt64("appID")
-	sess := c.Session.Start(ctx)
-	uid, err := sess.GetInt64("uid")
-	if err != nil {
-		ctx.StatusCode(302)
-		ctx.Header("Location", "/")
-		return
-	}
-	app, err := bean.GetAppliction(appID, uid)
+//app 获取
+func (c *App) Get(ctx iris.Context) {
+	id, _ := ctx.Params().GetInt64("appID")
+	app, err := bean.Application.Get(id)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
 		return
 	}
-	if app.ID == 0 {
-		ctx.StatusCode(404)
-		return
-	}
-	ctx.ViewData("App", app)
-	ctx.View("app-edit.html")
+	ctx.JSON(app)
 }
 
 //app 修改
-
 func (c *App) Put(ctx iris.Context) {
 	id, _ := ctx.Params().GetInt64("appID")
 	sess := c.Session.Start(ctx)

@@ -29,16 +29,22 @@ func AddUserToApp(userID int64, appID int64, category string, roleID int64) erro
 }
 
 type AppUseGroup struct {
-	AppUserList schema.AppUserList `xorm:"extends" json:"appUserList"`
+	AppUserList schema.AppUserList `xorm:"extends" json:"appUser"`
 	User        schema.User        `xorm:"extends" json:"user"`
 }
 
 func GetAppUserList(appID int64, category string) (list []AppUseGroup, err error) {
 	engine := database.GetDriver()
-	err = engine.Table("app_user_list").
+
+	session := engine.Table("app_user_list").
 		Join("LEFT", "user", "app_user_list.user_id = user.id").
-		Where("app_user_list.category = ? and app_id = ?", category, appID).
-		Find(&list)
+		Where("app_id = ?", appID)
+
+	if category != "" {
+		session.Where("app_user_list.category = ?", category)
+	}
+
+	err = session.Find(&list)
 	return
 }
 

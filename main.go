@@ -30,6 +30,7 @@ func GetApp() *iris.Application {
 	//免登陆接口
 	webIndexCtrl := controller.WebIndex{Session: session}
 	app.Get("/", webIndexCtrl.Get)
+	//app.Get("/index.html", func(ctx iris.Context) { ctx.View("index.html") })
 	userCtrl := controller.User{Session: session}
 	app.PartyFunc("/user", func(u iris.Party) {
 		u.Get("/register", func(ctx iris.Context) { ctx.View("register.html") })
@@ -43,6 +44,7 @@ func GetApp() *iris.Application {
 		u.Get("/password", func(ctx iris.Context) { ctx.View("password.html") })
 		u.Get("/password/{uid:long}", userCtrl.ResetPassword4AdminView)
 	})
+	viewCtrl := controller.View{Session: session}
 
 	appCtrl := controller.App{Session: session}
 	app.PartyFunc("/app", func(u iris.Party) {
@@ -52,18 +54,19 @@ func GetApp() *iris.Application {
 		//注册
 		u.Post("/register", appCtrl.Post)
 
-		u.Get("/{appID:long}", appCtrl.EditPage)
+		u.Get("/{appID:long}", viewCtrl.GetAppEditPage)
 	})
 
 	//用户管理
 	middle := middleware.MiddleWare{Session: session}
+
 	appUserMangerCtrl := controller.AppUserManager{Session: session}
 	app.PartyFunc("/app/{appID:long}/user_manager", func(u iris.Party) {
 		//判定app是否归属于当前用户(该应用是否为该用户创建)
 		u.Use(middle.UserHaveApp)
-		u.Get("/", appUserMangerCtrl.GetView)
-		u.Get("/role", appUserMangerCtrl.GetRoleView)
-		u.Get("/role/{roleID:long}/permission", appUserMangerCtrl.GetRolePermissionView)
+		u.Get("/", viewCtrl.GetAppUserView)
+		u.Get("/role", viewCtrl.GetAppRoleView)
+		u.Get("/role/{roleID:long}/permission", viewCtrl.GetRolePermissionView)
 	})
 
 	//以下为第三方调用接口
@@ -92,13 +95,15 @@ func GetApp() *iris.Application {
 
 	application := API.Party("/app/{appID:long}", middle.UserHaveApp)
 	application.PartyFunc("/", func(u iris.Party) {
+		u.Get("/", appCtrl.Get)
 		u.Delete("/", appCtrl.Delete)
 		u.Put("/", appCtrl.Put)
 		u.Patch("/user_mode/{mode:string}", appCtrl.UpdateRunMode)
 	})
 
 	//黑白名单
-	application.PartyFunc("/user_manager", func(u iris.Party) {
+	application.PartyFunc("/user", func(u iris.Party) {
+		u.Get("/", appUserMangerCtrl.Get)
 		u.Post("/", appUserMangerCtrl.Post)
 		u.Delete("/{id: long}", appUserMangerCtrl.Delete)
 	})

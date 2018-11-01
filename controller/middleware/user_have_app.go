@@ -18,7 +18,7 @@ func (m *MiddleWare) UserHaveApp(ctx iris.Context) {
 		return
 	}
 
-	app, err := bean.FindApplicationByID(appID)
+	app, err := bean.Application.Get(appID)
 	if err != nil {
 		ctx.StatusCode(500)
 		return

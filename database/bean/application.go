@@ -8,7 +8,11 @@ import (
 	"oauth/utils"
 )
 
-func FindApplicationByID(id int64) (schema.Application, error) {
+type application struct{}
+
+var Application application
+
+func (a *application) Get(id int64) (schema.Application, error) {
 	app := schema.Application{}
 	engine := database.GetDriver()
 	_, err := engine.Id(id).Get(&app)

@@ -219,6 +219,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	}
+	app, _ := bean.Application.Get(appID)
 	//确认用户是否在正常访问名单
 	if haveEnterPromise, err := bean.HaveEnterPromise(uid, appID); err != nil {
 		ctx.StatusCode(500)
@@ -226,7 +227,6 @@ func (c *Authorize) Get(ctx iris.Context) {
 		return
 	} else if !haveEnterPromise {
 		//没有访问权限
-		app, _ := bean.FindApplicationByID(appID)
 		ctx.ViewData("AppName", app.Name)
 		ctx.View("no-promise.html")
 		return
@@ -235,7 +235,6 @@ func (c *Authorize) Get(ctx iris.Context) {
 	username := sess.GetString("username")
 	//是否已经进过确认页面
 	if agree, err := sess.GetBoolean(clientID); err != nil || !agree {
-		app, _ := bean.FindApplicationByID(appID)
 		ctx.ViewData("ClientID", clientID)
 		ctx.ViewData("AppName", app.Name)
 		ctx.View("confirm.html")
