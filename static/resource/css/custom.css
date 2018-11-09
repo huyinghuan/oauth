@@ -1,0 +1,16 @@
+#app{
+    height: 100%;
+    overflow: hidden;
+}
+.login-body{
+    height: 100%;
+    overflow: hidden;
+    background-image: url("/static/images/bg.png") !important;
+    background-repeat: repeat-x!important;
+    color: whitesmoke;
+    padding-top: 15%;
+    margin: 0;
+}
+.login-body  .label{
+    color: whitesmoke!important;
+}

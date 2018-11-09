@@ -86,6 +86,14 @@ type PassResetForm struct {
 	NewPassword string `json:"newPassword"`
 }
 
+func (c *User) GetLoginUserInfo(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	username := sess.GetString("username")
+	ctx.JSON(map[string]string{
+		"username": username,
+	})
+}
+
 func (c *User) ResetPassword(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	uid, _ := sess.GetInt64("uid")

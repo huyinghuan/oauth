@@ -30,7 +30,7 @@ func GetApp() *iris.Application {
 	//免登陆接口
 	webIndexCtrl := controller.WebIndex{Session: session}
 	app.Get("/", webIndexCtrl.Get)
-	//app.Get("/index.html", func(ctx iris.Context) { ctx.View("index.html") })
+	app.Get("/index.html", func(ctx iris.Context) { ctx.View("index.html") })
 	userCtrl := controller.User{Session: session}
 	app.PartyFunc("/user", func(u iris.Party) {
 		u.Get("/register", func(ctx iris.Context) { ctx.View("register.html") })
@@ -88,6 +88,8 @@ func GetApp() *iris.Application {
 	API := app.Party("/api")
 	API.PartyFunc("/user", func(u iris.Party) {
 		u.Use(middle.UserAuth)
+		u.Get("/", userCtrl.GetLoginUserInfo)
+		u.Post("/login", userCtrl.Login)
 		u.Put("/password", userCtrl.ResetPassword)
 		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
 		u.Delete("/{uid:long}", userCtrl.DeleteUser)
