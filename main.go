@@ -90,6 +90,7 @@ func GetApp() *iris.Application {
 		u.Use(middle.UserAuth)
 		u.Get("/", userCtrl.GetLoginUserInfo)
 		u.Post("/login", userCtrl.Login)
+		u.Delete("/logout", userCtrl.Logout)
 		u.Put("/password", userCtrl.ResetPassword)
 		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
 		u.Delete("/{uid:long}", userCtrl.DeleteUser)

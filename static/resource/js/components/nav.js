@@ -24,7 +24,7 @@
                 <div class="navbar-dropdown is-right">
                     <a class="navbar-item">修改密码 </a>
                     <hr class="navbar-divider">
-                    <a class="navbar-item">注销</a>
+                    <a class="navbar-item" v-on:click="logout">注销</a>
                 </div>
             </div>
         </div>
@@ -41,12 +41,16 @@
         },
         beforeCreate: function(){
             GetData("/user/", {method:"GET"}).then((u)=>{
-                this.username = u.username
+                this.username = u && u.username
             })
         },
         methods:{
-            dropdownUserinfo:function(){
-
+            logout: function(){
+                GetData("/user/logout",{
+                    method: "DELETE"
+                }).then(()=>{
+                    location.reload()
+                })
             }
         }
     })

@@ -32,7 +32,8 @@ const GetData = function(url, options){
                 })
                 return
         }
-        let contentType  = resp.headers.get("Content-Type").split(";").shift()
+        let contentType  = resp.headers.get("Content-Type")
+        contentType = contentType && contentType.split(";").shift()
         switch(contentType){
             case "application/json":
                 return resp.json()

@@ -16,6 +16,9 @@ func (m *MiddleWare) UserAuth(ctx context.Context) {
 	case "/api/user/login":
 		ctx.Next()
 		break
+	case "/api/user/logout":
+		ctx.Next()
+		break
 	default:
 		sess := m.Session.Start(ctx)
 		username := sess.GetString("username")
