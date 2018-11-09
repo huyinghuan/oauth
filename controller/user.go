@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"oauth/config"
 	"oauth/database/bean"
 	"strings"
@@ -84,6 +85,23 @@ func (c *User) Login(ctx iris.Context) {
 type PassResetForm struct {
 	OldPassword string `json:"oldPassword"`
 	NewPassword string `json:"newPassword"`
+}
+
+func (c *User) GetList(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	//用户是否已登陆
+	uid, _ := sess.GetInt64("uid")
+
+	if uid == 0 {
+		if userList, err := bean.GetAllUser(); err != nil {
+			log.Println(err)
+			ctx.StatusCode(500)
+		} else {
+			ctx.JSON(userList)
+		}
+		return
+	}
+	ctx.JSON([]interface{}{})
 }
 
 func (c *User) GetLoginUserInfo(ctx iris.Context) {

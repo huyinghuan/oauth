@@ -20,6 +20,18 @@ type appForm struct {
 	Callback string `json:"callback"`
 }
 
+func (c *App) GetList(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	//用户是否已登陆
+	uid, _ := sess.GetInt64("uid")
+	if list, err := bean.GetApplictionList(uid); err != nil {
+		ctx.StatusCode(500)
+		ctx.Text(err.Error())
+	} else {
+		ctx.JSON(list)
+	}
+}
+
 //app 获取
 func (c *App) Get(ctx iris.Context) {
 	id, _ := ctx.Params().GetInt64("appID")

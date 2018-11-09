@@ -85,17 +85,19 @@ func GetApp() *iris.Application {
 
 	//数据接口
 
-	API := app.Party("/api")
+	API := app.Party("/api", middle.UserAuth)
 	API.PartyFunc("/user", func(u iris.Party) {
-		u.Use(middle.UserAuth)
 		u.Get("/", userCtrl.GetLoginUserInfo)
+		u.Get("/list", userCtrl.GetList)
 		u.Post("/login", userCtrl.Login)
 		u.Delete("/logout", userCtrl.Logout)
 		u.Put("/password", userCtrl.ResetPassword)
 		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
 		u.Delete("/{uid:long}", userCtrl.DeleteUser)
 	})
-
+	API.PartyFunc("/app", func(u iris.Party) {
+		u.Get("/", appCtrl.GetList)
+	})
 	application := API.Party("/app/{appID:long}", middle.UserHaveApp)
 	application.PartyFunc("/", func(u iris.Party) {
 		u.Get("/", appCtrl.Get)
