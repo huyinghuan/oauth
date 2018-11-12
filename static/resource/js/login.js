@@ -32,9 +32,14 @@ var Login = (function(){
                 <div class="field-label"></div>
                 <div class="field-body">
                     <div class="field">
-                    <div class="control">
-                        <button class="button is-primary" v-on:click="login">登陆</button>
+                        <div class="control">
+                            <button class="button is-primary" v-on:click="login">登陆</button>
+                        </div>
                     </div>
+                    <div class="field">
+                        <div class="control">
+                            <router-link to="/register">用户注册</router-link>
+                        </div>
                     </div>
                 </div>
             </div>

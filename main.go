@@ -34,8 +34,7 @@ func GetApp() *iris.Application {
 	userCtrl := controller.User{Session: session}
 	app.PartyFunc("/user", func(u iris.Party) {
 		u.Get("/register", func(ctx iris.Context) { ctx.View("register.html") })
-		//注册
-		u.Post("/register", userCtrl.Post)
+
 		//退出
 		u.Delete("/logout", userCtrl.Logout)
 		//提交登陆表单
@@ -91,6 +90,8 @@ func GetApp() *iris.Application {
 		u.Get("/list", userCtrl.GetList)
 		u.Post("/login", userCtrl.Login)
 		u.Delete("/logout", userCtrl.Logout)
+		//注册
+		u.Post("/register", userCtrl.Post)
 		u.Put("/password", userCtrl.ResetPassword)
 		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
 		u.Delete("/{uid:long}", userCtrl.DeleteUser)

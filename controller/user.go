@@ -19,7 +19,7 @@ func (c *User) Post(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	//如果没有开放用户认证，用户不是管理员，那么就拒绝注册
 	if !config.Get().OpenRegister && sess.GetString("username") != config.Get().Account.User {
-		ctx.StatusCode(401)
+		ctx.StatusCode(403)
 		return
 	}
 

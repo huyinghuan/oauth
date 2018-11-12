@@ -1,15 +1,20 @@
 const router = new VueRouter({
     routes:[
         {
+            path:"/", redirect:"/home/center"
+        },
+        {
             path: "/login", component: Login, name:"login"
         },{
+            path: "/register", component: Register, name:"register"
+        },{
             name: "home",
-            path: "/",
+            path: "/home",
             component: Home,
             children:[
                 {
                     name: "center",
-                    path: "home",
+                    path: "center",
                     component: Center
                 }
             ]
@@ -24,7 +29,10 @@ const GetData = function(url, options){
             case 200:
                 break
             case 401:
-                router.push("login")
+                router.push("/login")
+                return
+            case 403:
+                alertify.error("此操作无权限")
                 return
             default:
                 resp.text().then((body)=>{
