@@ -16,6 +16,10 @@ const router = new VueRouter({
                     name: "center",
                     path: "center",
                     component: Center
+                },{
+                    name: "app-register",
+                    path: "app-register",
+                    component: AppRegister
                 }
             ]
         }
@@ -32,8 +36,15 @@ const GetData = function(url, options){
                 router.push("/login")
                 return
             case 403:
-                alertify.error("此操作无权限")
+                resp.text().then((body)=>{
+                    alertify.error(body||"此操作无权限")
+                })
                 return
+            case 406:
+                resp.text().then((body)=>{
+                    alertify.error(body||"提交数据错误")
+                })
+                throw new Error()
             default:
                 resp.text().then((body)=>{
                     alertify.error(body||resp.statusText)

@@ -15,9 +15,9 @@
     
         <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item"> Home  </a>
-            <a class="navbar-item">注册应用</a>
-            <a class="navbar-item">注册用户</a>
+            <router-link class="navbar-item" to="/">Home</router-link>
+            <router-link class="navbar-item" to="/home/app-register">注册应用</router-link>
+            <router-link class="navbar-item" to="/register">注册用户</router-link>
         </div>
         <div class="navbar-end">
             <div class="navbar-item has-dropdown" :class="{'is-active':isDropdownUserinfo}" v-on:click="isDropdownUserinfo=!isDropdownUserinfo" >

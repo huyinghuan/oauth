@@ -28,17 +28,11 @@ func GetApp() *iris.Application {
 	app.StaticWeb("/static/", "./static/resource")
 
 	//免登陆接口
-	webIndexCtrl := controller.WebIndex{Session: session}
-	app.Get("/", webIndexCtrl.Get)
-	app.Get("/index.html", func(ctx iris.Context) { ctx.View("index.html") })
+	// webIndexCtrl := controller.WebIndex{Session: session}
+	// app.Get("/", webIndexCtrl.Get)
+	app.Get("/", func(ctx iris.Context) { ctx.View("index.html") })
 	userCtrl := controller.User{Session: session}
 	app.PartyFunc("/user", func(u iris.Party) {
-		u.Get("/register", func(ctx iris.Context) { ctx.View("register.html") })
-
-		//退出
-		u.Delete("/logout", userCtrl.Logout)
-		//提交登陆表单
-		u.Post("/login", userCtrl.Login)
 		//修改密码
 		u.Get("/password", func(ctx iris.Context) { ctx.View("password.html") })
 		u.Get("/password/{uid:long}", userCtrl.ResetPassword4AdminView)
@@ -51,7 +45,6 @@ func GetApp() *iris.Application {
 			ctx.View("app-register.html")
 		})
 		//注册
-		u.Post("/register", appCtrl.Post)
 
 		u.Get("/{appID:long}", viewCtrl.GetAppEditPage)
 	})
@@ -98,6 +91,7 @@ func GetApp() *iris.Application {
 	})
 	API.PartyFunc("/app", func(u iris.Party) {
 		u.Get("/", appCtrl.GetList)
+		u.Post("/register", appCtrl.Post)
 	})
 	application := API.Party("/app/{appID:long}", middle.UserHaveApp)
 	application.PartyFunc("/", func(u iris.Party) {
