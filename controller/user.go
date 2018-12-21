@@ -104,11 +104,31 @@ func (c *User) GetList(ctx iris.Context) {
 	ctx.JSON([]interface{}{})
 }
 
+func (c *User) GetAnyOneInfo(ctx iris.Context) {
+	sess := c.Session.Start(ctx)
+	cid, _ := sess.GetInt64("uid")
+	if cid != 0 {
+		ctx.StatusCode(403)
+		return
+	}
+	uid, _ := ctx.Params().GetInt64("id")
+
+	info, err := bean.GetUserByID(uid)
+	if err != nil {
+		ctx.StatusCode(406)
+		ctx.WriteString(err.Error())
+		return
+	}
+	ctx.JSON(info)
+}
+
 func (c *User) GetLoginUserInfo(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
+	uid, _ := sess.GetInt64("uid")
 	username := sess.GetString("username")
-	ctx.JSON(map[string]string{
+	ctx.JSON(map[string]interface{}{
 		"username": username,
+		"uid":      uid,
 	})
 }
 

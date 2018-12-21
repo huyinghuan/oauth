@@ -28,6 +28,10 @@ const router = new VueRouter({
                     name:"password-reset",
                     path:"password-reset",
                     component: PasswordResetPage
+                },{
+                    name: "admin-reset-anyone",
+                    path: "user/:id/password",
+                    component: AdminResetAnyonePage
                 }
             ]
         }

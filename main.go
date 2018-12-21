@@ -77,6 +77,7 @@ func GetApp() *iris.Application {
 	API := app.Party("/api", middle.UserAuth)
 	API.PartyFunc("/user", func(u iris.Party) {
 		u.Get("/", userCtrl.GetLoginUserInfo)
+		u.Get("/info/{id:long}", userCtrl.GetAnyOneInfo)
 		u.Get("/list", userCtrl.GetList)
 		u.Post("/login", userCtrl.Login)
 		u.Delete("/logout", userCtrl.Logout)

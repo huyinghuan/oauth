@@ -48,7 +48,7 @@
                 })
             },
             loadData: function(){
-                GetData("/app/", {method:"GET"}).then((u)=>{
+                GetData("/app", {method:"GET"}).then((u)=>{
                     this.appList = u || []
                 })
             }

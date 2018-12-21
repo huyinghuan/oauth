@@ -13,7 +13,7 @@
                 <td>
                     <div class="buttons">
                         <button class="button is-small">删除</button>
-                        <a class="button is-small">修改密码</a>
+                        <router-link class="button is-small" :to="{name: 'admin-reset-anyone', params: {id: u.id}}" >修改密码</router-link>
                     </div>
                 </td>
             </tr>
