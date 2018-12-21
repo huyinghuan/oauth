@@ -44,9 +44,6 @@ func GetApp() *iris.Application {
 		u.Get("/register", func(ctx iris.Context) {
 			ctx.View("app-register.html")
 		})
-		//注册
-
-		u.Get("/{appID:long}", viewCtrl.GetAppEditPage)
 	})
 
 	//用户管理

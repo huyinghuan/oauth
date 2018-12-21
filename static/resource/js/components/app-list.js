@@ -21,7 +21,7 @@
                     <td>
                         <div class="buttons">
                             <button class="button is-small">删除</button>
-                            <a class="button is-small">编辑</a>
+                            <router-link class="button is-small" :to="{name: 'app-edit', params: {id: app.application.id}}" >编辑</router-link>
                             <a class="button is-small">用户管理</a>
                         </div>
                     </td>

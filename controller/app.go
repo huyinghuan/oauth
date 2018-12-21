@@ -41,7 +41,10 @@ func (c *App) Get(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-	ctx.JSON(app)
+	ctx.JSON(map[string]string{
+		"name":     app.Name,
+		"callback": app.Callback,
+	})
 }
 
 //app 修改
