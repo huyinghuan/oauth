@@ -1,12 +1,13 @@
 var Home = (function(){
     var template = `
-    <div class="columns">
-        <div class="column is-10 is-offset-1">
+        <div class="container is-fluid">
             <o-nav></o-nav>
-            <router-view></router-view>
-        </div>
-    </div>
-       
+            <div class="columns" style="margin-top: 0px">
+                <div class="column is-full">
+                    <router-view></router-view>
+                </div>
+            </div>
+        </div>       
     `
     return {
         template: template,

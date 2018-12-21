@@ -20,6 +20,10 @@ const router = new VueRouter({
                     name: "app-register",
                     path: "app-register",
                     component: AppRegister
+                },{
+                    name:"password-reset",
+                    path:"password-reset",
+                    component: PasswordResetPage
                 }
             ]
         }

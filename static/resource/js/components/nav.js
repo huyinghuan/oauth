@@ -13,7 +13,7 @@
         </a>
         </div>
     
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-menu" style="margin-right:0px">
         <div class="navbar-start">
             <router-link class="navbar-item" to="/">Home</router-link>
             <router-link class="navbar-item" to="/home/app-register">注册应用</router-link>
@@ -23,7 +23,7 @@
             <div class="navbar-item has-dropdown" :class="{'is-active':isDropdownUserinfo}" v-on:click="isDropdownUserinfo=!isDropdownUserinfo" >
                 <a class="navbar-link">{{username}}</a>
                 <div class="navbar-dropdown is-right">
-                    <a class="navbar-item">修改密码 </a>
+                    <router-link class="navbar-item" to="/home/password-reset">修改密码</router-link>
                     <hr class="navbar-divider">
                     <a class="navbar-item" v-on:click="logout">注销</a>
                 </div>
@@ -41,7 +41,7 @@
             }
         },
         beforeCreate: function(){
-            GetData("/user/", {method:"GET"}).then((u)=>{
+            GetData("/user", {method:"GET"}).then((u)=>{
                 this.username = u && u.username
             })
         },

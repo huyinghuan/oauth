@@ -117,7 +117,19 @@ func (c *User) ResetPassword(ctx iris.Context) {
 	uid, _ := sess.GetInt64("uid")
 	form := PassResetForm{}
 	ctx.ReadJSON(&form)
-	err := bean.UpdateUserPassword(uid, form.OldPassword, form.NewPassword)
+	if uid == 0 {
+		uid, _ = sess.GetInt64("adminID")
+	}
+	oldPassword := strings.TrimSpace(form.OldPassword)
+	newPassword := strings.TrimSpace(form.NewPassword)
+
+	if oldPassword == "" || newPassword == "" {
+		ctx.StatusCode(406)
+		ctx.WriteString("密码不能为空")
+		return
+	}
+
+	err := bean.UpdateUserPassword(uid, oldPassword, newPassword)
 	if err != nil {
 		ctx.StatusCode(406)
 		ctx.WriteString(err.Error())
