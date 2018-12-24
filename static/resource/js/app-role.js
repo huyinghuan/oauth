@@ -71,6 +71,7 @@ var AppRolesPage = (function(){
                     body: JSON.stringify({role: this.newRole})
                 }).then(()=>{
                     alertify.success("添加成功!")
+                    this.newRole = ""
                     this.loadList()
                 });
             },

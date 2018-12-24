@@ -40,6 +40,7 @@ func (a *AppUserManager) Post(ctx iris.Context) {
 
 	if username == "" || category == "" {
 		ctx.StatusCode(406)
+		ctx.Text("参数错误" + username + ":" + category)
 		return
 	}
 	user, err := bean.FindUserByUsername(username)
