@@ -33,6 +33,10 @@ const router = new VueRouter({
                     path: "app/:id/roles",
                     component: AppRolesPage
                 },{
+                    name: "app-role-permission",
+                    path: "app/:id/roles/:roleID/permission",
+                    component: AppRoleAndPermissionPage
+                },{
                     name:"password-reset",
                     path:"password-reset",
                     component: PasswordResetPage

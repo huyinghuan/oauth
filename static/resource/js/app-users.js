@@ -4,6 +4,7 @@ var AppUsersPage = (function(){
         <div class="column is-full">
             <h3 class="title is-3"> 当前应用: {{appName}}</h3>
             <div class="buttons">
+                <go-back></go-back>
                 <button class="button is-info" @click="runMode('black')">黑名单模式运行</button>
                 <button class="button is-warning" @click="runMode('white')">白名单模式运行</button>
                 <router-link class="button is-success" :to="{name: 'app-roles', params: {id: $route.params.id}}" >角色与权限</router-link>

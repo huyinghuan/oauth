@@ -3,10 +3,9 @@ var AppRoleAndPermissionPage = (function(){
     let template = `
     <div class="columns">
         <div class="column is-full">
-            <h3  class="title is-3"> 当前应用:</h3>
+            <h3  class="title is-3"> 当前应用: {{appName}}  角色: {{roleName}}</h3>
             <div class="buttons">
-                <a class="button is-white" href="/">首页</a>
-                <a class="button is-success">角色与权限</a>
+               <go-back></go-back>
             </div>
             <hr>
             <div class="field is-horizontal">
@@ -52,7 +51,7 @@ var AppRoleAndPermissionPage = (function(){
                         <td>{{p.name}}</td>
                         <td>
                             <div class="buttons">
-                                <button class="button is-small" onclick="delPermission({{p.id}}, {{p.name}})">删除</button>
+                                <button class="button is-small" onclick="delPermission(p.id,p.name)">删除</button>
                             </div>
                         </td>
                     </tr>
@@ -64,6 +63,48 @@ var AppRoleAndPermissionPage = (function(){
 
     return {
         template: template,
+        data: function(){
+            return {
+                appName: "",
+                roleName:"",
+                permissionList:[]
+            }
+        },
+        methods: {
+            loadList(){
+                GetData(`/app/${this.$route.params.id}/role/${this.$route.params.roleID}/permission`,{method: 'GET'}).then((data)=>{
+                    console.log(data)
+                });
+            },
+            addRule(){
+                GetData(`/app/${this.$route.params.id}/role/${this.$route.params.id}/permission`,{
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({name: name, pattern: pattern, method: httpMethod})
+                }).then((resp)=>{
+                    if(resp.status == 200){
+                        confirm("添加成功!")
+                        location.reload()
+                    }else{
+                        confirm(resp.statusText)
+                    }
+                });
+            }
+        },
+        created() {
+            this.loadList()
+        },
+        beforeCreate() {
+            GetData(`/app/${this.$route.params.id}`, {method:"GET"}).then((data)=>{
+                this.appName = data.name
+            })
+            GetData(`/app/${this.$route.params.id}/role/${this.$route.params.roleID}`, {method:"GET"}).then((data)=>{
+               this.roleName = data.name
+            })
+        },
     }
 
 

@@ -91,6 +91,7 @@ func GetApp() *iris.Application {
 		u.Post("/", roleCtrl.Post)
 		u.Get("/", roleCtrl.Get)
 		u.Delete("/{id:long}", roleCtrl.Delete)
+		u.Get("/{id:long}", roleCtrl.GetOne)
 	})
 
 	permissionCtrl := controller.AppRolePermission{Session: session}

@@ -37,7 +37,7 @@ var AppRolesPage = (function(){
                                 <td>
                                     <div class="buttons">
                                         <button class="button is-small" @click="delRole(role.id, role.name)">删除</button>
-                                        <a class="button is-small is-info">权限分配</a>
+                                        <router-link class="button is-small is-info" :to="{name: 'app-role-permission', params: {id: $route.params.id, roleID: role.id}}">权限分配</router-link>
                                     </div>
                                 </td>
                             </tr>

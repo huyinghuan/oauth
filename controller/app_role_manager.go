@@ -57,3 +57,20 @@ func (a *AppRoleManager) Delete(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 	}
 }
+
+func (a *AppRoleManager) GetOne(ctx iris.Context) {
+	id, _ := ctx.Params().GetInt64("id")
+	appID, _ := ctx.Params().GetInt64("appID")
+	role, err := bean.Role.Get(id)
+	if err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	}
+	if role.AppID != appID {
+		ctx.StatusCode(403)
+		ctx.WriteString("无权限")
+		return
+	}
+	ctx.JSON(role)
+}
