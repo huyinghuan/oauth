@@ -22,7 +22,7 @@
                         <div class="buttons">
                             <button class="button is-small" @click="deleteApp(app.application.id, app.application.name)">删除</button>
                             <router-link class="button is-small" :to="{name: 'app-edit', params: {id: app.application.id}}" >编辑</router-link>
-                            <a class="button is-small">用户管理</a>
+                            <router-link class="button is-small" :to="{name: 'app-users', params: {id: app.application.id}}">用户管理</router-link>
                         </div>
                     </td>
                 </tr>

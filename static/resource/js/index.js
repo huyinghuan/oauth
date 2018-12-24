@@ -25,6 +25,14 @@ const router = new VueRouter({
                     path: "app/:id",
                     component: AppEditPage
                 },{
+                    name: "app-users",
+                    path: "app/:id/users",
+                    component: AppUsersPage
+                },{
+                    name: "app-roles",
+                    path: "app/:id/roles",
+                    component: AppRolesPage
+                },{
                     name:"password-reset",
                     path:"password-reset",
                     component: PasswordResetPage
