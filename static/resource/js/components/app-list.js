@@ -20,7 +20,7 @@
                     <td>{{app.application.callback}}</td>
                     <td>
                         <div class="buttons">
-                            <button class="button is-small">删除</button>
+                            <button class="button is-small" @click="deleteApp(app.application.id, app.application.name)">删除</button>
                             <router-link class="button is-small" :to="{name: 'app-edit', params: {id: app.application.id}}" >编辑</router-link>
                             <a class="button is-small">用户管理</a>
                         </div>
@@ -37,15 +37,13 @@
             }
         },
         methods:{
-            deleteApp: (id, name)=>{
-                if(!confirm("是否删除应用:"+name)){
-                    return
-                }
-                GetData("/api/app/"+id,{
-                    method: "DELETE"
-                }).then(()=>{
-                    this.loadData()
-                })
+            deleteApp: function(id, name){                
+                alertify.confirm('是否删除应用:', name, ()=>{
+                    GetData(`/app/${id}`,{ method: "DELETE" }).then(()=>{
+                        alertify.success("删除成功")
+                        this.loadData()
+                    })
+                }, ()=>{});
             },
             loadData: function(){
                 GetData("/app", {method:"GET"}).then((u)=>{
@@ -53,10 +51,8 @@
                 })
             }
         },
-        beforeCreate: function(){
-            GetData("/app/", {method:"GET"}).then((u)=>{
-                this.appList = u || []
-            })
-        },
+        created() {
+            this.loadData()
+        }
     })
 })()
