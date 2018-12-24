@@ -49,23 +49,25 @@ var AdminResetAnyonePage = (function(){
     return {
         template: template,
         data: ()=>{
-            return {u:{
-                username:"",
-                password:""
-            }}
+            return {
+                u:{
+                    username:"",
+                    password:""
+                }
+            }
         },
         methods: {
             save: function(){
-                // GetData('/user/register', {
-                //     method: 'POST',
-                //     headers: {
-                //     'Accept': 'application/json',
-                //     'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({username: this.username, password: this.password})
-                // }).then((resp)=>{
-                //     alertify.success("注册成功!")
-                // });
+                GetData(`/user/password/${this.$route.params.id}`, {
+                    method: 'PUT',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({password: this.u.password})
+                }).then((resp)=>{
+                    alertify.success("修改成功!")
+                });
             }
         },
         beforeCreate() {

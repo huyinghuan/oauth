@@ -12,7 +12,7 @@
                 <td>{{u.name}}</td>
                 <td>
                     <div class="buttons">
-                        <button class="button is-small">删除</button>
+                        <button class="button is-small" @click="deleteUser(u.id, u.name)">删除</button>
                         <router-link class="button is-small" :to="{name: 'admin-reset-anyone', params: {id: u.id}}" >修改密码</router-link>
                     </div>
                 </td>
@@ -35,26 +35,18 @@
                 GetData("/user/"+id, {
                     method:"DELETE"
                 }).then((resp)=>{
-                    if(resp.status ==200){
-                        location.reload()
-                        return
-                    }
-                    resp.text().then((t)=>{
-                        confirm(resp.status + ":"+t)
-                    })
+                    this.loadData()
                 })
             },
-            
+            loadData: function(){
+                GetData("/user/list", {method:"GET"}).then((u)=>{
+                    this.userList = u || []
+                })
+            }
         },
-        loadData: function(){
-            GetData("/user/list", {method:"GET"}).then((u)=>{
-                this.userList = u || []
-            })
-        },
-        beforeCreate: function(){
-            GetData("/user/list", {method:"GET"}).then((u)=>{
-                this.userList = u || []
-            })
-        },
+        
+        created() {
+            this.loadData()
+        }
     })
 })()

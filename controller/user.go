@@ -188,6 +188,7 @@ func (c *User) ResetPassword4AdminView(ctx iris.Context) {
 func (c *User) ResetPassword4Admin(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	currendUID, _ := sess.GetInt64("uid")
+	//非管理员
 	if currendUID != 0 {
 		ctx.StatusCode(403)
 		return
