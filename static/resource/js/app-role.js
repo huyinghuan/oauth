@@ -74,10 +74,13 @@ var AppRolesPage = (function(){
                     this.loadList()
                 });
             },
-            delRole(){
-                GetData(`/app/${this.$route.params.id}/role`, {
-
-                })
+            delRole: function(id, name){
+                alertify.confirm('是否删除角色:', name, ()=>{
+                    GetData(`/app/${this.$route.params.id}/role/${id}`,{ method: "DELETE" }).then(()=>{
+                        alertify.success("删除成功")
+                        this.loadList()
+                    })
+                }, ()=>{});
             }
         },
         created() {
