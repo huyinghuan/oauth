@@ -31,32 +31,8 @@ func GetApp() *iris.Application {
 	// webIndexCtrl := controller.WebIndex{Session: session}
 	// app.Get("/", webIndexCtrl.Get)
 	app.Get("/", func(ctx iris.Context) { ctx.View("index.html") })
-	userCtrl := controller.User{Session: session}
-	app.PartyFunc("/user", func(u iris.Party) {
-		//修改密码
-		u.Get("/password", func(ctx iris.Context) { ctx.View("password.html") })
-		u.Get("/password/{uid:long}", userCtrl.ResetPassword4AdminView)
-	})
-	viewCtrl := controller.View{Session: session}
-
-	appCtrl := controller.App{Session: session}
-	app.PartyFunc("/app", func(u iris.Party) {
-		u.Get("/register", func(ctx iris.Context) {
-			ctx.View("app-register.html")
-		})
-	})
-
 	//用户管理
 	middle := middleware.MiddleWare{Session: session}
-
-	appUserMangerCtrl := controller.AppUserManager{Session: session}
-	app.PartyFunc("/app/{appID:long}/user_manager", func(u iris.Party) {
-		//判定app是否归属于当前用户(该应用是否为该用户创建)
-		u.Use(middle.UserHaveApp)
-		u.Get("/", viewCtrl.GetAppUserView)
-		u.Get("/role", viewCtrl.GetAppRoleView)
-		u.Get("/role/{roleID:long}/permission", viewCtrl.GetRolePermissionView)
-	})
 
 	//以下为第三方调用接口
 	authorizeCtrl := controller.Authorize{Session: session}
@@ -73,6 +49,9 @@ func GetApp() *iris.Application {
 	})
 
 	//数据接口
+	userCtrl := controller.User{Session: session}
+	appCtrl := controller.App{Session: session}
+	appUserMangerCtrl := controller.AppUserManager{Session: session}
 
 	API := app.Party("/api", middle.UserAuth)
 	API.PartyFunc("/user", func(u iris.Party) {

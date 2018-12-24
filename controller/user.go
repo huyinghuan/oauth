@@ -160,31 +160,6 @@ func (c *User) ResetPassword(ctx iris.Context) {
 	ctx.StatusCode(200)
 }
 
-func (c *User) ResetPassword4AdminView(ctx iris.Context) {
-	sess := c.Session.Start(ctx)
-	currendUID, _ := sess.GetInt64("uid")
-	if currendUID != 0 {
-		ctx.StatusCode(403)
-		return
-	}
-	uid, _ := ctx.Params().GetInt64("uid")
-
-	user, err := bean.GetUserByID(uid)
-	if err != nil {
-		ctx.StatusCode(500)
-		ctx.WriteString(err.Error())
-		return
-	}
-	if user.ID == 0 {
-		ctx.StatusCode(404)
-		return
-	}
-
-	ctx.ViewData("User", user)
-	ctx.View("password4admin.html")
-
-}
-
 func (c *User) ResetPassword4Admin(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	currendUID, _ := sess.GetInt64("uid")
