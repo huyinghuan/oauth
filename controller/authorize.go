@@ -84,10 +84,12 @@ func (c *Authorize) Verify(ctx iris.Context) {
 	clientID = strings.TrimSpace(clientID)
 	if clientID == "" {
 		ctx.StatusCode(406)
+		ctx.WriteString("参数错误: clientID 不能为空")
 		return
 	}
 	if account == "" {
-		ctx.StatusCode(401)
+		ctx.WriteString("参数错误: account 不能为空")
+		ctx.StatusCode(406)
 		return
 	}
 	//校验 account 是否存在数据库，是否处于正常状态
@@ -201,11 +203,13 @@ func (c *Authorize) Get(ctx iris.Context) {
 	clientID = strings.TrimSpace(clientID)
 	if clientID == "" {
 		ctx.StatusCode(406)
+		ctx.WriteString("参数错误,client_id不能为空")
 		return
 	}
 	//是否存在私有key
 	if !iredis.AppCache.Exist(clientID) {
 		ctx.StatusCode(406)
+		ctx.WriteString("参数错误, client_id不存在")
 		return
 	}
 
@@ -271,6 +275,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 	u, e := url.Parse(cbURL)
 	if e != nil {
 		ctx.StatusCode(406)
+		ctx.WriteString("回调地址错误:" + e.Error())
 		return
 	}
 	q := u.Query()

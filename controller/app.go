@@ -106,7 +106,16 @@ func (c *App) Post(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 	} else {
 		ctx.StatusCode(200)
-		iredis.AppCache.SetAll(app.ID, app.PrivateKey, app.Callback, app.Mode)
+		if err := iredis.AppCache.SetAll(app.ID, app.PrivateKey, app.Callback, app.Mode); err != nil {
+			ctx.StatusCode(500)
+			ctx.WriteString(err.Error())
+			return
+		}
+		if err := iredis.AppCache.SetMap(app.ID, app.ClientID); err != nil {
+			ctx.StatusCode(500)
+			ctx.WriteString(err.Error())
+			return
+		}
 		ctx.JSON(map[string]string{
 			"client_id":   app.ClientID,
 			"private_key": app.PrivateKey,
