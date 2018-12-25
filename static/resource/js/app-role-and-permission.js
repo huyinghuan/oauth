@@ -15,21 +15,22 @@ var AppRoleAndPermissionPage = (function(){
                 <div class="field-body">
                     <div class="field">
                         <p class="control">
-                            <input class="input" type="text" id="pattern" placeholder="url正则">
+                            <input class="input" type="text" v-model="rule.pattern" placeholder="url正则 or 字符串">
                         </p>
                     </div>
                     <div class="field">
                         <p class="control">
-                            <input class="input" type="text" id="method" placeholder="HTTP Method">
+                            <input class="input" type="text" v-model="rule.method" placeholder="HTTP Method 多个用逗号 ',' 隔开 ">
                         </p>
                     </div>
                     <div class="field">
                         <p class="control">
-                            <input class="input" type="text" id="name" placeholder="备注">
+                            <input class="input" type="text" v-model="rule.name" placeholder="备注">
                         </p>
                     </div>
                     <div class="field">
-                        <button class="button is-success" onclick="addRole()">添加</button>
+                        <button v-if="isAdd" class="button is-success" @click="addRule()">添加</button>
+                        <button v-if="isEdit" class="button is-success" @click="saveRule()">保存</button>
                     </div>
                 </div>
             </div>
@@ -51,7 +52,7 @@ var AppRoleAndPermissionPage = (function(){
                         <td>{{p.name}}</td>
                         <td>
                             <div class="buttons">
-                                <button class="button is-small" onclick="delPermission(p.id,p.name)">删除</button>
+                                <button class="button is-small" @click="delPermission(p.id,p.name)">删除</button>
                             </div>
                         </td>
                     </tr>
@@ -65,25 +66,32 @@ var AppRoleAndPermissionPage = (function(){
         template: template,
         data: function(){
             return {
-                appName: "",
+                appName:"",
                 roleName:"",
+                rule:{
+                    name: "",
+                    pattern:"",
+                    method:"",
+                },
+                isAdd: true,
+                isEdit: false,
                 permissionList:[]
             }
         },
         methods: {
             loadList(){
                 GetData(`/app/${this.$route.params.id}/role/${this.$route.params.roleID}/permission`,{method: 'GET'}).then((data)=>{
-                    console.log(data)
+                    this.permissionList = data
                 });
             },
-            addRule(){
-                GetData(`/app/${this.$route.params.id}/role/${this.$route.params.id}/permission`,{
-                    method: 'POST',
+            saveRule(){
+                GetData(`/app/${this.$route.params.id}/role/${this.$route.params.roleID}/permission/${this.rule.id}`,{
+                    method: 'PUT',
                     headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({name: name, pattern: pattern, method: httpMethod})
+                    body: JSON.stringify(this.rule)
                 }).then((resp)=>{
                     if(resp.status == 200){
                         confirm("添加成功!")
@@ -92,7 +100,29 @@ var AppRoleAndPermissionPage = (function(){
                         confirm(resp.statusText)
                     }
                 });
+            },
+            addRule(){
+                GetData(`/app/${this.$route.params.id}/role/${this.$route.params.roleID}/permission`,{
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.rule)
+                }).then(()=>{
+                    alertify.success("添加成功")
+                    this.loadList()
+                });
+            },
+            delPermission(id, name){
+                alertify.confirm('是否删除权限:', name, ()=>{
+                    GetData(`/app/${this.$route.params.id}/role/${this.$route.params.roleID}/permission/${id}`,{ method: "DELETE" }).then(()=>{
+                        alertify.success("删除成功")
+                        this.loadList()
+                    })
+                }, ()=>{});
             }
+            
         },
         created() {
             this.loadList()
