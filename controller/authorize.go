@@ -113,7 +113,7 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	} else if !haveEnterPromise {
-		ctx.StatusCode(401)
+		ctx.StatusCode(403)
 		return
 	}
 
@@ -191,7 +191,12 @@ func (c *Authorize) Jump(ctx iris.Context) {
 }
 
 func (c *Authorize) Get(ctx iris.Context) {
+	referer := ctx.GetHeader("referer")
 	redirectURL := ctx.URLParam("redirect")
+	if redirectURL == "" && strings.Index(referer, ctx.Host()) == -1 {
+		redirectURL = referer
+	}
+	log.Println("redirect:", redirectURL)
 	clientID := ctx.URLParam("client_id")
 	clientID = strings.TrimSpace(clientID)
 	if clientID == "" {
@@ -199,7 +204,6 @@ func (c *Authorize) Get(ctx iris.Context) {
 		return
 	}
 	//是否存在私有key
-
 	if !iredis.AppCache.Exist(clientID) {
 		ctx.StatusCode(406)
 		return
@@ -209,9 +213,12 @@ func (c *Authorize) Get(ctx iris.Context) {
 	//用户是否已登陆
 	uid, err := sess.GetInt64("uid")
 	if err != nil {
-		ctx.ViewData("OpenRegister", config.Get().OpenRegister)
-		ctx.View("login.html")
+		//用户登陆
+		ctx.Redirect(fmt.Sprintf("/authorize/login?client_id=%s&t=%s&redirect=%s", clientID, ctx.URLParam("t"), redirectURL))
 		return
+	}
+	if uid == 0 {
+		uid, _ = sess.GetInt64("adminID")
 	}
 	appID, err := iredis.AppCache.GetMap(clientID)
 	if err != nil {
@@ -237,6 +244,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 	if agree, err := sess.GetBoolean(clientID); err != nil || !agree {
 		ctx.ViewData("ClientID", clientID)
 		ctx.ViewData("AppName", app.Name)
+		ctx.ViewData("Redirect", redirectURL)
 		ctx.View("confirm.html")
 		return
 	}
@@ -272,4 +280,9 @@ func (c *Authorize) Get(ctx iris.Context) {
 	u.RawQuery = q.Encode()
 	ctx.StatusCode(302)
 	ctx.Header("Location", u.String())
+}
+
+func (c *Authorize) Login(ctx iris.Context) {
+	ctx.ViewData("OpenRegister", config.Get().OpenRegister)
+	ctx.View("login.html")
 }

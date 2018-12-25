@@ -42,6 +42,8 @@ func GetApp() *iris.Application {
 		u.Post("/", authorizeCtrl.Verify)
 		//接口跳转
 		u.Post("/jump", authorizeCtrl.Jump)
+
+		u.Get("/login", authorizeCtrl.Login)
 	})
 	resourceCtrl := controller.Resource{Session: session}
 	app.PartyFunc("/resource", func(u iris.Party) {

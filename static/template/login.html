@@ -87,19 +87,17 @@
             loginBtn.addEventListener("click", function(){
                 let username = usernameInput.value
                 let password = passwordInput.value
-
-                console.log(usernameInput.value, passwordInput.value)
-
-               fetch('/user/login', {
+               fetch('/api/user/login', {
                     method: 'POST',
                     headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({username: username, password: password})
                 }).then((resp)=>{
                     if(resp.status == 200){
                         location.reload();
+                        location.href = "/authorize"+location.search
                     }else{
                         confirm("账户或密码错误")
                     }

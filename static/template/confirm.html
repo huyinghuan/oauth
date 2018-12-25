@@ -34,11 +34,16 @@
     </body>
     <script>
         var client_id = "{{.ClientID}}";
+        var redirect = "{{.Redirect}}";
         function agree(){
-            fetch("/authorize/jump?client_id="+client_id, {
+            fetch(`/authorize/jump?client_id=${client_id}`, {
                 method:"POST"
             }).then(()=>{
-                location.reload()
+                if(location.search.indexOf("redirect=") != -1){
+                    location.reload()
+                }else{
+                    location.href = "/authorize" + location.search + "&redirect="+redirect
+                }
             })
         }
         function disagree(){
