@@ -230,7 +230,13 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	}
+	log.Println(appID)
 	app, _ := bean.Application.Get(appID)
+	if app.ID == 0 {
+		ctx.StatusCode(406)
+		ctx.WriteString("应用存不存在")
+		return
+	}
 	//确认用户是否在正常访问名单
 	if haveEnterPromise, err := bean.HaveEnterPromise(uid, appID); err != nil {
 		ctx.StatusCode(500)
