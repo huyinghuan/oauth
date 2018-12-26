@@ -147,7 +147,7 @@ var AppUsersPage = (function(){
                 GetData(`/app/${this.$route.params.id}/user_mode/${mode}`,{
                     method:"PATCH"
                 }).then((resp)=>{
-                    alertify.success("添加成功")
+                    alertify.success("保存成功")
                 })
             }
         },
