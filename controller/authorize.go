@@ -88,8 +88,8 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		return
 	}
 	if account == "" {
-		ctx.WriteString("参数错误: account 不能为空")
 		ctx.StatusCode(406)
+		ctx.WriteString("参数错误: account 不能为空")
 		return
 	}
 	//校验 account 是否存在数据库，是否处于正常状态
