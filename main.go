@@ -85,6 +85,7 @@ func GetApp() *iris.Application {
 		u.Get("/", appUserMangerCtrl.Get)
 		u.Post("/", appUserMangerCtrl.Post)
 		u.Delete("/{id: long}", appUserMangerCtrl.Delete)
+		u.Get("/{id:long}", appUserMangerCtrl.GetUserByID)
 		u.Put("/{id:long}/role", appUserMangerCtrl.UpdateUserRole)
 	})
 

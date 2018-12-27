@@ -28,12 +28,12 @@ func AddUserToApp(userID int64, appID int64, category string, roleID int64) erro
 	return err
 }
 
-type AppUseGroup struct {
+type AppUserGroup struct {
 	AppUserList schema.AppUserList `xorm:"extends" json:"appUser"`
 	User        schema.User        `xorm:"extends" json:"user"`
 }
 
-func GetAppUserList(appID int64, category string) (list []AppUseGroup, err error) {
+func GetAppUserList(appID int64, category string) (list []AppUserGroup, err error) {
 	engine := database.GetDriver()
 
 	session := engine.Table("app_user_list").
@@ -46,6 +46,38 @@ func GetAppUserList(appID int64, category string) (list []AppUseGroup, err error
 
 	err = session.Find(&list)
 	return
+}
+
+func UpdateUserRoleInApp(appID int64, userID int64, roleID int64) (int, string) {
+	list, err := Role.GetRoleList(appID)
+	if err != nil {
+		return 500, err.Error()
+	}
+	illegeRole := true
+	for _, role := range list {
+		if role.ID == roleID {
+			illegeRole = false
+			break
+		}
+	}
+	if illegeRole {
+		return 406, "不存在角色"
+	}
+	engine := database.GetDriver()
+	appUser := schema.AppUserList{
+		RoleID: roleID,
+	}
+	count, err := engine.Table("app_user_list").
+		Where("app_id = ? and user_id = ? ", appID, userID).
+		Cols("role_id").Update(&appUser)
+
+	if count == 0 {
+		return 406, "应用名单不存在该用户"
+	}
+	if err != nil {
+		return 500, err.Error()
+	}
+	return 200, ""
 }
 
 func DeleteUserFromAppUserList(id int64) error {

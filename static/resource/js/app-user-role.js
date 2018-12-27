@@ -55,6 +55,16 @@ var AppUserRolePage = (function(){
         },
         methods: {
             save: function(){
+                GetData(`/app/${this.$route.params.id}/user/${this.$route.params.uid}/role`,{
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({roleID: this.newRole})
+                }).then(()=>{
+                    alertify.success("修改成功")
+                });
             }
         },
         beforeCreate() {

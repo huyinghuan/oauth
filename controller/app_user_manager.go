@@ -29,6 +29,10 @@ func (a *AppUserManager) Get(ctx iris.Context) {
 	ctx.JSON(list)
 }
 
+func (a *AppUserManager) GetUserByID(ctx iris.Context) {
+
+}
+
 func (a *AppUserManager) Post(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
 	form := appUserPostForm{}
@@ -75,29 +79,12 @@ func (a *AppUserManager) UpdateUserRole(ctx iris.Context) {
 		ctx.WriteString("提交数据错误")
 		return
 	}
-
 	appID, _ := ctx.Params().GetInt64("appID")
-	//userID, _ := ctx.Params().GetInt64("id")
-
-	list, err := bean.Role.GetRoleList(appID)
-	if err != nil {
-		ctx.StatusCode(500)
-		ctx.WriteString(err.Error())
-		return
+	userID, _ := ctx.Params().GetInt64("id")
+	status, err := bean.UpdateUserRoleInApp(appID, userID, roleID)
+	if status != 200 {
+		ctx.StatusCode(status)
+		ctx.WriteString(err)
 	}
-
-	illegeRole := true
-
-	for _, role := range list {
-		if role.ID == roleID {
-			illegeRole = false
-			break
-		}
-	}
-	if illegeRole {
-		ctx.StatusCode(406)
-		ctx.WriteString("不存在角色")
-		return
-	}
-
+	ctx.StatusCode(200)
 }
