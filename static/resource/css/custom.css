@@ -6,7 +6,7 @@
     height: 100%;
     overflow: hidden;
     background-image: url("/static/images/bg.png") !important;
-    background-repeat: repeat-x!important;
+    background-size: contain;
     color: whitesmoke;
     padding-top: 15%;
     margin: 0;

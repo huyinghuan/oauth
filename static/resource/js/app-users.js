@@ -53,9 +53,11 @@ var AppUsersPage = (function(){
                 <tbody>
                     <tr v-for="item in whiteList">
                         <td>{{item.user.name}}</td>
-                        <td>{{item.appUser.role_id}}</td>
+                        <td>{{item.appUser.roleName}}</td>
                         <td>
                             <div class="buttons">
+                                <button v-if="item.appUser.role_id == 0" class="button is-small is-info" @click="defaultRoleTip()">权限详情</button>
+                                <router-link v-if="item.appUser.role_id != 0" class="button is-small is-info" :to="{name: 'app-role-permission', params: {id: $route.params.id, roleID: item.appUser.role_id}}">权限详情</router-link>
                                 <button class="button is-small" @click="deleteFromUserList(item.appUser.id, item.user.name)">删除</button>
                             </div>
                         </td>
@@ -97,10 +99,16 @@ var AppUsersPage = (function(){
                     role_id: 0,
                     category:"white",
                     username: ""
+                },
+                roleNameMap:{
+                    0: "默认用户"
                 }
             }
         },
         methods: {
+            defaultRoleTip(){
+                alertify.alert('权限详情','默认角色拥有全部权限', ()=>{})
+            },
             loadList(){
                 GetData(`/app/${this.$route.params.id}/user`).then((data)=>{
                     data = data || []
@@ -108,6 +116,7 @@ var AppUsersPage = (function(){
                     let blackList = []
                     data.forEach((item)=>{
                         if(item.appUser.category == "white"){
+                            item.appUser["roleName"] = this.roleNameMap[item.appUser.role_id]
                             whiteList.push(item)
                         }else{
                             blackList.push(item)
@@ -152,15 +161,22 @@ var AppUsersPage = (function(){
             }
         },
         created() {
-            this.loadList()
+            GetData(`/app/${this.$route.params.id}/role`, {method: "GET"}).then((data)=>{
+                this.roleList = data || []
+                this.roleList.forEach((item)=>{
+                    this.roleNameMap[item.id] = item.name
+                })
+                return
+            }).then(()=>{
+                this.loadList()
+            })
+            
         },
         beforeCreate() {
             GetData(`/app/${this.$route.params.id}`, {method:"GET"}).then((data)=>{
                this.appName = data.name
             })
-            GetData(`/app/${this.$route.params.id}/role`, {method: "GET"}).then((data)=>{
-                this.roleList = data || []
-            })
+            
         },
     }
 })()

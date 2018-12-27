@@ -50,9 +50,11 @@ func (r *role) Delete(id int64) error {
 		return err
 	}
 	if _, err := sess.ID(id).Delete(&schema.AppRole{}); err != nil {
+		sess.Rollback()
 		return err
 	}
 	if _, err := sess.Where("role_id = ?", id).Delete(&schema.AppRolePermission{}); err != nil {
+		sess.Rollback()
 		return err
 	}
 	return sess.Commit()
