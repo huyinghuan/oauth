@@ -66,7 +66,7 @@ var Login = (function(){
                     },
                     body: JSON.stringify({username: this.username, password: this.password})
                 }).then((resp)=>{
-                    router.push({name:"center"})
+                    router.push({name:"apps"})
                 })
             }
         }

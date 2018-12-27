@@ -20,7 +20,7 @@
                     <td>{{app.application.callback}}</td>
                     <td>
                         <div class="buttons">
-                            <button class="button is-small" @click="deleteApp(app.application.id, app.application.name)">删除</button>
+                            <button class="button is-small is-danger" @click="deleteApp(app.application.id, app.application.name)">删除</button>
                             <router-link class="button is-small" :to="{name: 'app-edit', params: {id: app.application.id}}" >编辑</router-link>
                             <router-link class="button is-small" :to="{name: 'app-users', params: {id: app.application.id}}">用户管理</router-link>
                         </div>

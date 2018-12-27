@@ -12,7 +12,7 @@
                 <td>{{u.name}}</td>
                 <td>
                     <div class="buttons">
-                        <button class="button is-small" @click="deleteUser(u.id, u.name)">删除</button>
+                        <button class="button is-small is-danger" @click="deleteUser(u.id, u.name)">删除</button>
                         <router-link class="button is-small" :to="{name: 'admin-reset-anyone', params: {id: u.id}}" >修改密码</router-link>
                     </div>
                 </td>
