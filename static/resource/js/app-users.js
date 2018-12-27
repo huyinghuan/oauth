@@ -2,7 +2,7 @@ var AppUsersPage = (function(){
     var template = `
     <div class="columns">
         <div class="column is-full">
-            <h3 class="title is-3"> 当前应用: {{appName}}</h3>
+            <h3 class="title is-3"> 当前应用: {{app.name}}  运行模式: {{app.model == "black" ? "黑名单" : "白名单"}}</h3>
             <div class="buttons">
                 <go-back></go-back>
                 <button class="button is-info" @click="runMode('black')">黑名单模式运行</button>
@@ -91,7 +91,10 @@ var AppUsersPage = (function(){
         template: template,
         data: function(){
             return {
-                appName:"",
+                app:{
+                    name:"",
+                    model:""
+                },
                 roleList:[],
                 whiteList: [],
                 blackList: [],
@@ -174,7 +177,7 @@ var AppUsersPage = (function(){
         },
         beforeCreate() {
             GetData(`/app/${this.$route.params.id}`, {method:"GET"}).then((data)=>{
-               this.appName = data.name
+               this.app = data
             })
             
         },

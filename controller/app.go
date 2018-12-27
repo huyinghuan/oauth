@@ -44,6 +44,7 @@ func (c *App) Get(ctx iris.Context) {
 	ctx.JSON(map[string]string{
 		"name":     app.Name,
 		"callback": app.Callback,
+		"model":    app.Mode,
 	})
 }
 
