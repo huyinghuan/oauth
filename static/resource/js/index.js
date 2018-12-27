@@ -33,6 +33,10 @@ const router = new VueRouter({
                     path: "app/:id/users",
                     component: AppUsersPage
                 },{
+                    name: "app-user-role",
+                    path: "app/:id/users/:uid/role",
+                    component: AppUserRolePage
+                },{
                     name: "app-roles",
                     path: "app/:id/roles",
                     component: AppRolesPage

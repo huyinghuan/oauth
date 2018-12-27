@@ -56,9 +56,10 @@ var AppUsersPage = (function(){
                         <td>{{item.appUser.roleName}}</td>
                         <td>
                             <div class="buttons">
-                                <button v-if="item.appUser.role_id == 0" class="button is-small is-info" @click="defaultRoleTip()">权限详情</button>
-                                <router-link v-if="item.appUser.role_id != 0" class="button is-small is-info" :to="{name: 'app-role-permission', params: {id: $route.params.id, roleID: item.appUser.role_id}}">权限详情</router-link>
-                                <button class="button is-small" @click="deleteFromUserList(item.appUser.id, item.user.name)">删除</button>
+                                <router-link class="button is-small is-info" :to="{name: 'app-user-role', params: {id: $route.params.id, uid: item.user.id}}">修改角色</router-link>
+                                <button v-if="item.appUser.role_id == 0" class="button is-small is-success" @click="defaultRoleTip()">权限详情</button>
+                                <router-link v-if="item.appUser.role_id != 0" class="button is-small is-success" :to="{name: 'app-role-permission', params: {id: $route.params.id, roleID: item.appUser.role_id}}">权限详情</router-link>
+                                <button class="button is-small is-danger" @click="deleteFromUserList(item.appUser.id, item.user.name)">删除</button>
                             </div>
                         </td>
                     </tr>
@@ -78,7 +79,7 @@ var AppUsersPage = (function(){
                     <td>{{item.user.name}}</td>
                     <td>
                         <div class="buttons">
-                            <button class="button is-small" @click="deleteFromUserList(item.appUser.id, item.user.name)">删除</button>
+                            <button class="button is-small is-danger" @click="deleteFromUserList(item.appUser.id, item.user.name)">删除</button>
                         </div>
                     </td>
                 </tr>
@@ -104,7 +105,7 @@ var AppUsersPage = (function(){
                     username: ""
                 },
                 roleNameMap:{
-                    0: "默认用户"
+                    0: "默认角色"
                 }
             }
         },
@@ -179,7 +180,6 @@ var AppUsersPage = (function(){
             GetData(`/app/${this.$route.params.id}`, {method:"GET"}).then((data)=>{
                this.app = data
             })
-            
-        },
+        }
     }
 })()

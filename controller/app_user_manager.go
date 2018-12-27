@@ -61,3 +61,43 @@ func (a *AppUserManager) Delete(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 	}
 }
+
+func (a *AppUserManager) UpdateUserRole(ctx iris.Context) {
+	form := map[string]int64{}
+	if err := ctx.ReadJSON(&form); err != nil {
+		ctx.StatusCode(406)
+		ctx.WriteString("提交数据错误")
+		return
+	}
+	roleID, ok := form["roleID"]
+	if !ok {
+		ctx.StatusCode(406)
+		ctx.WriteString("提交数据错误")
+		return
+	}
+
+	appID, _ := ctx.Params().GetInt64("appID")
+	//userID, _ := ctx.Params().GetInt64("id")
+
+	list, err := bean.Role.GetRoleList(appID)
+	if err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+		return
+	}
+
+	illegeRole := true
+
+	for _, role := range list {
+		if role.ID == roleID {
+			illegeRole = false
+			break
+		}
+	}
+	if illegeRole {
+		ctx.StatusCode(406)
+		ctx.WriteString("不存在角色")
+		return
+	}
+
+}
