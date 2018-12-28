@@ -33,6 +33,14 @@ type AppUserGroup struct {
 	User        schema.User        `xorm:"extends" json:"user"`
 }
 
+func GetAppUserInfo(appID int64, userID int64) (user AppUserGroup, err error) {
+	engine := database.GetDriver()
+	_, err = engine.Table("app_user_list").
+		Join("LEFT", "user", "app_user_list.user_id = user.id").
+		Where("app_user_list.app_id = ? and app_user_list.user_id = ? ", appID, userID).Get(&user)
+	return
+}
+
 func GetAppUserList(appID int64, category string) (list []AppUserGroup, err error) {
 	engine := database.GetDriver()
 
@@ -60,21 +68,14 @@ func UpdateUserRoleInApp(appID int64, userID int64, roleID int64) (int, string) 
 			break
 		}
 	}
-	if illegeRole {
+	if illegeRole && roleID != 0 {
 		return 406, "不存在角色"
 	}
 	engine := database.GetDriver()
 	appUser := schema.AppUserList{
 		RoleID: roleID,
 	}
-	count, err := engine.Table("app_user_list").
-		Where("app_id = ? and user_id = ? ", appID, userID).
-		Cols("role_id").Update(&appUser)
-
-	if count == 0 {
-		return 406, "应用名单不存在该用户"
-	}
-	if err != nil {
+	if _, err := engine.Table("app_user_list").Where("app_id = ? and user_id = ? ", appID, userID).Cols("role_id").Update(&appUser); err != nil {
 		return 500, err.Error()
 	}
 	return 200, ""

@@ -29,10 +29,6 @@ func (a *AppUserManager) Get(ctx iris.Context) {
 	ctx.JSON(list)
 }
 
-func (a *AppUserManager) GetUserByID(ctx iris.Context) {
-
-}
-
 func (a *AppUserManager) Post(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
 	form := appUserPostForm{}
@@ -87,4 +83,15 @@ func (a *AppUserManager) UpdateUserRole(ctx iris.Context) {
 		ctx.WriteString(err)
 	}
 	ctx.StatusCode(200)
+}
+
+func (a *AppUserManager) GetUserInfo(ctx iris.Context) {
+	appID, _ := ctx.Params().GetInt64("appID")
+	userID, _ := ctx.Params().GetInt64("id")
+	user, err := bean.GetAppUserInfo(appID, userID)
+	if err != nil {
+		ctx.StatusCode(500)
+		ctx.WriteString(err.Error())
+	}
+	ctx.JSON(user)
 }

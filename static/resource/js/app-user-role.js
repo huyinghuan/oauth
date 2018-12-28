@@ -71,8 +71,9 @@ var AppUserRolePage = (function(){
             GetData(`/app/${this.$route.params.id}`, {method:"GET"}).then((data)=>{
                this.appName = data.name
             })
-            GetData("/user", {method:"GET"}).then((u)=>{
-                this.username = u && u.username
+            GetData(`/app/${this.$route.params.id}/user/${this.$route.params.uid}/info`, {method:"GET"}).then((data)=>{
+                this.username =  data.user.name  == "" ?  "不存在用户" : data.user.name
+                this.newRole = data.appUser.role_id
             })
             GetData(`/app/${this.$route.params.id}/role`, {method: "GET"}).then((data)=>{
                 this.roleList = data || []
