@@ -100,7 +100,10 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		return
 	}
 	if user.ID == 0 {
+		msg := fmt.Sprintf("权限请求: %s:%s  状态:%d\n 用户不存在", clientID, account, 401)
+		log.Println(msg)
 		ctx.StatusCode(401)
+		ctx.WriteString(msg)
 		return
 	}
 	appID, err := iredis.AppCache.GetMap(clientID)
@@ -115,7 +118,10 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	} else if !haveEnterPromise {
+		msg := fmt.Sprintf("权限请求: %s:%s  状态:%d\n 用户为黑名单", clientID, account, 403)
+		log.Println(msg)
 		ctx.StatusCode(403)
+		ctx.WriteString(msg)
 		return
 	}
 
@@ -139,7 +145,6 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		return
 	}
 
-	log.Println(fmt.Sprintf("权限请请求 %s : %s : %s : %s", clientID, account, scope.Name, scope.Type))
 	//TODO 用户是否存在角色，该角色是否具有该路径的访问权限。
 	roleID, err := bean.Role.GetRoleIDByUserIDInApp(appID, user.ID)
 	if err != nil {
@@ -156,7 +161,10 @@ func (c *Authorize) Verify(ctx iris.Context) {
 			return
 		}
 		if !verifyAPIAccessPromission(list, scope.Name, scope.Type) {
+			msg := fmt.Sprintf("权限请求 %s : %s : %s : %s 角色无权限:%d\n", clientID, account, scope.Name, scope.Type, 403)
+			log.Println(msg)
 			ctx.StatusCode(403)
+			ctx.WriteString(msg)
 			return
 		}
 	}
@@ -171,6 +179,8 @@ func (c *Authorize) Verify(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	}
+	msg := fmt.Sprintf("权限请求 %s : %s : %s : %s 授权成功:%d\n", clientID, account, scope.Name, scope.Type, 200)
+	log.Println(msg)
 	ctx.StatusCode(200)
 	ctx.WriteString(encryptAuthScope)
 }
