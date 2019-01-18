@@ -8,6 +8,20 @@
 
 运行 `docker-compose up`即可
 
+##  nginx 配置说明
+
+```
+server {
+        listen 80;
+        server_name d.imgo.tv;
+        
+        underscores_in_headers on; #需增加
+        location / {
+                 proxy_pass_request_headers      on; #需增加
+                proxy_pass http://127.0.0.1:8000;
+        }
+}
+```
 
 ## API说明
 

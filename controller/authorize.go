@@ -240,7 +240,6 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.StatusCode(500)
 		return
 	}
-	log.Println(appID)
 	app, _ := bean.Application.Get(appID)
 	if app.ID == 0 {
 		ctx.StatusCode(406)
