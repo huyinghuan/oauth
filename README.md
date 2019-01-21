@@ -51,7 +51,7 @@ server {
 URL: /resource/account
 Method:  POST
 Header:
-  client_id=your_app_client_id
+  client-id=your_app_client_id
 
 Body为将数据格式 
   {
@@ -81,7 +81,7 @@ URL: /authorize
 Mehod: POST
 Header:
   account=username
-  client_id=client_id
+  client-id=client_id
 
 Body为将数据格式:
   {

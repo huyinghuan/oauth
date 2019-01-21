@@ -79,7 +79,7 @@
   branch = "master"
   name = "github.com/huyinghuan/oauth_sdk"
   packages = ["."]
-  revision = "cfa82b130618dc425ade24e4d266b3c5f7ab4b5f"
+  revision = "7c9dc72fcc1b1c466da8d147d83940b6fce1e465"
 
 [[projects]]
   branch = "master"
@@ -200,8 +200,8 @@
 [[projects]]
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
-  revision = "82c7118e8ccf7403d4860175d97bb635e8e28239"
-  version = "v1.0.1"
+  revision = "506f3da9b7c86d737e91f16b7431df8635871552"
+  version = "v1.0.2"
 
 [[projects]]
   name = "github.com/modern-go/concurrent"
@@ -284,8 +284,8 @@
 [[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
-  version = "v2.2.1"
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
 
 [solve-meta]
   analyzer-name = "dep"

@@ -78,7 +78,7 @@ func verifyAPIAccessPromission(list []schema.AppRolePermission, url string, meth
 
 //权限校验
 func (c *Authorize) Verify(ctx iris.Context) {
-	clientID := ctx.GetHeader("client_id")
+	clientID := ctx.GetHeader("client-id")
 	account := ctx.GetHeader("account")
 	account = strings.TrimSpace(account)
 	clientID = strings.TrimSpace(clientID)

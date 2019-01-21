@@ -24,7 +24,7 @@ type resourceAccountForm struct {
 }
 
 func (c *Resource) GetAccount(ctx iris.Context) {
-	clientID := ctx.GetHeader("client_id")
+	clientID := ctx.GetHeader("client-id")
 	clientID = strings.TrimSpace(clientID)
 	if clientID == "" {
 		ctx.StatusCode(406)
