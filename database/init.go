@@ -31,7 +31,7 @@ func initAdmin(username string, password string, resetOnRestart bool) error {
 	user := schema.User{
 		Name: username,
 	}
-	exist, err := engine.Get(&user)
+	exist, err := engine.Where("name = ?", username).Get(&user)
 	if err != nil {
 		return err
 	}
