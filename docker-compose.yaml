@@ -38,6 +38,7 @@ services:
       MYSQL_DATABASE: oauth
     volumes:
       - /Volumes/Macintosh HD/Extends/data/mysql-oauth:/var/lib/mysql
+      - ./sql/table.sql:/docker-entrypoint-initdb.d/table.sql
     healthcheck:
       test: "/usr/bin/mysql --user=root --password=12345678 --execute \"SHOW DATABASES;\""
       interval: 2s

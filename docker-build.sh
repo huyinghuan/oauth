@@ -5,6 +5,8 @@ if [ "$1" == "" ]; then
   version=latest
 fi
 
+env GOOS=linux GOARCH=amd64 go build -o app
+
 docker build  -t docker.hunantv.com/huyinghuan/oauth:$version .
 
 if [ "$version" != "latest" ]; then
@@ -15,3 +17,5 @@ fi
 if [ "$2" != "" ]; then
   docker push docker.hunantv.com/huyinghuan/oauth:$version
 fi
+
+rm app

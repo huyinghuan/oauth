@@ -1,6 +1,9 @@
-FROM golang:latest
-WORKDIR /go/src/oauth
-COPY . /go/src/oauth
-RUN go build
+FROM alpine:3.7
+WORKDIR /server
+ADD app /server
+ADD static /server/static
+ADD config.yaml /server
+
 EXPOSE 8000
-CMD [ "./oauth" ]
+
+CMD ["./app"]
