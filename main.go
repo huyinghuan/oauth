@@ -53,6 +53,7 @@ func GetApp() *iris.Application {
 	//数据接口
 	userCtrl := controller.User{Session: session}
 	appCtrl := controller.App{Session: session}
+	openAppsCtrl := controller.OpenApps{Session: session}
 	appUserMangerCtrl := controller.AppUserManager{Session: session}
 
 	API := app.Party("/api", middle.UserAuth)
@@ -68,6 +69,12 @@ func GetApp() *iris.Application {
 		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
 		u.Delete("/{uid:long}", userCtrl.DeleteUser)
 	})
+
+	//获取所有注册的app列表
+	API.PartyFunc("/open-apps", func(u iris.Party) {
+		u.Get("/", openAppsCtrl.GetList)
+	})
+
 	API.PartyFunc("/app", func(u iris.Party) {
 		u.Get("/", appCtrl.GetList)
 		u.Post("/register", appCtrl.Post)

@@ -3,7 +3,7 @@ var Home = (function(){
         <div class="container is-fluid">
             <o-nav></o-nav>
             <div class="columns" style="margin-top: 0px">
-                <div class="column is-full">
+                <div class="column is-full" id="content-body">
                     <router-view></router-view>
                 </div>
             </div>

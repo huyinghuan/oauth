@@ -2,6 +2,39 @@
     height: 100%;
     overflow: hidden;
 }
+
+.container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.container > div.columns{
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+#content-body{
+    height: 100%;
+    overflow: hidden;
+}
+
+.page{
+    height: 100%;
+}
+
+.page-layout{
+    display: flex;
+    flex-direction: column;
+    display: 100%;
+}
+
+.page-layout div{
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+
+
 .login-body{
     height: 100%;
     overflow: hidden;

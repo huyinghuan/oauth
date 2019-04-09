@@ -24,7 +24,7 @@ func (c *App) GetList(ctx iris.Context) {
 	sess := c.Session.Start(ctx)
 	//用户是否已登陆
 	uid, _ := sess.GetInt64("uid")
-	if list, err := bean.GetApplictionList(uid); err != nil {
+	if list, err := bean.GetApplicationList(uid); err != nil {
 		ctx.StatusCode(500)
 		ctx.Text(err.Error())
 	} else {

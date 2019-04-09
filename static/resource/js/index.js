@@ -1,7 +1,7 @@
 const router = new VueRouter({
     routes:[
         {
-            path:"/", redirect:"/home/apps"
+            path:"/", redirect:"/home/open-apps"
         },
         {
             path: "/login", component: Login, name:"login"
@@ -12,6 +12,11 @@ const router = new VueRouter({
             path: "/home",
             component: Home,
             children:[
+                {
+                    name: "open-apps",
+                    path: "open-apps",
+                    component: OpenAppsPage
+                },
                 {
                     name: "apps",
                     path: "apps",

@@ -10,7 +10,8 @@
         <div class="navbar-menu" style="margin-right:0px">
         <div class="navbar-start">
             <router-link class="navbar-item" to="/">OAUTH</router-link>
-            <router-link class="navbar-item" :to="{name:'apps'}" active-class="is-active">应用列表</router-link>
+            <router-link class="navbar-item" :to="{name:'open-apps'}" active-class="is-active">应用入口</router-link>
+            <router-link class="navbar-item" :to="{name:'apps'}" active-class="is-active">我的应用</router-link>
             <router-link class="navbar-item" :to="{name:'users'}"  v-if="isAdmin" active-class="is-active">用户列表</router-link>
         </div>
         <div class="navbar-end">

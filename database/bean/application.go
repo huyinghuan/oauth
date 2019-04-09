@@ -31,7 +31,16 @@ type ApplicationUserGroup struct {
 	User       schema.User        `xorm:"extends" json:"user"`
 }
 
-func GetApplictionList(userID int64) ([]ApplicationUserGroup, error) {
+//获取开放的应用列表
+func GetOpenApplicationList() ([]ApplicationUserGroup, error) {
+	engine := database.GetDriver()
+	list := make([]ApplicationUserGroup, 0)
+	session := engine.Table("application").Where("open = ?", true)
+	err := session.Find(&list)
+	return list, err
+}
+
+func GetApplicationList(userID int64) ([]ApplicationUserGroup, error) {
 
 	engine := database.GetDriver()
 

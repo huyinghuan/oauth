@@ -8,4 +8,5 @@ type Application struct {
 	PrivateKey string `xorm:"private_key" json:"private_key" `
 	Callback   string `xorm:"callback" json:"callback"`
 	Mode       string `xoram:"mode" json:"mode"` //运行模式
+	Open       bool   `xorm:"open" json:"open"`
 }

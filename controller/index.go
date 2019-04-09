@@ -42,7 +42,7 @@ func (c *WebIndex) Get(ctx iris.Context) {
 	}
 
 	if OpenAppRegister || isAdmin {
-		list, err := bean.GetApplictionList(uid)
+		list, err := bean.GetApplicationList(uid)
 		if err != nil {
 			log.Println(err)
 			ctx.StatusCode(500)
