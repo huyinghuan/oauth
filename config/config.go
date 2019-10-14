@@ -91,6 +91,8 @@ func readENV() {
 		resetOnRestart = strings.Replace(resetOnRestart, "\"", "", -1)
 		if resetOnRestart == "true" {
 			config.Account.ResetOnRestart = true
+		} else {
+			config.Account.ResetOnRestart = false
 		}
 	}
 
