@@ -1,0 +1,10 @@
+
+.page-login{
+    height: 100%;
+    overflow: hidden;
+    background-image: url("./images/bg.png") !important;
+    background-size: contain;
+    color: whitesmoke;
+    padding-top: 15%;
+    margin: 0;
+}
