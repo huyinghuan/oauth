@@ -6,8 +6,8 @@ import (
 	"oauth/database/bean"
 	"strings"
 
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
 )
 
 type User struct {

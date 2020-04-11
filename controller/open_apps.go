@@ -3,8 +3,8 @@ package controller
 import (
 	"oauth/database/bean"
 
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
 )
 
 func isAdmin(uid int64) bool {

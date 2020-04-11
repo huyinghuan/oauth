@@ -3,7 +3,7 @@ package middleware
 import (
 	"oauth/database/bean"
 
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 )
 
 func (m *MiddleWare) UserHaveApp(ctx iris.Context) {

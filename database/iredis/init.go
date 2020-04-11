@@ -5,7 +5,7 @@ import (
 
 	"log"
 
-	redis "gopkg.in/redis.v3"
+	redis "github.com/go-redis/redis/v7"
 )
 
 var cluster *redis.ClusterClient
