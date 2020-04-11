@@ -20,7 +20,7 @@ export const get = function(url, options){
                         duration: 3,
                     });
                 })
-                return
+                throw new Error("错误:"+resp.statusText)
             case 406:
                 resp.text().then((body)=>{
                     notification.error({

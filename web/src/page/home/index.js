@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-import {Route, Switch, useRouteMatch} from 'react-router-dom';
+import {Route, Switch, withRouter} from 'react-router-dom';
 import "./index.css"
 
 import App from "./apps"
@@ -10,9 +10,10 @@ const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 
-export default class Page extends React.Component {
+class Page extends React.Component {
     render() {
-        let { path } = useRouteMatch();
+        let path = this.props.match.path
+        console.log(path)
         return (
         <Layout className="page-home">
             <Header className="header">
@@ -98,11 +99,13 @@ export default class Page extends React.Component {
                         <Route exact path={`${path}/apps`} component={App} />
                         <Route exact path={`${path}/role`} component={Role} />
                     </Switch>
-                  
-                  
                 </Content>
               </Layout>
             </Layout>
           </Layout>)
     }
 }
+
+const p = withRouter(Page)
+
+export default p
