@@ -24,8 +24,7 @@ func GetApp() *iris.Application {
 	tmpl.Reload(true)
 
 	app.RegisterView(tmpl)
-
-	app.StaticWeb("/static/", "./static/resource")
+	app.HandleDir("/static/", "./static/resource")
 
 	//免登陆接口
 	// webIndexCtrl := controller.WebIndex{Session: session}
@@ -116,5 +115,5 @@ func GetApp() *iris.Application {
 
 func main() {
 	app := GetApp()
-	app.Run(iris.Addr(":"+config.Get().Port), iris.WithoutVersionChecker)
+	app.Run(iris.Addr(":"+config.Get().Port))
 }

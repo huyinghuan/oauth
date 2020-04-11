@@ -21,7 +21,7 @@ type DbConfig struct {
 type RedisClient struct {
 	Addr     string `yaml:"addr"`
 	Password string `yaml:"pass"`
-	DB       int64  `yaml:"db"`
+	DB       int  `yaml:"db"`
 }
 
 type RedisCluster struct {
@@ -112,7 +112,7 @@ func readENV() {
 	redisClientDB := os.Getenv("OPENAUTH_REDIS_CLIENT_DB")
 	if redisClientDB != "" {
 		redisIndex := strings.Replace(redisClientDB, "\"", "", -1)
-		config.Redis.Client.DB, _ = strconv.ParseInt(redisIndex, 10, 64)
+		config.Redis.Client.DB, _ = strconv.Atoi(redisIndex)
 	}
 
 	openRegister := os.Getenv("OPENAUTH_OPEN_REGISTER")

@@ -13,20 +13,14 @@ func SetEx(key string, value interface{}, seconds time.Duration) error {
 }
 
 func Exist(key string) bool {
-	return client.Exists(key).Val()
+	return client.Exists(key).Val() == 1
 }
 
 func Del(keys ...string) error {
-	var queue []string
 	for _, key := range keys {
-		if client.Exists(key).Val() {
-			queue = append(queue, key)
-		}
+		client.Del(key).Err()
 	}
-	if len(queue) == 0 {
-		return nil
-	}
-	return client.Del(queue...).Err()
+	return nil
 }
 
 func Get(key string) (string, error) {
@@ -34,7 +28,7 @@ func Get(key string) (string, error) {
 }
 
 func RPush(key string, values ...string) error {
-	return client.RPush(key, values...).Err()
+	return client.RPush(key, values).Err()
 }
 
 func LRange(key string, start int64, end int64) ([]string, error) {
