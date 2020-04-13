@@ -4,13 +4,14 @@ import (
 	"oauth/database/bean"
 
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
 )
 
-func (m *MiddleWare) UserHaveApp(ctx iris.Context) {
+func UserHaveApp(ctx iris.Context) {
 
 	appID, _ := ctx.Params().GetInt64("appID")
 
-	sess := m.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	currentUID, _ := sess.GetInt64("uid")
 	//如果是管理员
 	if currentUID == 0 {

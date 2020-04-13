@@ -21,9 +21,7 @@ import (
 	"github.com/kataras/iris/v12/sessions"
 )
 
-type Authorize struct {
-	Session *sessions.Sessions
-}
+type Authorize struct {}
 
 // type Scope struct {
 // 	Type    string
@@ -192,7 +190,7 @@ func (c *Authorize) Jump(ctx iris.Context) {
 		ctx.StatusCode(406)
 		return
 	}
-	sess := c.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	//用户是否已登陆
 	if _, err := sess.GetInt64("uid"); err != nil {
 		ctx.StatusCode(401)
@@ -223,7 +221,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 		return
 	}
 
-	sess := c.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	//用户是否已登陆
 	uid, err := sess.GetInt64("uid")
 	if err != nil {
@@ -306,3 +304,5 @@ func (c *Authorize) Login(ctx iris.Context) {
 	ctx.ViewData("OpenRegister", config.Get().OpenRegister)
 	ctx.View("login.html")
 }
+
+var AuthorizeCtrl Authorize

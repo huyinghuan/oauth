@@ -1,4 +1,3 @@
-import {useHistory} from 'react-router-dom'
 import {notification} from 'antd'
 
 export const get = function(url, options){
@@ -8,9 +7,15 @@ export const get = function(url, options){
             case 200:
                 break
             case 401:
-               // router.push("/login")
-                useHistory().push("/login")
-                return
+                resp.text().then((body)=>{
+                    notification.warning({
+                        message: '401',
+                        description:body||"用户未登录",
+                        placement: 'bottomRight',
+                        duration: 3,
+                    });
+                })
+                throw new Error("错误:"+resp.statusText)
             case 403:
                 resp.text().then((body)=>{
                     notification.warning({

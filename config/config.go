@@ -33,10 +33,15 @@ type Redis struct {
 	Cluster RedisCluster `yaml:"cluster"`
 }
 
+// 默认管理员
 type Account struct {
 	User           string `yaml:"user"`
 	Pass           string `yaml:"pass"`
 	ResetOnRestart bool   `yaml:"resetOnRestart"`
+}
+
+func (a Account) IsAdmin(username string) bool{
+	return a.User == username
 }
 
 type Config struct {
@@ -140,7 +145,7 @@ func readENV() {
 }
 
 //init 读取配置文件
-func init() {
+func Init() {
 	configPath := "config.yaml"
 	if os.Getenv("ProjectPWD") != "" {
 		configPath = path.Join(os.Getenv("ProjectPWD"), "config.yaml")

@@ -11,12 +11,10 @@ func isAdmin(uid int64) bool {
 	return uid == 0
 }
 
-type OpenApps struct {
-	Session *sessions.Sessions
-}
+type OpenApps struct {}
 
 func (c *OpenApps) GetList(ctx iris.Context) {
-	sess := c.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	uid, _ := sess.GetInt64("uid")
 	list, err := bean.GetOpenApplicationList()
 
@@ -31,3 +29,5 @@ func (c *OpenApps) GetList(ctx iris.Context) {
 	}
 
 }
+
+var OpenAppsCtrl OpenApps

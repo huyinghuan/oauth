@@ -12,16 +12,14 @@ import (
 	"github.com/kataras/iris/v12/sessions"
 )
 
-type App struct {
-	Session *sessions.Sessions
-}
+type App struct {}
 type appForm struct {
 	Name     string `json:"name"`
 	Callback string `json:"callback"`
 }
 
 func (c *App) GetList(ctx iris.Context) {
-	sess := c.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	//用户是否已登陆
 	uid, _ := sess.GetInt64("uid")
 	if list, err := bean.GetApplicationList(uid); err != nil {
@@ -51,7 +49,7 @@ func (c *App) Get(ctx iris.Context) {
 //app 修改
 func (c *App) Put(ctx iris.Context) {
 	id, _ := ctx.Params().GetInt64("appID")
-	sess := c.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	uid, _ := sess.GetInt64("uid")
 	form := appForm{}
 	ctx.ReadJSON(&form)
@@ -67,12 +65,11 @@ func (c *App) Put(ctx iris.Context) {
 		iredis.AppCache.SetCallback(id, uApp.Callback)
 		ctx.StatusCode(200)
 	}
-
 }
 
 // app 注册
 func (c *App) Post(ctx iris.Context) {
-	sess := c.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	username := sess.GetString("username")
 	//如果没有开放应用注册或用户不是管理员，那么就拒绝注册
 	if !config.Get().OpenRegister && username != config.Get().Account.User {
@@ -158,3 +155,5 @@ func (c *App) UpdateRunMode(ctx iris.Context) {
 	}
 
 }
+
+var AppCtrl App

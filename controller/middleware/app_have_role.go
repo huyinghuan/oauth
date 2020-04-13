@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-func (m *MiddleWare) AppHaveRole(ctx iris.Context) {
+func AppHaveRole(ctx iris.Context) {
 	appID, _ := ctx.Params().GetInt64("appID")
 	roleID, _ := ctx.Params().GetInt64("roleID")
 	exist, err := bean.Role.AppHaveRole(roleID, appID)

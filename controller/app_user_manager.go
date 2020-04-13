@@ -1,16 +1,14 @@
 package controller
 
 import (
-	"oauth/database/bean"
 	"strings"
 
+	"oauth/database/bean"
+
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/sessions"
 )
 
-type AppUserManager struct {
-	Session *sessions.Sessions
-}
+type AppUserManager struct {}
 
 type appUserPostForm struct {
 	Username string `json:"username"`
@@ -95,3 +93,5 @@ func (a *AppUserManager) GetUserInfo(ctx iris.Context) {
 	}
 	ctx.JSON(user)
 }
+
+var AppUserManagerCtrl AppUserManager

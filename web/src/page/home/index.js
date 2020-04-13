@@ -1,10 +1,13 @@
 import React from 'react';
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
 import {Route, Switch, withRouter} from 'react-router-dom';
-import "./index.css"
+import "./index.scss"
+
+import TopNav from "../../components/top-nav"
 
 import App from "./apps"
 import Role from "./role"
+
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -13,22 +16,9 @@ const { Header, Content, Sider } = Layout;
 class Page extends React.Component {
     render() {
         let path = this.props.match.path
-        console.log(path)
         return (
         <Layout className="page-home">
-            <Header className="header">
-              <div className="logo" />
-              <Menu
-                theme="dark"
-                mode="horizontal"
-                defaultSelectedKeys={['2']}
-                style={{ lineHeight: '64px' }}
-              >
-                <Menu.Item key="1">nav 1</Menu.Item>
-                <Menu.Item key="2">nav 2</Menu.Item>
-                <Menu.Item key="3">nav 3</Menu.Item>
-              </Menu>
-            </Header>
+            <TopNav />
             <Layout>
               <Sider width={200} style={{ background: '#fff' }}>
                 <Menu
@@ -41,7 +31,7 @@ class Page extends React.Component {
                     key="sub1"
                     title={
                       <span>
-                        <Icon type="user" />
+                      
                         subnav 1
                       </span>
                     }

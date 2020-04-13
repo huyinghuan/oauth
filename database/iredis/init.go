@@ -11,7 +11,7 @@ import (
 var cluster *redis.ClusterClient
 var client *redis.Client
 
-func init() {
+func Init() {
 	conf := config.Get()
 
 	// client = redis.NewClusterClient(&redis.ClusterOptions{

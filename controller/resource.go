@@ -5,19 +5,17 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
-	"oauth/auth"
-	"oauth/database/iredis"
-	"oauth/logger"
 	"strings"
 	"time"
 
+	"oauth/auth"
+	"oauth/database/iredis"
+	"oauth/logger"
+
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/sessions"
 )
 
-type Resource struct {
-	Session *sessions.Sessions
-}
+type Resource struct {}
 type resourceAccountForm struct {
 	Timestamp int64  `json:"timestamp"`
 	Token     string `json:"token"`
@@ -83,3 +81,4 @@ func (c *Resource) GetAccount(ctx iris.Context) {
 	}
 	ctx.WriteString(encryptBody)
 }
+var ResourceCtrl Resource

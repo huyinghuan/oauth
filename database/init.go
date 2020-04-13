@@ -59,7 +59,7 @@ func initAdmin(username string, password string, resetOnRestart bool) error {
 }
 
 // InitDriver 初始化数据库链接
-func init() {
+func InitDriver() {
 	conf := config.Get()
 	var connectErr error
 	engine, connectErr = xorm.NewEngine(conf.Db.Driver, conf.Db.Connect)
@@ -83,6 +83,11 @@ func init() {
 	if conf.RedisCacheFromDB {
 		initAppIDMapToClientID()
 	}
+}
+
+func InitAll(){
+	iredis.Init()
+	InitDriver()
 }
 
 // GetDriver 获取数据库链接

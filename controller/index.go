@@ -14,7 +14,7 @@ type WebIndex struct {
 }
 
 func (c *WebIndex) Get(ctx iris.Context) {
-	sess := c.Session.Start(ctx)
+	sess := sessions.Get(ctx)
 	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	ctx.Header("Pragma", "no-cache")
 	ctx.Header("Expires", "0")

@@ -35,7 +35,7 @@ class NormalLoginForm extends React.Component {
 
 class Page extends React.Component {
   onFinish(values){
-    GetData('/user/login', {
+    GetData('/user-status', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -43,7 +43,6 @@ class Page extends React.Component {
       },
       body: JSON.stringify(values)
     }).then((resp) => {
-      console.log(this.props)
       this.props.history.push("/home/apps")
     }).catch((e)=>{console.log(e)})
   };

@@ -1,20 +1,24 @@
 package main
 
 import (
+	"time"
+
 	"oauth/config"
 	"oauth/controller"
 	"oauth/controller/middleware"
-	_ "oauth/database"
+	"oauth/database"
 
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/core/router"
 	"github.com/kataras/iris/v12/sessions"
 )
 
 var (
 	cookieNameForSessionID = "mgtv-oauth-sessionid"
-	session                = sessions.New(sessions.Config{
-		Cookie: cookieNameForSessionID,
-		//Expires: 45 * time.Minute, // <=0 means unlimited life
+	session               = sessions.New(sessions.Config{
+		Cookie:  cookieNameForSessionID,
+		Expires: 30 * time.Minute, // <=0 means unlimited life
+		AllowReclaim: true,
 	})
 )
 
@@ -31,68 +35,65 @@ func GetApp() *iris.Application {
 	// app.Get("/", webIndexCtrl.Get)
 	app.Get("/", func(ctx iris.Context) { ctx.View("index.html") })
 	//用户管理
-	middle := middleware.MiddleWare{Session: session}
 
 	//以下为第三方调用接口
-	authorizeCtrl := controller.Authorize{Session: session}
 	app.PartyFunc("/authorize", func(u iris.Party) {
-		u.Get("/", authorizeCtrl.Get)
+		u.Get("/", controller.AuthorizeCtrl.Get)
 		//权限校验
-		u.Post("/", authorizeCtrl.Verify)
+		u.Post("/", controller.AuthorizeCtrl.Verify)
 		//接口跳转
-		u.Post("/jump", authorizeCtrl.Jump)
+		u.Post("/jump", controller.AuthorizeCtrl.Jump)
 
-		u.Get("/login", authorizeCtrl.Login)
+		u.Get("/login", controller.AuthorizeCtrl.Login)
 	})
-	resourceCtrl := controller.Resource{Session: session}
 	app.PartyFunc("/resource", func(u iris.Party) {
-		u.Post("/account", resourceCtrl.GetAccount)
+		u.Post("/account", controller.ResourceCtrl.GetAccount)
 	})
 
 	//数据接口
-	userCtrl := controller.User{Session: session}
-	appCtrl := controller.App{Session: session}
-	openAppsCtrl := controller.OpenApps{Session: session}
-	appUserMangerCtrl := controller.AppUserManager{Session: session}
+	API := app.Party("/api", session.Handler(), middleware.UserAuth)
 
-	API := app.Party("/api", middle.UserAuth)
+	API.PartyFunc("/user-status", func(u router.Party) {
+		u.Get("/", controller.UserStatusCtrl.Get)
+		u.Post("/", func(ctx iris.Context) {controller.UserStatusCtrl.Post(ctx, session)})
+		u.Delete("/", controller.UserStatusCtrl.Delete)
+	})
+
 	API.PartyFunc("/user", func(u iris.Party) {
-		u.Get("/", userCtrl.GetLoginUserInfo)
-		u.Get("/info/{id:long}", userCtrl.GetAnyOneInfo)
-		u.Get("/list", userCtrl.GetList)
-		u.Post("/login", userCtrl.Login)
-		u.Delete("/logout", userCtrl.Logout)
+		u.Get("/info/{id:long}", controller.UserCtrl.GetAnyOneInfo)
+		u.Get("/list", controller.UserCtrl.GetList)
+
 		//注册
-		u.Post("/register", userCtrl.Post)
-		u.Put("/password", userCtrl.ResetPassword)
-		u.Put("/password/{uid:long}", userCtrl.ResetPassword4Admin)
-		u.Delete("/{uid:long}", userCtrl.DeleteUser)
+		u.Post("/register", controller.UserCtrl.Post)
+		u.Put("/password", controller.UserCtrl.ResetPassword)
+		u.Put("/password/{uid:long}", controller.UserCtrl.ResetPassword4Admin)
+		u.Delete("/{uid:long}", controller.UserCtrl.DeleteUser)
 	})
 
 	//获取所有注册的app列表
 	API.PartyFunc("/open-apps", func(u iris.Party) {
-		u.Get("/", openAppsCtrl.GetList)
+		u.Get("/", controller.OpenAppsCtrl.GetList)
 	})
 
 	API.PartyFunc("/app", func(u iris.Party) {
-		u.Get("/", appCtrl.GetList)
-		u.Post("/register", appCtrl.Post)
+		u.Get("/", controller.AppCtrl.GetList)
+		u.Post("/register", controller.AppCtrl.Post)
 	})
-	application := API.Party("/app/{appID:long}", middle.UserHaveApp)
+	application := API.Party("/app/{appID:long}", middleware.UserHaveApp)
 	application.PartyFunc("/", func(u iris.Party) {
-		u.Get("/", appCtrl.Get)
-		u.Delete("/", appCtrl.Delete)
-		u.Put("/", appCtrl.Put)
-		u.Patch("/user_mode/{mode:string}", appCtrl.UpdateRunMode)
+		u.Get("/", controller.AppCtrl.Get)
+		u.Delete("/", controller.AppCtrl.Delete)
+		u.Put("/", controller.AppCtrl.Put)
+		u.Patch("/user_mode/{mode:string}", controller.AppCtrl.UpdateRunMode)
 	})
 
 	//黑白名单
 	application.PartyFunc("/user", func(u iris.Party) {
-		u.Get("/", appUserMangerCtrl.Get)
-		u.Post("/", appUserMangerCtrl.Post)
-		u.Delete("/{id: long}", appUserMangerCtrl.Delete)
-		u.Get("/{id: long}/info", appUserMangerCtrl.GetUserInfo)
-		u.Put("/{id:long}/role", appUserMangerCtrl.UpdateUserRole)
+		u.Get("/", controller.AppUserManagerCtrl.Get)
+		u.Post("/", controller.AppUserManagerCtrl.Post)
+		u.Delete("/{id: long}", controller.AppUserManagerCtrl.Delete)
+		u.Get("/{id: long}/info", controller.AppUserManagerCtrl.GetUserInfo)
+		u.Put("/{id:long}/role", controller.AppUserManagerCtrl.UpdateUserRole)
 	})
 
 	//应用角色
@@ -105,7 +106,7 @@ func GetApp() *iris.Application {
 	})
 
 	permissionCtrl := controller.AppRolePermission{Session: session}
-	RolePermission := application.Party("/role/{roleID:long}/permission", middle.AppHaveRole)
+	RolePermission := application.Party("/role/{roleID:long}/permission", middleware.AppHaveRole)
 	RolePermission.Get("/", permissionCtrl.Get)
 	RolePermission.Post("/", permissionCtrl.Post)
 	RolePermission.Delete("/{id:long}", permissionCtrl.Delete)
@@ -114,6 +115,8 @@ func GetApp() *iris.Application {
 }
 
 func main() {
+	config.Init()
+	database.InitAll()
 	app := GetApp()
-	app.Run(iris.Addr(":"+config.Get().Port))
+	app.Run(iris.Addr(":" + config.Get().Port))
 }

@@ -12,9 +12,9 @@ function App() {
       <Route path="/home">
         <Home />
       </Route>
-      {/* <Route strict path="/">
+      <Route exact path="/">
         <Redirect to="/home"/>
-      </Route> */}
+      </Route>
     </Router>
   );
 }

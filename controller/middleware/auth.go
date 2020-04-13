@@ -6,30 +6,20 @@ import (
 	"github.com/kataras/iris/v12/sessions"
 )
 
-type MiddleWare struct {
-	Session *sessions.Sessions
-}
 
-func (m *MiddleWare) UserAuth(ctx context.Context) {
+func UserAuth(ctx context.Context) {
 	switch ctx.Path() {
-	//登陆请求跳过
-	case "/api/user/login":
+	// 登陆请求跳过
+	case "/api/user-status", "/api/user/register":
 		ctx.Next()
-		break
-	case "/api/user/logout":
-		ctx.Next()
-		break
-	case "/api/user/register":
-		ctx.Next()
-		break
 	default:
-		sess := m.Session.Start(ctx)
+		sess := sessions.Get(ctx)
 		username := sess.GetString("username")
 		if username == "" {
 			ctx.StatusCode(401)
+			ctx.WriteString("用户未登录")
 			return
 		}
 		ctx.Next()
 	}
-
 }
