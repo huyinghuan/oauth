@@ -51,7 +51,9 @@ func GetApp() *iris.Application {
 	})
 
 	//数据接口
-	API := app.Party("/api", session.Handler(), middleware.UserAuth)
+	API := app.Party("/api", session.Handler(), func(context iris.Context) {
+		middleware.UserAuth(context, session)
+	})
 
 	API.PartyFunc("/user-status", func(u router.Party) {
 		u.Get("/", controller.UserStatusCtrl.Get)

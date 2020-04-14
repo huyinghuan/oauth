@@ -43,7 +43,7 @@ class Page extends React.Component {
       },
       body: JSON.stringify(values)
     }).then((resp) => {
-      this.props.history.push("/home/apps")
+      this.props.history.push("/home/appList")
     }).catch((e)=>{console.log(e)})
   };
   onFinishFailed(errorInfo) {

@@ -4,7 +4,7 @@ import { UserOutlined,  LogoutOutlined, ReloadOutlined} from '@ant-design/icons'
 import { get as GetData } from '../service'
 import { withRouter } from 'react-router-dom';
 
-const { Header } = Layout;
+const { Header} = Layout;
 const { Title } = Typography;
 const {SubMenu} = Menu;
 
@@ -42,6 +42,7 @@ class Component extends React.Component{
                 break
             case "resetPassword":
                 break
+            default:
         }
     }
     render(){
