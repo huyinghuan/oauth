@@ -1,7 +1,7 @@
 import React from 'react';
 import { get as GetData } from '../../../service'
 import {Route, Switch, withRouter, Link} from 'react-router-dom';
-import { Table, Button } from 'antd';
+import { Table, Button, Popconfirm } from 'antd';
 
 import { TeamOutlined, FormOutlined, DeleteOutlined, EyeOutlined} from '@ant-design/icons';
 
@@ -46,7 +46,9 @@ class Page extends React.Component {
                 let userManagerHref = [this.props.match.path, record.application.id, "userManager"].join("/")
                 return (
                     <div className="custom-btn-group">
-                        <Button danger icon={<DeleteOutlined />}>删除</Button>
+                        <Popconfirm placement="topLeft" title="确认删除该应用?" onConfirm={()=>{this.delApp(record.application.id)}} okText="Yes" cancelText="No">
+                            <Button danger icon={<DeleteOutlined />}  >删除</Button>
+                        </Popconfirm>
                         <Button icon={<FormOutlined />} type="primary" onClick={()=>{this.goto(editHref)}}>编辑</Button>
                         <Button icon={<TeamOutlined/>} onClick={()=>{this.goto(userManagerHref)}}>用户管理</Button>
                     </div>
@@ -54,21 +56,17 @@ class Page extends React.Component {
             }
         }
     ]
-    showPrivateKey(key){
-
+    delApp(key){
+        console.log(key)
+        GetData(`/app/${key}`,{ method: "DELETE" }).then(()=>{
+            this.loadData()
+        })
     }
     goto(href){
         this.props.history.push(href)
     }
     loadData(){
         GetData("/app").then((data)=>{
-
-            let item = Object.assign({}, data[0])
-            for(let i = 0; i < 20; i++){
-                item.application.id="xxxx"+i
-                data.push(item)
-            }
-
             this.setState({dataSource: data, loading: false})
         }).catch((e)=>{
             this.setState({loading: false})

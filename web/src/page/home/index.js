@@ -7,7 +7,7 @@ import TopNav from "../../components/top-nav"
 import SideNav from "../../components/side-nav"
 
 import App from "./apps/list"
-import Role from "./role"
+import AppEdit from "./apps/edit"
 
 
 const { Content } = Layout;
@@ -56,8 +56,9 @@ class Page extends React.Component {
                   }}
                 >
                     <Switch>
+                        <Route exact path={`${path}/appList/:appId`} component={AppEdit} />
                         <Route exact path={`${path}/appList`} component={App} />
-                        <Route exact path={`${path}/role`} component={Role} />
+                        {/* <Route exact path={`${path}/role`} component={Role} /> */}
                     </Switch>
                 </Content>
               </Layout>
