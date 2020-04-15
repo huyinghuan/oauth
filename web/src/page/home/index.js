@@ -29,7 +29,6 @@ class Page extends React.Component {
     render() {
         let path = this.props.match.path
         let pathList = this.props.history.location.pathname.split("/").filter(i => i)
- 
         return (
         <Layout className="page-home">
             <TopNav />
@@ -41,7 +40,7 @@ class Page extends React.Component {
                     const url = `/${pathList.slice(0, index + 1).join('/')}`;
                     return (
                       <Breadcrumb.Item key={url}>
-                        { index !== 0 && ~~pathname == 0 ? (<Link to={url}>{getBreadcrumbName(pathname)}</Link>) : breadcrumbNameMap[pathname]}
+                        { index !== 0 && ~~pathname === 0 ? (<Link to={url}>{getBreadcrumbName(pathname)}</Link>) : breadcrumbNameMap[pathname]}
                       </Breadcrumb.Item>
                     )
                   })}
@@ -56,8 +55,13 @@ class Page extends React.Component {
                   }}
                 >
                     <Switch>
-                        <Route exact path={`${path}/appList/:appId`} component={AppEdit} />
+                        <Route exact path={`${path}/appList/:appId`}>
+                          <AppEdit />
+                        </Route>
                         <Route exact path={`${path}/appList`} component={App} />
+                        <Route exact path={`${path}/appRegister`}>
+                          <AppEdit  />
+                        </Route>
                         {/* <Route exact path={`${path}/role`} component={Role} /> */}
                     </Switch>
                 </Content>

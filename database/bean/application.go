@@ -109,6 +109,7 @@ func UpdateApplication(id int64, uid int64, app *schema.Application) (*schema.Ap
 	}
 	findApp.Callback = app.Callback
 	findApp.Name = app.Name
+	findApp.Open = app.Open
 	_, err = engine.ID(id).Update(&findApp)
 	if err == nil {
 		iredis.AppCache.SetAll(id, findApp.PrivateKey, findApp.Callback, findApp.Mode)

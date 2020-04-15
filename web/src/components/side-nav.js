@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu, Layout } from 'antd';
 import { AppstoreOutlined, UnorderedListOutlined, AppstoreAddOutlined,
-    TeamOutlined, UserOutlined, UserAddOutlined } from '@ant-design/icons';
+    TeamOutlined, UserOutlined, UserAddOutlined, HomeOutlined } from '@ant-design/icons';
 
 import { withRouter } from 'react-router-dom';
 
@@ -16,13 +16,21 @@ class Component extends React.Component{
         this.props.history.push(queue.join("/"))
     }
     render(){
+        let arr =  this.props.history.location.pathname.split("/")
+        let key = ""
+        if(arr.length == 2){
+          key = arr[1]
+        }else if(arr.length > 1){
+          key = arr[2]
+        }
         return (
             <Sider width={200} style={{ background: '#fff' }}>
                 <Menu mode="inline"
                     onClick={(item, key)=>{this.menuClick(item, key)}}
-                    defaultSelectedKeys={['appList']}
-                    defaultOpenKeys={['apps']}
+                    defaultSelectedKeys={[key]}
+                    defaultOpenKeys={['apps', "users"]}
                     style={{ height: '100%', borderRight: 0 }}>
+                  <Menu.Item key="home"><span><span><HomeOutlined/></span>主页</span></Menu.Item>
                   <SubMenu key="apps" title={<span><span><AppstoreOutlined/></span>应用管理</span>}>
                     <Menu.Item key="appList"><span><span><UnorderedListOutlined/></span>列表</span></Menu.Item>
                     <Menu.Item key="appRegister"><span><span><AppstoreAddOutlined/></span>注册</span></Menu.Item>
