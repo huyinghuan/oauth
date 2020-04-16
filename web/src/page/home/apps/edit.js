@@ -35,7 +35,9 @@ class Page extends React.Component{
         }
         GetData(`/app/${this.props.match.params.appId}`, {method:"GET"}).then((data)=>{
            this.formRef.current.setFieldsValue(data)
-        }).catch((e)=>{})
+        }).catch((e)=>{
+            this.formRef.current.resetFields()
+        })
     }
     onFinish(v){
         let api = "/app"
@@ -67,9 +69,13 @@ class Page extends React.Component{
     componentDidUpdate(){
         console.log(this.props.match.url)
         let data = this.getStateData()
-        if(this.state.appId != data.appId){
+        // 有编辑页面 -> 创建页面
+        if(!data.appId && this.state.appId != data.appId){
             this.formRef.current.resetFields()
             this.setState(data)
+            // 编辑A -> 编辑 B
+        }else if(data.appId && this.state.appId != data.appId){
+            this.loadData(data.isEdit)
         }
     }
     render(){

@@ -32,12 +32,12 @@ class Component extends React.Component{
                     style={{ height: '100%', borderRight: 0 }}>
                   <Menu.Item key="home"><span><span><HomeOutlined/></span>主页</span></Menu.Item>
                   <SubMenu key="apps" title={<span><span><AppstoreOutlined/></span>应用管理</span>}>
-                    <Menu.Item key="appList"><span><span><UnorderedListOutlined/></span>列表</span></Menu.Item>
-                    <Menu.Item key="appRegister"><span><span><AppstoreAddOutlined/></span>注册</span></Menu.Item>
+                    <Menu.Item key="appList"><span><span><UnorderedListOutlined/></span>应用列表</span></Menu.Item>
+                    <Menu.Item key="appRegister"><span><span><AppstoreAddOutlined/></span>应用注册</span></Menu.Item>
                   </SubMenu>
                   <SubMenu key="users" title={<span><span> <UserOutlined /></span>用户管理</span>}>
-                    <Menu.Item key="usersList"><span><span><TeamOutlined/></span>列表</span></Menu.Item>
-                    <Menu.Item key="usersRegister"><span><span><UserAddOutlined/></span>注册</span></Menu.Item>
+                    <Menu.Item key="usersList"><span><span><TeamOutlined/></span>用户列表</span></Menu.Item>
+                    <Menu.Item key="usersRegister"><span><span><UserAddOutlined/></span>用户注册</span></Menu.Item>
                   </SubMenu>
                 </Menu>
               </Sider>

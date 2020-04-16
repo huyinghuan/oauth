@@ -40,7 +40,7 @@ class Page extends React.Component {
                     const url = `/${pathList.slice(0, index + 1).join('/')}`;
                     return (
                       <Breadcrumb.Item key={url}>
-                        { index !== 0 && ~~pathname === 0 ? (<Link to={url}>{getBreadcrumbName(pathname)}</Link>) : breadcrumbNameMap[pathname]}
+                        { index !== 0 && ~~pathname === 0 ? (<Link to={url}>{getBreadcrumbName(pathname)}</Link>) : getBreadcrumbName(pathname)}
                       </Breadcrumb.Item>
                     )
                   })}
