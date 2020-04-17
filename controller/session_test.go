@@ -1,19 +1,14 @@
 package controller
 
 import (
-  "os"
   "testing"
   "time"
 
-  "github.com/kataras/iris/v12"
   "github.com/kataras/iris/v12/httptest"
-  "github.com/kataras/iris/v12/sessions"
 )
 
-var app *iris.Application
-var cookieName = "mycustomsessionid"
 
-
+/*
 func TestMain(m *testing.M){
   // config.Init()
   // database.InitAll()
@@ -57,7 +52,7 @@ func TestMain(m *testing.M){
   exit := m.Run()
   os.Exit(exit)
 }
-
+*/
 func TestFirstPostWillFail(t *testing.T){
   e := httptest.New(t, app, httptest.URL("http://example.com"))
   t.Run("Post Set expire", func(t *testing.T){

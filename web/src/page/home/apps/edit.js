@@ -3,7 +3,6 @@ import { get as GetData } from '../../../service'
 import { withRouter } from 'react-router-dom';
 import { Button, Form, Layout, Input, Typography, Switch, notification} from 'antd';
 
-import { TeamOutlined, FormOutlined, DeleteOutlined, EyeOutlined} from '@ant-design/icons';
 
 const { Title } = Typography;
 const {Content} = Layout
@@ -70,11 +69,11 @@ class Page extends React.Component{
         console.log(this.props.match.url)
         let data = this.getStateData()
         // 有编辑页面 -> 创建页面
-        if(!data.appId && this.state.appId != data.appId){
+        if(!data.appId && this.state.appId !== data.appId){
             this.formRef.current.resetFields()
             this.setState(data)
             // 编辑A -> 编辑 B
-        }else if(data.appId && this.state.appId != data.appId){
+        }else if(data.appId && this.state.appId !== data.appId){
             this.loadData(data.isEdit)
         }
     }

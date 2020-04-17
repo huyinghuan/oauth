@@ -26,7 +26,8 @@ class Component extends React.Component{
                 isLogin: true
             })
         }catch(e){
-            this.props.history.push("/login")
+            const {location} = this.props.history
+            this.props.history.push(`/login?goback=${encodeURIComponent(location.pathname+location.search)}`)
         }
     }
     signOut(){
@@ -41,6 +42,7 @@ class Component extends React.Component{
                 this.signOut()
                 break
             case "resetPassword":
+                this.props.history.push("/home/password-reset")
                 break
             default:
         }

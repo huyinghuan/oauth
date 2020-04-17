@@ -8,6 +8,18 @@ import { NavLink, withRouter} from "react-router-dom"
 import "./index.css"
 
 class NormalLoginForm extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      openRegister: false
+    }
+  }
+  componentDidMount(){
+    GetData("/open-register").then((data)=>{
+      this.setState({openRegister: data.open})
+    }).catch((e)=>{})
+  }
+  
   render() {
     return (
       <Form onFinish={this.props.onFinish}
@@ -24,8 +36,11 @@ class NormalLoginForm extends React.Component {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">登录</Button>
-          <Button type="link"><NavLink to="/users">忘记密码?</NavLink></Button>
-          <Button type="link"><NavLink to="/users">注册</NavLink></Button>
+          <Button type="link" onClick={()=>{alert("请联系管理员")}}>忘记密码?</Button>
+          {
+            this.state.openRegister ? (<Button type="link"><NavLink to="/register">注册</NavLink></Button>) : null
+          }
+          
         </Form.Item>
       </Form>
     );
@@ -34,6 +49,18 @@ class NormalLoginForm extends React.Component {
 // const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(NormalLoginForm);
 
 class Page extends React.Component {
+  getBackURL(){
+    const {search} = this.props.location
+    if(!search){
+      return
+    }
+    if(URLSearchParams){
+      const searchParams = new URLSearchParams(search.substring(1))
+      return searchParams.get("goback")
+    }
+    return ""
+
+  }
   onFinish(values){
     GetData('/user-status', {
       method: 'POST',
@@ -43,7 +70,12 @@ class Page extends React.Component {
       },
       body: JSON.stringify(values)
     }).then((resp) => {
-      this.props.history.push("/home/appList")
+      let backUrl = "/home/appList"
+      let shouldBack = this.getBackURL()
+      if(shouldBack){
+        backUrl = shouldBack
+      }
+      this.props.history.push(backUrl)
     }).catch((e)=>{console.log(e)})
   };
   onFinishFailed(errorInfo) {

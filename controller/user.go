@@ -13,6 +13,15 @@ import (
 
 type User struct {}
 
+
+// 是否开放用户注册
+//用户注册
+func (c *User) IsOpenRegister(ctx iris.Context) {
+	ctx.JSON(map[string]bool{
+		"open": config.Get().OpenRegister,
+	})
+}
+
 //用户注册
 func (c *User) Post(ctx iris.Context) {
 	sess := sessions.Get(ctx)
@@ -48,7 +57,7 @@ type PassResetForm struct {
 
 func (c *User) GetList(ctx iris.Context) {
 	sess := sessions.Get(ctx)
-	//用户是否已登陆
+	// 用户是否已登陆
 	uid, _ := sess.GetInt64("uid")
 
 	if uid == 0 {
@@ -121,7 +130,7 @@ func (c *User) ResetPassword4Admin(ctx iris.Context) {
 
 	form := map[string]string{}
 	ctx.ReadJSON(&form)
-	newPassword, ok := form["password"]
+	newPassword, ok := form["newPassword"]
 	if !ok || newPassword == "" {
 		ctx.StatusCode(406)
 		return

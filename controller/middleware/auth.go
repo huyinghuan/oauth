@@ -13,7 +13,7 @@ func UserAuth(ctx context.Context, session *sessions.Sessions) {
 	session.UpdateExpiration(ctx, 30 * time.Minute)
 	switch ctx.Path() {
 	// 登陆请求跳过
-	case "/api/user-status", "/api/user/register":
+	case "/api/user-status", "/api/user/register", "/api/open-register":
 		ctx.Next()
 	default:
 		sess := sessions.Get(ctx)

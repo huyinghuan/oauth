@@ -8,17 +8,20 @@ import SideNav from "../../components/side-nav"
 
 import App from "./apps/list"
 import AppEdit from "./apps/edit"
-
+import User from "./user/list"
+import PasswordReset from "./user/password-reset"
+import Register from './user/register'
 
 const { Content } = Layout;
 
 const breadcrumbNameMap = {
-  "appList": "应用列表",
+  "app": "应用列表",
   "home": "首页",
-  "appRegister": "应用注册",
-  "usersList":"用户列表",
-  "usersRegister":"用户注册",
-  "userManager": "用户管理"
+  "app-register": "应用注册",
+  "user":"用户列表",
+  "user-register":"用户注册",
+  "userManager": "用户管理",
+  "password-reset":"密码重置"
 }
 
 function getBreadcrumbName(name){
@@ -55,13 +58,13 @@ class Page extends React.Component {
                   }}
                 >
                     <Switch>
-                        <Route exact path={`${path}/appList/:appId`}>
-                          <AppEdit />
-                        </Route>
-                        <Route exact path={`${path}/appList`} component={App} />
-                        <Route exact path={`${path}/appRegister`}>
-                          <AppEdit  />
-                        </Route>
+                        <Route exact path={`${path}/app/:appId`} component={AppEdit}/>
+                        <Route exact path={`${path}/app`} component={App} />
+                        <Route exact path={`${path}/app-register`}  component={AppEdit} />
+                        <Route exact path={`${path}/user`} component={User} />
+                        <Route exact path={`${path}/user-register`} component={Register} />
+                        <Route exact path={`${path}/user/:id/password-reset`} component={PasswordReset}/>
+                        <Route exact path={`${path}/password-reset`} component={PasswordReset}/>
                         {/* <Route exact path={`${path}/role`} component={Role} /> */}
                     </Switch>
                 </Content>

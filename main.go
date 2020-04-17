@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"oauth/config"
 	"oauth/controller"
 	"oauth/controller/middleware"
@@ -17,7 +15,7 @@ var (
 	cookieNameForSessionID = "mgtv-oauth-sessionid"
 	session               = sessions.New(sessions.Config{
 		Cookie:  cookieNameForSessionID,
-		Expires: 30 * time.Minute, // <=0 means unlimited life
+		Expires:  0, // <=0 means unlimited life
 		AllowReclaim: true,
 	})
 )
@@ -55,6 +53,8 @@ func GetApp() *iris.Application {
 		middleware.UserAuth(context, session)
 	})
 
+	API.Get("/open-register",  controller.UserCtrl.IsOpenRegister)
+
 	API.PartyFunc("/user-status", func(u router.Party) {
 		u.Get("/", controller.UserStatusCtrl.Get)
 		u.Post("/", func(ctx iris.Context) {controller.UserStatusCtrl.Post(ctx, session)})
@@ -63,13 +63,14 @@ func GetApp() *iris.Application {
 
 	API.PartyFunc("/user", func(u iris.Party) {
 		u.Get("/info/{id:long}", controller.UserCtrl.GetAnyOneInfo)
-		u.Get("/list", controller.UserCtrl.GetList)
+		u.Get("/", controller.UserCtrl.GetList)
+		u.Delete("/{uid:long}", controller.UserCtrl.DeleteUser)
 
 		//注册
 		u.Post("/register", controller.UserCtrl.Post)
 		u.Put("/password", controller.UserCtrl.ResetPassword)
-		u.Put("/password/{uid:long}", controller.UserCtrl.ResetPassword4Admin)
-		u.Delete("/{uid:long}", controller.UserCtrl.DeleteUser)
+		u.Put("/{uid:long}/password", controller.UserCtrl.ResetPassword4Admin)
+
 	})
 
 	//获取所有注册的app列表

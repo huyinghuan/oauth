@@ -1,7 +1,22 @@
 import {notification} from 'antd'
 
-export const get = function(url, options){
+export const get = function(url, options, body){
     url = "/api" + url
+    if(!options){
+        options = {}
+    }
+    if(!options.method){
+        options.method = "GET"
+    }
+    if(!options.headers && options.method === "POST"){
+        options.headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }
+    if(body && !options.body){
+        options.body = JSON.stringify(body)
+    }
     return fetch(url, options).then((resp)=>{
         switch(resp.status){
             case 200:
