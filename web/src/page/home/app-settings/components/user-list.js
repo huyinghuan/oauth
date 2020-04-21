@@ -55,7 +55,7 @@ export default class Components extends React.Component{
               
                 return (
                     <div>
-                        <Popconfirm placement="topLeft" title="确认从名单中删除该用户?" onConfirm={()=>{this.del(record.id)}} okText="Yes" cancelText="No">
+                        <Popconfirm placement="topLeft" title="确认从名单中删除该用户?" onConfirm={()=>{this.del(record.appUser.id)}} okText="Yes" cancelText="No">
                             <Button danger icon={<DeleteOutlined />} type="link"  >删除</Button>
                         </Popconfirm>
                         <Button icon={<FormOutlined />} type="link" onClick={()=>{}}>分配角色</Button>

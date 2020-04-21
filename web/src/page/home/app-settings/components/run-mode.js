@@ -13,17 +13,9 @@ export default class Components extends React.Component{
             "white": "白名单",
             "black": "黑名单"
         }
-       // this.state = {roleList: this.props.roleList}
-
+        this.formRef = React.createRef()
     }
     componentDidMount(){
-       // this.loadRoles()
-    }
-    loadRoles(){
-        GetData(`/app/${this.props.appId}/role`).then((data)=>{
-            data = data || []
-            this.setState({roleList: data})
-        }).catch(()=>{})
     }
 
     updateAppRunMode(m){
@@ -52,6 +44,17 @@ export default class Components extends React.Component{
             }
         });
     }
+    addUserToCategoryList(v){
+        console.log(v)
+        GetData(`/app/${this.props.appId}/user`,{method: 'POST'}, v).then(()=>{
+            notification.success({
+                message: '操作成功',
+                placement: 'topRight',
+                duration: 3,
+            });
+            this.formRef.current.resetFields()
+        });
+    }
     render(){
         return(<>
               <Form>
@@ -62,18 +65,22 @@ export default class Components extends React.Component{
                         </Radio.Group>
                     </Form.Item>
                 </Form>
-                <Form layout="inline">
-                    <Form.Item label="用户">
+                <Form layout="inline" 
+                    onFinish={(v)=>{this.addUserToCategoryList(v)}}
+                    initialValues={{category:"white", role_id:0}}
+                    ref={this.formRef}
+                    >
+                    <Form.Item label="用户" name="username" rules={[{ required: true, message: '用户不能为空' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item >
-                        <Select defaultValue="white" style={{ width: 120 }}>
+                    <Form.Item  name="category">
+                        <Select style={{ width: 120 }}>
                             <Option value="white">白名单</Option>
                             <Option value="black">黑名单</Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item>
-                        <Select defaultValue={0} style={{ width: 120 }}>
+                    <Form.Item  name="role_id">
+                        <Select  style={{ width: 120 }} >
                             <Option value={0}>默认角色</Option>
                             {this.props.roleList.map((item)=>{
                                 return (<Option value={item.id} key={item.id}>{item.name}</Option>)
