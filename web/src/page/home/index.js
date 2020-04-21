@@ -8,6 +8,7 @@ import SideNav from "../../components/side-nav"
 
 import App from "./apps/list"
 import AppEdit from "./apps/edit"
+import AppSetting from './app-settings/index'
 import User from "./user/list"
 import PasswordReset from "./user/password-reset"
 import Register from './user/register'
@@ -20,8 +21,11 @@ const breadcrumbNameMap = {
   "app-register": "应用注册",
   "user":"用户列表",
   "user-register":"用户注册",
-  "userManager": "用户管理",
-  "password-reset":"密码重置"
+  "app-settings": "权限配置",
+  "password-reset":"密码重置",
+  "app-role":"角色",
+  "app-black":"黑名单",
+  "app-white":"白名单",
 }
 
 function getBreadcrumbName(name){
@@ -58,8 +62,10 @@ class Page extends React.Component {
                   }}
                 >
                     <Switch>
-                        <Route exact path={`${path}/app/:appId`} component={AppEdit}/>
                         <Route exact path={`${path}/app`} component={App} />
+                        <Route exact path={`${path}/app/:appId`} component={AppEdit}/>
+                        <Route path={`${path}/app/:appId/app-settings`} component={AppSetting}/>
+                        <Route exact path={`${path}/app/:appId/role`} component={AppEdit}/>
                         <Route exact path={`${path}/app-register`}  component={AppEdit} />
                         <Route exact path={`${path}/user`} component={User} />
                         <Route exact path={`${path}/user-register`} component={Register} />

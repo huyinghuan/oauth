@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
-
 import Login from './page/login'
 import Register from './page/register'
 import Home from './page/home'
@@ -18,5 +17,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

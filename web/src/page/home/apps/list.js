@@ -3,7 +3,7 @@ import { get as GetData } from '../../../service'
 import { withRouter } from 'react-router-dom';
 import { Table, Button, Popconfirm } from 'antd';
 
-import { TeamOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import { SettingOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 
 
 class Page extends React.Component {
@@ -53,14 +53,14 @@ class Page extends React.Component {
             width: 320,
             render:(text, record)=>{
                 let editHref = [this.props.match.path, record.application.id].join("/")
-                let userManagerHref = [this.props.match.path, record.application.id, "userManager"].join("/")
+                let settingHref = [this.props.match.path, record.application.id, "app-settings"].join("/")
                 return (
                     <div>
                         <Popconfirm placement="topLeft" title="确认删除该应用?" onConfirm={()=>{this.delApp(record.application.id)}} okText="Yes" cancelText="No">
                             <Button danger icon={<DeleteOutlined />} type="link"  >删除</Button>
                         </Popconfirm>
                         <Button icon={<FormOutlined />} type="link" onClick={()=>{this.goto(editHref)}}>编辑</Button>
-                        <Button icon={<TeamOutlined/>} type="link" onClick={()=>{this.goto(userManagerHref)}}>用户管理</Button>
+                        <Button icon={<SettingOutlined />} type="link" onClick={()=>{this.goto(settingHref)}}>权限配置</Button>
                     </div>
                 )
             }

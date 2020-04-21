@@ -1,11 +1,10 @@
 import React from 'react';
 import { get as GetData } from '../../../service'
 import { withRouter } from 'react-router-dom';
-import { Button, Form, Layout, Input, Typography, Modal, notification} from 'antd';
+import { Button, Form, Layout, Input, Modal, notification} from 'antd';
 
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
-const { Title } = Typography;
 const {Content} = Layout
 
 
@@ -13,7 +12,9 @@ const {Content} = Layout
 class Page extends React.Component{
     formRef = React.createRef();
 
-
+    componentWillUnmount(){
+        Modal.destroyAll()
+    }
     onFinish(v){
         let api = "/user/password"
         let uid = this.props.match.params.id
