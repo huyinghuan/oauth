@@ -11,7 +11,6 @@ const EditableCell = ({
     editing,
     dataIndex,
     title,
-    inputType,
     record,
     index,
     children,
@@ -100,7 +99,7 @@ export default class Components extends React.Component{
                         <Popconfirm placement="topLeft" title="确认删除该角色?" onConfirm={()=>{this.del(record.id)}} okText="Yes" cancelText="No">
                             <Button danger icon={<DeleteOutlined />} type="link"  >删除</Button>
                         </Popconfirm>
-                        {/* <Button icon={<FormOutlined />} type="link" onClick={()=>{this.edit(record)}}>修改</Button> */}
+                        <Button icon={<FormOutlined />} type="link" onClick={()=>{this.edit(record)}}>修改</Button>
                         <Button icon={<KeyOutlined />} type="link" onClick={()=>{}}>权限分配</Button>
                     </div>
                 ):(
@@ -157,7 +156,6 @@ export default class Components extends React.Component{
               ...col,
               onCell: record => ({
                 record,
-                inputType: "",
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: this.isEditing(record),
