@@ -7,7 +7,7 @@ account:
   resetOnRestart: true
 db: 
   driver: mysql
-  connect: "root:12345678@tcp(127.0.0.1:3306)/open-auth"
+  connect: "dev:qm@mgtv.com@tcp(118.24.53.213:3306)/open-auth"
 redis:
   client:
     addr: "localhost:6379"

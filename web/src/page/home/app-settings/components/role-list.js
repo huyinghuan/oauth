@@ -70,12 +70,31 @@ export default class Components extends React.Component{
         })
     };
     
+
     save = async key => {
         try {
             // TODO
             const row = await this.cellFormRef.current.validateFields();
+            let id = this.state.editingKey
+            console.log(this.state.editingKey);
             console.log(row)
-            
+            GetData(`/app/${this.props.appId}/role/${id}`,{ method: "PUT" },row).then(()=>{
+                notification.success({
+                    message: '操作成功',
+                    placement: 'topRight',
+                    duration: 3,
+                });
+                this.loadData()
+            }).catch((e)=>{
+
+            })
+            // this.cellFormRef.current.setFieldsValue({
+            //     name: '',
+            //     ...record,
+            // });
+            // this.setState({
+            //     editingKey: record.id
+            // }) 
 
         } catch (errInfo) { }
     };

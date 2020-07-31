@@ -58,7 +58,7 @@ var Login = (function(){
         },
         methods: {
             login: function(){
-                GetData('/user/login', {
+                GetData('/user-status', {
                     method: 'POST',
                     headers: {
                     'Accept': 'application/json',
