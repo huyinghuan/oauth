@@ -26,6 +26,7 @@ const breadcrumbNameMap = {
   "app-role":"角色",
   "app-black":"黑名单",
   "app-white":"白名单",
+  "role-settings":"权限分配"
 }
 
 function getBreadcrumbName(name){

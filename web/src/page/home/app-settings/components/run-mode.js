@@ -53,7 +53,9 @@ export default class Components extends React.Component{
                 duration: 3,
             });
             this.formRef.current.resetFields()
-        });
+        }).catch((e)=>{
+            console.log(e);
+        })
     }
     render(){
         return(<>

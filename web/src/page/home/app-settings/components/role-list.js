@@ -1,12 +1,11 @@
 import React from "react"
 
-import {Table,  Button, Modal, notification, Popconfirm, Form, Input, Divider} from "antd"
+import {Table,  Button, notification, Popconfirm, Form, Input, Divider} from "antd"
 
 import { KeyOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { get as GetData } from '../../../../service'
-
-
+import { withRouter } from "react-router";
 const EditableCell = ({
     editing,
     dataIndex,
@@ -42,17 +41,19 @@ const EditableCell = ({
 
 
 
-export default class Components extends React.Component{
+class Components extends React.Component{
+
     constructor(props){
         super(props)
         this.formRef = React.createRef();
         this.cellFormRef = React.createRef()
-
         this.state = {
             loading: true,
             list: [],
             editingKey:""
         }
+        console.log(props);
+
     }
     isEditing = record => record.id === this.state.editingKey;
     edit = record => {
@@ -70,15 +71,31 @@ export default class Components extends React.Component{
         })
     };
     
+
     save = async key => {
         try {
             // TODO
             const row = await this.cellFormRef.current.validateFields();
+            let id = this.state.editingKey
+            console.log(this.state.editingKey);
             console.log(row)
-            
+            GetData(`/app/${this.props.appId}/role/${id}`,{ method: "PUT" },row).then(()=>{
+                notification.success({
+                    message: '操作成功',
+                    placement: 'topRight',
+                    duration: 3,
+                });
+                this.loadData()
+            }).catch((e)=>{
+
+            })
+
 
         } catch (errInfo) { }
     };
+    goto(href){
+        this.props.history.push(href)
+    }
     tableColumns = [
         {
             title: '角色名',
@@ -93,14 +110,14 @@ export default class Components extends React.Component{
             align: "center",
             render:(_, record)=>{
                 let editable = this.isEditing(record);
-
+                let settingHref = [this.props.location.pathname, record.id, "role-settings"].join("/");
                 return !editable ? (
                     <div>
                         <Popconfirm placement="topLeft" title="确认删除该角色?" onConfirm={()=>{this.del(record.id)}} okText="Yes" cancelText="No">
                             <Button danger icon={<DeleteOutlined />} type="link"  >删除</Button>
                         </Popconfirm>
                         <Button icon={<FormOutlined />} type="link" onClick={()=>{this.edit(record)}}>修改</Button>
-                        <Button icon={<KeyOutlined />} type="link" onClick={()=>{}}>权限分配</Button>
+                        <Button icon={<KeyOutlined />} type="link" onClick={()=>{this.goto(settingHref)}}>权限分配</Button>{/* */}
                     </div>
                 ):(
                     <span>
@@ -140,7 +157,7 @@ export default class Components extends React.Component{
     onFinish(v){
         GetData(`/app/${this.props.appId}/role`, {method:"POST"}, v).then(()=>{
             this.loadData()
-            this.formRef.current.resetFields()
+            // this.formRef.current.resetFields()
         })
 
     }
@@ -205,3 +222,4 @@ export default class Components extends React.Component{
     }
 
 }
+export default withRouter(Components)

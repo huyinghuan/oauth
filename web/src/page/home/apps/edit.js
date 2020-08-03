@@ -34,6 +34,7 @@ class Page extends React.Component{
         }
         GetData(`/app/${this.props.match.params.appId}`, {method:"GET"}).then((data)=>{
            this.formRef.current.setFieldsValue(data)
+           console.log(data);
         }).catch((e)=>{
             this.formRef.current.resetFields()
         })
