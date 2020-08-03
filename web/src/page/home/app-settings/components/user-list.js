@@ -3,7 +3,7 @@ import React from "react"
 import {Table, notification, Popconfirm, Button, Form, Select} from "antd"
 
 import { get as GetData } from '../../../../service'
-import { FormOutlined, DeleteOutlined, KeyOutlined } from '@ant-design/icons';
+import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 
 
 const EditableCell = ({
@@ -38,7 +38,7 @@ const EditableCell = ({
 export default class Components extends React.Component{
     constructor(props){
         super(props)
-        this.initRoleNameMap()
+       
         this.state = {
             loading: true,
             list: [],
@@ -47,14 +47,15 @@ export default class Components extends React.Component{
         this.cellFormRef = React.createRef()
 
     }
-    isCellEditing = record => record.id === this.state.editingKey;
+    isCellEditing = record => record.appUser.id === this.state.editingKey;
     cellEdit = (record) => {
         this.cellFormRef.current.setFieldsValue({
           name: '',
           ...record,
         });
+        console.log(record);
         this.setState({
-            editingKey: record.id
+            editingKey: record.appUser.id
         })  
     };
     cellCancel = () => {
@@ -62,20 +63,23 @@ export default class Components extends React.Component{
             editingKey: ""
         })
     };
-    
-    cellSave = async (key) => {
+    cellSave = async (v,userid) => {
         const row = await this.cellFormRef.current.validateFields();
-        console.log(row)
+        //app/3/user/4/role
+        console.log(row.appUser);
+        GetData(`/app/${this.props.appId}/user/${userid}/role`, {method:"PUT"}, {roleID:row.appUser.role_id}).then(()=>{
+            notification.success({
+                message: '操作成功',
+                placement: 'topRight',
+                duration: 3,
+            });
+            this.loadData()
+            this.setState({editingKey:''})
+        })
     };
 
-    initRoleNameMap(){
-        let o = {0:"默认角色"}
-        this.props.roleList.forEach((item)=>{
-            o[item.id] = item.name
-        })
-        this.roleNameMap = o
-    }
-    del(id){
+    del(id,userid){
+        console.log(userid);
         GetData(`/app/${this.props.appId}/user/${id}`,{ method: "DELETE" }).then(()=>{
             notification.success({
                 message: '操作成功',
@@ -98,7 +102,16 @@ export default class Components extends React.Component{
             key: "role_id",
             align: "center",
             render: (text)=>{
-                return this.roleNameMap[text]
+                for (let i = 0; i < this.props.roleList.length; i++) {
+
+                   if(this.props.roleList[i].id === text){
+                       return this.props.roleList[i].name
+                   }
+                }
+                if(text === 0){
+                    return "默认角色"
+                }
+                return "未知角色"
             },
             editable: true,
         },
@@ -108,9 +121,10 @@ export default class Components extends React.Component{
             align: "center",
             render:(text, record)=>{
                 let editable = this.isCellEditing(record);
+                let userid=record.appUser.id
                 return !editable ?  (
                     <div>
-                        <Popconfirm placement="topLeft" title="确认从名单中删除该用户?" onConfirm={()=>{this.del(record.appUse.id)}} okText="Yes" cancelText="No">
+                        <Popconfirm placement="topLeft" title="确认从名单中删除该用户?" onConfirm={()=>{this.del(record.appUser.id)}} okText="Yes" cancelText="No">
                             <Button danger icon={<DeleteOutlined />} type="link"  >删除</Button>
                         </Popconfirm>
                         <Button icon={<FormOutlined />} type="link" onClick={()=>{this.cellEdit(record)}}>分配角色</Button>
@@ -118,7 +132,7 @@ export default class Components extends React.Component{
                     </div>
                 ) : (
                     <span>
-                    <Button icon={<FormOutlined />} type="link" onClick={()=>{this.cellSave(record.key)}}>保存</Button>
+                    <Button icon={<FormOutlined />} type="link" onClick={()=>{this.cellSave(record.key,userid)}}>保存</Button>
                     <Popconfirm title="Sure to cancel?" onConfirm={this.cellCancel}>
                         <Button icon={<FormOutlined />} type="link" >取消</Button>
                     </Popconfirm>

@@ -1,17 +1,15 @@
 import React from 'react';
 import { get as GetData } from '../../../service'
 import { withRouter, Route,  Switch as RouteSwitch} from 'react-router-dom';
-import { Typography, Modal,  Tabs, Divider, Tag} from 'antd';
+import { Modal,  Tabs, Divider, Tag} from 'antd';
 
 import { UserOutlined, ControlOutlined, TeamOutlined, UsergroupDeleteOutlined} from '@ant-design/icons';
 import RunModel from "./components/run-mode"
 import UserList from "./components/user-list"
 import RoleList from "./components/role-list"
 
-import RoleEdit from "./components/role-edit"
-
+import RoleSetting from "../role/role-settings"
 const { TabPane } = Tabs;
-const { Title } = Typography;
 
 class Page extends React.Component{
     constructor(props){
@@ -63,12 +61,12 @@ class Page extends React.Component{
         let path = this.props.match.url
 
         return (
-        <>   
+        <>
         <span>应用: {this.state.app.name}<Tag color="cyan" style={{marginLeft:"20px"}}>{this.getModeNameMap(this.state.app.model)}</Tag></span>
         <Divider />
         <RouteSwitch>
-            <Route exact path={`${path}/app-role/:roleId`}>
-                <RoleEdit/>
+            <Route exact path={`${path}/app-role/:roleId/role-settings`}>
+                <RoleSetting  appId={appId}/>
             </Route>
             <Route path={path}>
                 <Tabs tabPosition="left" animated={false} onChange={(key)=>{this.tabsChange(key)}} activeKey={activeKey}>
@@ -86,6 +84,7 @@ class Page extends React.Component{
                     </TabPane>
                 </Tabs>
             </Route>
+            
         </RouteSwitch>
         
        
