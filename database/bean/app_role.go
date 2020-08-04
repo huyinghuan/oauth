@@ -74,3 +74,9 @@ func (r *role) GetRoleIDByUserIDInApp(appID int64, userID int64) (roleID int64, 
 	roleID = appUser.RoleID
 	return
 }
+
+func (r *role) Update(id int64, name string) error{
+	engine := database.GetDriver()
+	_, err:= engine.Where("id = ?", id).Cols("name").Update(schema.AppRole{Name: name})
+	return err
+}

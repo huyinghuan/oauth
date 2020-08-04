@@ -72,19 +72,17 @@ class Components extends React.Component{
     };
     
 
-    save = async key => {
+    save = async id => {
         try {
             // TODO
             const row = await this.cellFormRef.current.validateFields();
-            let id = this.state.editingKey
-            console.log(this.state.editingKey);
-            console.log(row)
             GetData(`/app/${this.props.appId}/role/${id}`,{ method: "PUT" },row).then(()=>{
                 notification.success({
                     message: '操作成功',
                     placement: 'topRight',
                     duration: 3,
                 });
+                this.setState({editingKey: ""})
                 this.loadData()
             }).catch((e)=>{
 
@@ -121,7 +119,7 @@ class Components extends React.Component{
                     </div>
                 ):(
                     <span>
-                        <Button icon={<FormOutlined />} type="link" onClick={()=>{this.save(record.key)}}>保存</Button>
+                        <Button icon={<FormOutlined />} type="link" onClick={()=>{this.save(record.id)}}>保存</Button>
                         <Popconfirm title="Sure to cancel?" onConfirm={this.cancel}>
                             <Button icon={<FormOutlined />} type="link" >取消</Button>
                         </Popconfirm>

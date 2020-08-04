@@ -2,6 +2,7 @@ package controller
 
 import (
 	"oauth/database/bean"
+	"log"
 	"strings"
 
 	"github.com/kataras/iris/v12"
@@ -73,4 +74,27 @@ func (a *AppRoleManager) GetOne(ctx iris.Context) {
 		return
 	}
 	ctx.JSON(role)
+}
+
+func (a *AppRoleManager) Update(ctx iris.Context){
+	id, _ := ctx.Params().GetInt64("id")
+	form := map[string]string{}
+
+	ctx.ReadJSON(&form)
+
+	if roleName, ok := form["name"]; ok{
+		roleName = strings.TrimSpace(roleName)
+		if roleName != ""{
+			if err := bean.Role.Update(id, roleName); err!=nil{
+				log.Print(err)
+				ctx.StatusCode(500)
+				ctx.WriteString("服务器错误")
+			}else{
+				ctx.WriteString("修改成功")
+			}
+			return
+		}
+	}
+	ctx.StatusCode(406)
+	ctx.WriteString("角色名称不能为空")
 }
