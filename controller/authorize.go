@@ -250,7 +250,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	} else if !haveEnterPromise {
-		//没有访问权限
+		// 没有访问权限
 		ctx.ViewData("AppName", app.Name)
 		ctx.View("no-promise.html")
 		return

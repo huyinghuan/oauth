@@ -31,15 +31,15 @@ func GetApp() *iris.Application {
 	//免登陆接口
 	// webIndexCtrl := controller.WebIndex{Session: session}
 	// app.Get("/", webIndexCtrl.Get)
-	app.Get("/", func(ctx iris.Context) { ctx.View("index.html") })
-	//用户管理
+	// app.Get("/", func(ctx iris.Context) { ctx.View("index.html") })
+	// 用户管理
 
 	//以下为第三方调用接口
 	app.PartyFunc("/authorize", func(u iris.Party) {
 		u.Get("/", controller.AuthorizeCtrl.Get)
-		//权限校验
+		// 权限校验
 		u.Post("/", controller.AuthorizeCtrl.Verify)
-		//接口跳转
+		// 接口跳转
 		u.Post("/jump", controller.AuthorizeCtrl.Jump)
 
 		u.Get("/login", controller.AuthorizeCtrl.Login)
