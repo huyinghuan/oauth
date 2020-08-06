@@ -13,15 +13,16 @@ import (
 
 var (
 	cookieNameForSessionID = "mgtv-oauth-sessionid"
-	session               = sessions.New(sessions.Config{
-		Cookie:  cookieNameForSessionID,
-		Expires:  0, // <=0 means unlimited life
+	session                = sessions.New(sessions.Config{
+		Cookie:       cookieNameForSessionID,
+		Expires:      0, // <=0 means unlimited life
 		AllowReclaim: true,
 	})
 )
 
 func GetApp() *iris.Application {
 	app := iris.New()
+	app.Use(session.Handler())
 	tmpl := iris.HTML("./static/template", ".html")
 	tmpl.Reload(true)
 
@@ -53,11 +54,11 @@ func GetApp() *iris.Application {
 		middleware.UserAuth(context, session)
 	})
 
-	API.Get("/open-register",  controller.UserCtrl.IsOpenRegister)
+	API.Get("/open-register", controller.UserCtrl.IsOpenRegister)
 
 	API.PartyFunc("/user-status", func(u router.Party) {
 		u.Get("/", controller.UserStatusCtrl.Get)
-		u.Post("/", func(ctx iris.Context) {controller.UserStatusCtrl.Post(ctx, session)})
+		u.Post("/", func(ctx iris.Context) { controller.UserStatusCtrl.Post(ctx, session) })
 		u.Delete("/", controller.UserStatusCtrl.Delete)
 	})
 

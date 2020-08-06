@@ -21,7 +21,7 @@ import (
 	"github.com/kataras/iris/v12/sessions"
 )
 
-type Authorize struct {}
+type Authorize struct{}
 
 // type Scope struct {
 // 	Type    string
