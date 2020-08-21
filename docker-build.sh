@@ -5,10 +5,10 @@ if [ "$1" == "" ]; then
   version=latest
 fi
 
-cd web
-cnpm install
-cnpm run-script build
-cd ..
+# cd web
+# cnpm install
+# cnpm run-script build
+# cd ..
 
 env GOOS=linux GOARCH=amd64 go build -o app
 

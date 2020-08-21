@@ -15,7 +15,7 @@ var Application application
 func (a *application) Get(id int64) (schema.Application, error) {
 	app := schema.Application{}
 	engine := database.GetDriver()
-	_, err := engine.Id(id).Get(&app)
+	_, err := engine.Where("id = ?", id).Get(&app)
 	return app, err
 }
 

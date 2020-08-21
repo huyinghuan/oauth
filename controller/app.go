@@ -12,11 +12,11 @@ import (
 	"github.com/kataras/iris/v12/sessions"
 )
 
-type App struct {}
+type App struct{}
 type appForm struct {
 	Name     string `json:"name"`
 	Callback string `json:"callback"`
-	Open bool `json:"open"`
+	Open     bool   `json:"open"`
 }
 
 func (c *App) GetList(ctx iris.Context) {
@@ -36,7 +36,7 @@ func (c *App) Get(ctx iris.Context) {
 	id, _ := ctx.Params().GetInt64("appID")
 	app, err := bean.Application.Get(id)
 	if err != nil {
-		log.Println(err)
+		log.Println("get app error", err)
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
 		return
@@ -45,7 +45,7 @@ func (c *App) Get(ctx iris.Context) {
 		"name":     app.Name,
 		"callback": app.Callback,
 		"model":    app.Mode,
-		"open": 		app.Open,
+		"open":     app.Open,
 	})
 }
 
@@ -59,7 +59,7 @@ func (c *App) Put(ctx iris.Context) {
 	app := schema.Application{
 		Name:     form.Name,
 		Callback: form.Callback,
-		Open: form.Open,
+		Open:     form.Open,
 	}
 	if uApp, err := bean.UpdateApplication(id, uid, &app); err != nil {
 		ctx.StatusCode(500)
@@ -102,7 +102,7 @@ func (c *App) Post(ctx iris.Context) {
 		UserID:   user.ID,
 		Name:     appName,
 		Callback: form.Callback,
-		Open: form.Open,
+		Open:     form.Open,
 	}
 	if err := bean.RegisterAppliction(&app); err != nil {
 		ctx.StatusCode(iris.StatusNotAcceptable)
