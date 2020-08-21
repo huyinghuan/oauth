@@ -1,0 +1,35 @@
+<div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">授权</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <input type="hidden" id="client_id" value={{.ClientID}}>
+            应用 <span class="tag is-info">{{.AppName}}</span> 想要获取你的账户信息进行登陆
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" onclick="agree()">同意</button>
+            <button class="button is-danger" onclick="disagree()">拒绝</button>
+        </footer>
+    </div>
+</div>
+<script>
+    var client_id = "{{.ClientID}}";
+    var redirect = "{{.Redirect}}";
+    function agree() {
+        fetch(`/authorize/jump?client_id=${client_id}`, {
+            method: "POST"
+        }).then(() => {
+            if (location.search.indexOf("redirect=") != -1) {
+                location.reload()
+            } else {
+                location.href = "/authorize" + location.search + "&redirect=" + redirect
+            }
+        })
+    }
+    function disagree() {
+        location.href = "/"
+    }
+</script>

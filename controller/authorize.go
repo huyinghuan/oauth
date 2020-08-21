@@ -226,7 +226,7 @@ func (c *Authorize) Get(ctx iris.Context) {
 	uid, err := sess.GetInt64("uid")
 	if err != nil {
 		//用户登陆
-		ctx.Redirect(fmt.Sprintf("/authorize/login?client_id=%s&t=%s&redirect=%s", clientID, ctx.URLParam("t"), redirectURL))
+		ctx.Redirect(fmt.Sprintf("/authorize/login.html?client_id=%s&t=%s&redirect=%s", clientID, ctx.URLParam("t"), redirectURL))
 		return
 	}
 	if uid == 0 {

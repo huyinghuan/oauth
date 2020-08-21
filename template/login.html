@@ -1,0 +1,149 @@
+<style>
+    .is-horizontal {
+        display: flex;
+        margin-bottom: 20px
+    }
+
+    .is-horizontal .is-normal {
+        width: 75px;
+        padding: 8px 15px;
+        height: 38px;
+        line-height: 20px;
+        border-radius: 2px 0 0 2px;
+        text-align: center;
+        overflow: hidden;
+        box-sizing: border-box;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .field .field-body {
+        width: calc(100% - 75px);
+    }
+
+    .field-body .input {
+        width: 100%;
+        height: 38px;
+        line-height: 1.3;
+        border-width: 1px;
+        border-style: solid;
+        background-color: #fff;
+        border-radius: 2px;
+        border-color: #dbdbdb;
+        color: #363636;
+        box-shadow: inset 0 1px 2px rgba(10, 10, 10, .1)
+    }
+
+    .field-body .button {
+        display: inline-block;
+        height: 38px;
+        line-height: 38px;
+        background-color: #1E9FFF;
+        padding: 0 50px;
+        text-align: center;
+        font-size: 14px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+    }
+
+    .field-body .button:hover {
+        opacity: .8;
+    }
+
+    .login {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .login .control {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .login .control a {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #1d1c1c;
+    }
+
+    .login .control a:hover {
+        color: #393D49;
+    }
+</style>
+<div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">OAuth登陆</p>
+        </header>
+        <section class="modal-card-body">
+            <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                    <label class="label">账户:</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <p class="control is-expanded">
+                            <input class="input" type="text" id="username">
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                    <label class="label">密码:</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="password" id="password">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="login is-horizontal">
+                <div class="field-label">
+                    <!-- Left empty for spacing -->
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary" id="login">
+                                登陆
+                            </button>
+                            {{if .OpenRegister}}<a href="/#/register" target="_blank">没有账号？立即注册</a>{{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+    var loginBtn = document.querySelector("#login")
+    var usernameInput = document.querySelector("#username")
+    var passwordInput = document.querySelector("#password")
+    loginBtn.addEventListener("click", function () {
+        let username = usernameInput.value
+        let password = passwordInput.value
+        fetch('/api/user-status', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: username, password: password })
+        }).then((resp) => {
+            if (resp.status == 200) {
+                location.reload();
+                location.href = "/authorize" + location.search
+            } else {
+                confirm("账户或密码错误")
+            }
+        });
+    })
+</script>

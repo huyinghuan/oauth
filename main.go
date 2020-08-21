@@ -23,11 +23,10 @@ var (
 func GetApp() *iris.Application {
 	app := iris.New()
 	app.Use(session.Handler())
-	tmpl := iris.HTML("./static/template", ".html")
+	tmpl := iris.HTML("./template", ".html").Layout("layout.html")
 	tmpl.Reload(true)
-
 	app.RegisterView(tmpl)
-	app.HandleDir("/static/", "./static/resource")
+	// app.HandleDir("/static/", "./static/resource")
 
 	//免登陆接口
 	// webIndexCtrl := controller.WebIndex{Session: session}
@@ -43,14 +42,14 @@ func GetApp() *iris.Application {
 		// 接口跳转
 		u.Post("/jump", controller.AuthorizeCtrl.Jump)
 
-		u.Get("/login", controller.AuthorizeCtrl.Login)
+		u.Get("/login.html", controller.AuthorizeCtrl.Login)
 	})
 	app.PartyFunc("/resource", func(u iris.Party) {
 		u.Post("/account", controller.ResourceCtrl.GetAccount)
 	})
 
 	//数据接口
-	API := app.Party("/api", session.Handler(), func(context iris.Context) {
+	API := app.Party("/api", func(context iris.Context) {
 		middleware.UserAuth(context, session)
 	})
 

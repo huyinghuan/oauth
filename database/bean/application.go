@@ -74,8 +74,6 @@ func RegisterAppliction(app *schema.Application) error {
 		return err
 	}
 
-
-
 	return nil
 }
 

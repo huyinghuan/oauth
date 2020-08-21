@@ -1,0 +1,20 @@
+<div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">授权</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            你无法登陆 应用 <span class="tag is-info">{{.AppName}}</span> 如果有疑问，请联系该应用管理员。
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" onclick="disagree()">关闭</button>
+        </footer>
+    </div>
+</div>
+<script>
+    function disagree() {
+        location.href = "/"
+    }
+</script>
