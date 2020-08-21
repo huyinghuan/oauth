@@ -12,7 +12,7 @@ services:
       - OPENAUTH_ADMIN=admin
       #admin account password
       - OPENAUTH_ADMIN_PASS=12345678
-      - OPENAUTH_ADMIN_RESET_ONRESTART=false
+      - OPENAUTH_ADMIN_RESET_ONRESTART=true
       #account database mysql
       - OPENAUTH_DATABASE=root:12345678@tcp(mysql:3306)/oauth
       #redis
@@ -64,5 +64,5 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.66.0/24 
-          gateway: 172.16.66.1
+        - subnet: 172.16.96.0/24 
+          gateway: 172.16.96.1

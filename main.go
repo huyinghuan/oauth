@@ -26,7 +26,7 @@ func GetApp() *iris.Application {
 	tmpl := iris.HTML("./template", ".html").Layout("layout.html")
 	tmpl.Reload(true)
 	app.RegisterView(tmpl)
-	// app.HandleDir("/static/", "./static/resource")
+	app.HandleDir("/", "./web/build")
 
 	//免登陆接口
 	// webIndexCtrl := controller.WebIndex{Session: session}
