@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"oauth/database/bean"
 
 	"github.com/kataras/iris/v12"
@@ -16,11 +17,12 @@ func UserHaveApp(ctx iris.Context) {
 
 	app, err := bean.Application.Get(appID)
 	if err != nil {
+		log.Println(err)
 		ctx.StatusCode(500)
 		return
 	}
 	// 如果app 不存在
-	if app.ID == 0{
+	if app.ID == 0 {
 		ctx.StatusCode(404)
 		ctx.WriteString("找不到该应用")
 		return

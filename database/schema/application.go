@@ -8,5 +8,9 @@ type Application struct {
 	PrivateKey string `xorm:"private_key" json:"private_key" `
 	Callback   string `xorm:"callback" json:"callback"`
 	Mode       string `xorm:"mode" json:"mode"` //运行模式
-	Open       bool   `xorm:"open" json:"open"`
+	Open       bool   `xorm:"is_open" json:"open"`
+}
+
+func (a Application) TableName() string {
+	return "application"
 }
