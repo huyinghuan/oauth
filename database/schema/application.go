@@ -9,6 +9,8 @@ type Application struct {
 	Callback   string `xorm:"callback" json:"callback"`
 	Mode       string `xorm:"mode" json:"mode"` //运行模式
 	Open       bool   `xorm:"is_open" json:"open"`
+	Icon       string `xorm:"icon" json:"icon"`
+	HomePage   string `xorm:"home_page" json:"home_page"`
 }
 
 func (a Application) TableName() string {

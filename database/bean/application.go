@@ -35,7 +35,7 @@ type ApplicationUserGroup struct {
 func GetOpenApplicationList() ([]ApplicationUserGroup, error) {
 	engine := database.GetDriver()
 	list := make([]ApplicationUserGroup, 0)
-	session := engine.Table("application").Where("open = ?", true)
+	session := engine.Table("application").Where("is_open = ?", true)
 	err := session.Find(&list)
 	return list, err
 }
