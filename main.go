@@ -8,21 +8,10 @@ import (
 
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/core/router"
-	"github.com/kataras/iris/v12/sessions"
-)
-
-var (
-	cookieNameForSessionID = "mgtv-oauth-sessionid"
-	session                = sessions.New(sessions.Config{
-		Cookie:       cookieNameForSessionID,
-		Expires:      0, // <=0 means unlimited life
-		AllowReclaim: true,
-	})
 )
 
 func GetApp() *iris.Application {
 	app := iris.New()
-	app.Use(session.Handler())
 	tmpl := iris.HTML("./template", ".html").Layout("layout.html")
 	tmpl.Reload(true)
 	app.RegisterView(tmpl)
@@ -49,15 +38,13 @@ func GetApp() *iris.Application {
 	})
 
 	//数据接口
-	API := app.Party("/api", func(context iris.Context) {
-		middleware.UserAuth(context, session)
-	})
+	API := app.Party("/api", middleware.FindUserFromJWT(true, []string{"/api/user-status", "/api/user/register", "/api/open-register"}))
 
 	API.Get("/open-register", controller.UserCtrl.IsOpenRegister)
 
 	API.PartyFunc("/user-status", func(u router.Party) {
 		u.Get("/", controller.UserStatusCtrl.Get)
-		u.Post("/", func(ctx iris.Context) { controller.UserStatusCtrl.Post(ctx, session) })
+		u.Post("/", controller.UserStatusCtrl.Post)
 		u.Delete("/", controller.UserStatusCtrl.Delete)
 	})
 
